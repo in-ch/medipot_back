@@ -1,5 +1,5 @@
 import { IsArray, IsNumber, IsString } from 'class-validator';
-export class LocationCreateCrudDto {
+export class LocationCrudDto {
     @IsString()
     name: string;
 
@@ -40,4 +40,4 @@ export class LocationCreateCrudDto {
     imgs: string[];
 }
 
-export class LocationOutputCrudDto extends LocationCreateCrudDto  {}
+export class LocationOutputCrudDto extends LocationCrudDto  {}

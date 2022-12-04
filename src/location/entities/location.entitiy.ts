@@ -44,6 +44,11 @@ export class Location extends BaseEntity{
     @Column("text", { comment: '이미지들',array: true })
     imgs: string[];
     
+    @Column({ comment: '삭제 여부',default: false })
+    isDeleted: boolean;
+
+    @Column({ comment: '승인 여부',default: false })
+    isApproved: boolean;
   
     @CreateDateColumn({ name: 'create_at', comment: '생성일' })
     createdAt: Date;

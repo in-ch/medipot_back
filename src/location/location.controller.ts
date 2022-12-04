@@ -9,14 +9,14 @@ export class LocationController {
     constructor(private readonly locationsService: LocationService){}
 
     @Get() 
-    getLocation(): string[] {
+    getLocation(): Promise<string[]> {
         return this.locationsService.getLocations();
     }
 
     @Post()
     createLocation(
         @Body() payload: LocationCreateCrudDto
-    ):OutputDto<LocationOutputCrudDto> {
+    ):Promise<OutputDto<LocationOutputCrudDto>> {
         return this.locationsService.createLocation(payload);
     }
 }

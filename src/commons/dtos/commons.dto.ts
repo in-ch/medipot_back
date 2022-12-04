@@ -1,4 +1,4 @@
-import { IsBoolean, IsNumber } from 'class-validator';
+import { IsBoolean, IsNumber, IsString } from 'class-validator';
 
 export class OutputDto<T> {
   @IsBoolean()
@@ -7,5 +7,8 @@ export class OutputDto<T> {
   @IsNumber()
   status: number;
 
-  data: T;
+  data?: T;
+
+  @IsString()
+  error?: string;
 }

@@ -7,6 +7,43 @@ export class Location extends BaseEntity{
 
     @Column({ type: 'varchar', length: 30, comment: '입지 이름' })
     name: string;
+
+    @Column({ comment: '임대보증금' })
+    deposit: number;
+
+    @Column({ comment: '월 임대보증금' })
+    depositMonly: number;
+
+    @Column({ comment: '권리금' })
+    premium: number;
+
+    @Column({ comment: '관리비' })
+    manageCost: number;
+
+    @Column({ comment: '중개수수료' })
+    brokerage: number;
+
+    @Column("text", { array: true, comment: "진료과들" })
+    departments: string[];
+
+    @Column("text", { comment: '키워드',array: true })
+    keywords: string[];
+
+    @Column({ comment: '전용 면적' })
+    dedicatedArea: number;
+
+    @Column({ type: 'varchar', length: 300, comment: '추가 정보' })
+    etc: string;
+
+    @Column({ type: 'varchar', length: 150, comment: '입지 주소' })
+    address: string;
+
+    @Column({ type: 'varchar', length: 550, comment: '상세 설명' })
+    detail: string;
+
+    @Column("text", { comment: '이미지들',array: true })
+    imgs: string[];
+    
   
     @CreateDateColumn({ name: 'create_at', comment: '생성일' })
     createdAt: Date;

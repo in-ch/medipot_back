@@ -32,6 +32,9 @@ export class Location extends BaseEntity{
     @Column({ comment: '전용 면적' })
     dedicatedArea: number;
 
+    @Column({ comment: '공급 면적' })
+    supplyArea: number;
+
     @Column({ type: 'varchar', length: 300, comment: '추가 정보' })
     etc: string;
 

@@ -27,8 +27,11 @@ export class LocationCrudDto {
     @IsNumber()
     dedicatedArea: number;
 
+    @IsNumber()
+    supplyArea: number;
+
     @IsString()
-    readonly etc: string;
+    readonly etc?: string;
 
     @IsString()
     address: string;

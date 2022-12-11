@@ -36,12 +36,11 @@ export class LocationService {
     async createLocation(payload: LocationCrudDto): Promise<OutputDto<LocationOutputCrudDto>> {
         try{
             const newLocation = this.locations.create(payload);
-            console.log("새로운 입지 등록 :" + JSON.stringify(newLocation));
             this.locations.save(newLocation);
             return {
                 isDone: true,
                 status: 200,
-                data: payload,
+                data: newLocation,
             }
         } catch(e){
             return {

@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Location } from 'src/location/entities/location.entitiy';
+import { AdminUser } from 'src/user/entities/user.entitiy';
 
 @Module({
     imports:[
@@ -14,7 +15,7 @@ import { Location } from 'src/location/entities/location.entitiy';
             database: process.env.DB_NAME,
             synchronize: process.env.NODE_ENV !== 'prod',
             logging: process.env.NODE_ENV !== 'prod',
-            entities: [Location], // db 들어가는 곳
+            entities: [Location, AdminUser], // db 들어가는 곳
           }),
     ]
 })

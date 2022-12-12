@@ -1,8 +1,8 @@
 import { BaseEntity, Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 export enum grant {
-    'ADMIN',
-    'USER',
+    "ADMIN",
+    "USER",
 } 
 
 @Entity()
@@ -19,15 +19,12 @@ export class AdminUser extends BaseEntity{
     @Column({ comment: '유저 이름' })
     name: string;
 
-    @Column({ enum: grant,type:'enum', name:'권한', comment: '권한' })
+    @Column({ enum: grant,type:'enum', name:'grant', comment: '권한' })
     grant: grant;
 
     @Column({ comment: '삭제 여부',default: false })
     isDeleted: boolean;
 
-    @Column({ comment: '승인 여부',default: false })
-    isApproved: boolean;
-  
     @CreateDateColumn({ name: 'create_at', comment: '생성일' })
     createdAt: Date;
   

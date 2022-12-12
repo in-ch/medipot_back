@@ -14,7 +14,7 @@ export class AdminUserCrudDto {
 
     @IsEnum(grant)
     grant: grant;
-}
 
+}
 export class AdminUserCreateCrudDto extends AdminUserCrudDto  {}
 export class AdminUserOutputCrudDto extends AdminUserCrudDto  {}

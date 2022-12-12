@@ -7,7 +7,7 @@ import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
-    ConfigAppModule,TypeormModule, LocationModule, UserModule],
+    ConfigAppModule, TypeormModule, LocationModule, UserModule],
   controllers: [],
   providers: [],
 })

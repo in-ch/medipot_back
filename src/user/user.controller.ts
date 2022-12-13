@@ -12,7 +12,7 @@ export class UserController {
     constructor(private readonly usersService: UserService){}
 
     @UseGuards(LocalAuthenticationGuard)
-    @UseGuards(JwtAuthGuard)
+    // @UseGuards(JwtAuthGuard)
     @Post("/admin/create")
     createAdminUser(
         @Body() payload: AdminUserCreateCrudDto
@@ -24,6 +24,6 @@ export class UserController {
     loginAdmin(
     @Body() payload: AdminUserLoginCrudDto
     ): Promise<OutputDto<AdminUserOutputCrudDto>> {
-        return this.usersService.adminLogin(payload.id, payload.password);
+        return this.usersService.adminLogin(payload);
     }
 }

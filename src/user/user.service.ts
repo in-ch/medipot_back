@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { AdminUserCreateCrudDto, AdminUserOutputCrudDto } from './dto/admin.user.dto';
+import { AdminUserCreateCrudDto, AdminUserLoginCrudDto, AdminUserOutputCrudDto } from './dto/admin.user.dto';
 import { OutputDto } from 'src/commons/dtos';
 import { AdminUser } from './entities/user.entitiy';
 import { JwtService } from '@nestjs/jwt';
@@ -104,8 +104,9 @@ export class UserService {
      * @return {OutputDto<AdminUserOutputCrudDto>}
      * @author in-ch, 2022-12-12
     */
-    async adminLogin(id: string, password:string):Promise<OutputDto<AdminUserOutputCrudDto>> {
+    async adminLogin(payload:AdminUserLoginCrudDto):Promise<OutputDto<AdminUserOutputCrudDto>> {
         try{
+            const {id, password} = payload;
             const adminUser = await this.adminUsers.findOne({
                 where:{
                     id

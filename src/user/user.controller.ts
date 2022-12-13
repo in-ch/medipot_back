@@ -1,7 +1,7 @@
 import { Body, Controller, Post, UseGuards} from '@nestjs/common';
 
 import { OutputDto } from 'src/commons/dtos';
-import { AdminUserCreateCrudDto, AdminUserOutputCrudDto } from './dto/admin.user.dto';
+import { AdminUserCreateCrudDto, AdminUserLoginCrudDto, AdminUserOutputCrudDto } from './dto/admin.user.dto';
 import { JwtAuthGuard } from './strategy/jwtAuthentication.guard';
 import { LocalAuthenticationGuard } from './strategy/localAuthentication.guard';
 
@@ -18,5 +18,12 @@ export class UserController {
         @Body() payload: AdminUserCreateCrudDto
     ): Promise<OutputDto<AdminUserOutputCrudDto>> {
         return this.usersService.createAdminUser(payload);
+    }
+
+    @Post("/admin/login")
+    loginAdmin(
+    @Body() payload: AdminUserLoginCrudDto
+    ): Promise<OutputDto<AdminUserOutputCrudDto>> {
+        return this.usersService.adminLogin(payload.id, payload.password);
     }
 }

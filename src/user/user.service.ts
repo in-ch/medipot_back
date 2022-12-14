@@ -48,11 +48,6 @@ export class UserService {
                 ...newAdminUser,
                 password: encryptedPassowrd,
             });
-            const access_token = this.jwtService.sign({
-                ...newAdminUser,
-                password: '11',
-            });
-            console.log(`엑세스 토큰 : ${access_token}`);
             return {
                 isDone: true,
                 status: 200,
@@ -113,10 +108,24 @@ export class UserService {
                 }
             });
             await this.verifyPassword(password, adminUser.password);
+            const access_token = this.jwtService.sign({
+                ...adminUser,
+                password: '11',
+            });
+
+            const refresh_token = this.jwtService.sign({
+                ...adminUser,
+                password: '22',
+            });
+
             return {
                 isDone: true,
                 status: 200,
-                data: adminUser
+                data: {
+                    ...adminUser,
+                    token: access_token,
+                    refresh_token: refresh_token,
+                }
             }
 
         } catch(e){

@@ -19,4 +19,7 @@ export class AdminUserCrudDto {
 }
 export class AdminUserLoginCrudDto extends PickType(AdminUserCrudDto, ['id', 'password']){}
 export class AdminUserCreateCrudDto extends AdminUserCrudDto  {}
-export class AdminUserOutputCrudDto extends AdminUserCrudDto  {}
+export class AdminUserOutputCrudDto extends AdminUserCrudDto  {
+    token?: string;
+    refresh_token?: string;
+}

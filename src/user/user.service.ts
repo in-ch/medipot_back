@@ -1,8 +1,8 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { ConsoleLogger, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { AdminUserCreateCrudDto, AdminUserLoginCrudDto, AdminUserOutputCrudDto } from './dto/admin.user.dto';
+import { AdminUserCreateCrudDto, AdminUserLoginCrudDto, AdminUserOutputCrudDto, AdminUserRefreshCrudDto, AdminUserRefreshOutputCrudDto } from './dto/admin.user.dto';
 import { OutputDto } from 'src/commons/dtos';
 import { AdminUser } from './entities/user.entitiy';
 import { JwtService } from '@nestjs/jwt';
@@ -42,11 +42,31 @@ export class UserService {
     */
     async createAdminUser(payload: AdminUserCreateCrudDto): Promise<OutputDto<AdminUserOutputCrudDto>> {
         try{
-            const newAdminUser = this.adminUsers.create(payload);
-            const encryptedPassowrd = bcrypt.hashSync(newAdminUser.password, 10) 
-            this.adminUsers.save({
+            const newAdminUser = this.adminUsers.create({
+                ...payload,
+                token: ' ',
+                refresh_token: ' ',
+            });
+            const encryptedPassowrd = bcrypt.hashSync(newAdminUser.password, 10);
+
+            const newAdmin = this.adminUsers.save({
                 ...newAdminUser,
                 password: encryptedPassowrd,
+            });
+            const access_token = this.jwtService.sign({
+                ...newAdmin,
+                token:'',
+                refresh_token:'',
+                password: '11',
+            });
+
+            const refresh_token = this.jwtService.sign({
+                ...newAdmin,
+                token:'',
+                refresh_token:'',
+                password: '22',
+            }, {
+                expiresIn: '3200',
             });
             return {
                 isDone: true,
@@ -54,12 +74,14 @@ export class UserService {
                 data: {
                     ...newAdminUser,
                     password: encryptedPassowrd,
+                    token: access_token,
+                    refresh_token,
                 },
             }
         } catch(e){
             return {
                 isDone: false,
-                status: 201,
+                status: 400,
                 error: e,
             }
         }
@@ -86,7 +108,7 @@ export class UserService {
         } catch(e){
             return {
                 isDone: false,
-                status: 201,
+                status: 400,
                 error: e,
             }
         }
@@ -110,30 +132,93 @@ export class UserService {
             await this.verifyPassword(password, adminUser.password);
             const access_token = this.jwtService.sign({
                 ...adminUser,
+                token:'',
+                refresh_token:'',
                 password: '11',
             });
 
             const refresh_token = this.jwtService.sign({
                 ...adminUser,
+                token:'',
+                refresh_token:'',
                 password: '22',
+            }, {
+                expiresIn: '100s',
             });
-
+            await this.adminUsers.save({
+                ...adminUser,
+                token: access_token,
+                refresh_token,
+            });
             return {
                 isDone: true,
                 status: 200,
                 data: {
                     ...adminUser,
                     token: access_token,
-                    refresh_token: refresh_token,
+                    refresh_token,
                 }
             }
 
         } catch(e){
             return {
                 isDone: false,
-                status: 201,
+                status: 400,
                 error: e,
             }
         }
     }
+
+    /**
+     * @param {AdminUserRefreshCrudDto} payload
+     * @description 리프레쉬 토큰을 발급한다.
+     * @return {OutputDto<AdminUserRefreshOutputCrudDto>}
+     * @author in-ch, 2022-12-15
+    */
+     async adminRefresh(payload:AdminUserRefreshCrudDto):Promise<OutputDto<AdminUserRefreshOutputCrudDto>> {
+        try{
+            const {name, refresh_token} = payload;
+            const verify = this.jwtService.verify(refresh_token, { secret: process.env.PRIVATE_KEY });
+            console.log('인증 결과 '+ verify);
+            if(!verify){
+                return {
+                    isDone: false,
+                    status: 400,
+                    error: '리프레쉬 토큰이 만료되었습니다.',
+                }
+            }
+            const getAdmin = await this.adminUsers.findOne({
+                where:{
+                    name,
+                    refresh_token
+                }
+            });
+            const new_access_token = this.jwtService.sign({
+                ...getAdmin,
+                token:'',
+                refresh_token:'',
+                password: '11',
+            });
+
+            await this.adminUsers.save({
+                ...getAdmin,
+                token: new_access_token,
+            });
+
+            return {
+                isDone: true,
+                status: 200,
+                data: {
+                    ...getAdmin,
+                    token: new_access_token,
+                }
+            }
+        } catch(e) {
+            return {
+                isDone: false,
+                status: 400,
+                error: e,
+            }
+        }
+     }
 }

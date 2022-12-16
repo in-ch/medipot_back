@@ -1,7 +1,7 @@
 import { Body, Controller, Post, UseGuards} from '@nestjs/common';
 
 import { OutputDto } from 'src/commons/dtos';
-import { AdminUserCreateCrudDto, AdminUserLoginCrudDto, AdminUserOutputCrudDto } from './dto/admin.user.dto';
+import { AdminUserCreateCrudDto, AdminUserCrudDto, AdminUserLoginCrudDto, AdminUserOutputCrudDto, AdminUserRefreshCrudDto, AdminUserRefreshOutputCrudDto } from './dto/admin.user.dto';
 import { JwtAuthGuard } from './strategy/jwtAuthentication.guard';
 import { LocalAuthenticationGuard } from './strategy/localAuthentication.guard';
 
@@ -17,6 +17,7 @@ export class UserController {
     createAdminUser(
         @Body() payload: AdminUserCreateCrudDto
     ): Promise<OutputDto<AdminUserOutputCrudDto>> {
+        console.log(payload);
         return this.usersService.createAdminUser(payload);
     }
 
@@ -25,5 +26,12 @@ export class UserController {
     @Body() payload: AdminUserLoginCrudDto
     ): Promise<OutputDto<AdminUserOutputCrudDto>> {
         return this.usersService.adminLogin(payload);
+    }
+
+    @Post("/admin/refresh")
+    refreshAdmin(
+    @Body() payload: AdminUserRefreshCrudDto
+    ): Promise<OutputDto<AdminUserRefreshOutputCrudDto>> {
+        return this.usersService.adminRefresh(payload);
     }
 }

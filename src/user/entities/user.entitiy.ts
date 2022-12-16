@@ -22,6 +22,12 @@ export class AdminUser extends BaseEntity{
     @Column({ enum: grant,type:'enum', name:'grant', comment: '권한' })
     grant: grant;
 
+    @Column({ comment: '엑세스 토큰', default: "" })
+    token?: string;
+
+    @Column({ comment: '리프레쉬 토큰', default: "" })
+    refresh_token?: string;
+
     @Column({ comment: '삭제 여부',default: false })
     isDeleted: boolean;
 

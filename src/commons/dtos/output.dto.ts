@@ -11,4 +11,6 @@ export class OutputDto<T> {
 
   @IsString()
   error?: string;
+
+  totalCount?: number;
 }

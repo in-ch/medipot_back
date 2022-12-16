@@ -26,7 +26,9 @@ export class LocationService {
                 take: limit || 10,
                 skip: page * limit || 0,
             });
+            const totalCount = await this.locations.count();
             return {
+                totalCount,
                 isDone: true,
                 status: 200,
                 data: locations,

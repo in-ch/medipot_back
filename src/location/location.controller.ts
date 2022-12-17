@@ -2,6 +2,7 @@ import { Body, Controller, Get, Post, Req } from '@nestjs/common';
 import { Request } from 'express';
 
 import { OutputDto, PaginationDto } from 'src/commons/dtos';
+import { NoDto } from 'src/commons/dtos/no.dto';
 import { LocationCrudDto, LocationOutputCrudDto } from './dto/location.dto';
 import { LocationService } from './location.service';
 
@@ -9,8 +10,16 @@ import { LocationService } from './location.service';
 export class LocationController {
     constructor(private readonly locationsService: LocationService){}
 
-    @Get() 
+    @Get()
     getLocation(
+        @Req() request: Request<NoDto> 
+    ): Promise<OutputDto<LocationOutputCrudDto>> {
+        return this.locationsService.getLocation(request.query);
+    }
+
+
+    @Get() 
+    getLocations(
         @Req() request: Request<PaginationDto> 
     ): Promise<OutputDto<LocationOutputCrudDto[]>> {
         return this.locationsService.getLocations(request.query);

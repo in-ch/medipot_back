@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { OutputDto, PaginationDto } from 'src/commons/dtos';
 import { LocationCrudDto, LocationOutputCrudDto } from './dto/location.dto';
 import { Location } from './entities/location.entitiy';
+import { NoDto } from 'src/commons/dtos/no.dto';
 
 @Injectable()
 export class LocationService {
@@ -13,9 +14,36 @@ export class LocationService {
     ) {}
 
     /**
+     * @param {NoDto} query 쿼리값
+     * @description 입지 정보들을 가져온다.
+     * @return {OutputDto<LocationOutputCrudDto>} 입지 정보를 가져온다.
+     * @author in-ch, 2022-12-07
+    */
+    async getLocation(query: NoDto): Promise<OutputDto<LocationOutputCrudDto>> {
+        try{
+            const { no } = query;
+            const location = await this.locations.findOne({
+                where:{
+                    no,
+                }
+            });
+            return {
+                isDone: true,
+                status: 200,
+                data: location,
+            }
+        } catch(e) {
+            return {
+                isDone: false,
+                status: 400,
+                error: "오류가 발생하였습니다.",
+            }
+        }
+    }
+    /**
      * @param {PaginationDto} query 쿼리값
      * @description 입지 정보들을 가져온다.
-     * @return {OutputDto<LocationOutputCrudDto[]>} 입지 정보를 가져온다.
+     * @return {OutputDto<LocationOutputCrudDto[]>} 입지 정보들을 가져온다.
      * @author in-ch, 2022-12-07
     */
     async getLocations(query: PaginationDto): Promise<OutputDto<LocationOutputCrudDto[]>> {
@@ -36,7 +64,7 @@ export class LocationService {
         } catch(e){
             return {
                 isDone: false,
-                status: 201,
+                status: 400,
                 error: "오류가 발생하였습니다.",
             }
         }
@@ -60,7 +88,7 @@ export class LocationService {
         } catch(e){
             return {
                 isDone: false,
-                status: 201,
+                status: 400,
                 error: "오류가 발생하였습니다.",
             }
         }

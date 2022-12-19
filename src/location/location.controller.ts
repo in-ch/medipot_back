@@ -8,27 +8,22 @@ import { LocationService } from './location.service';
 
 @Controller('location')
 export class LocationController {
-    constructor(private readonly locationsService: LocationService){}
+  constructor(private readonly locationsService: LocationService) {}
 
-    @Get()
-    getLocation(
-        @Req() request: Request<NoDto> 
-    ): Promise<OutputDto<LocationOutputCrudDto>> {
-        return this.locationsService.getLocation(request.query);
-    }
+  @Get()
+  getLocation(@Req() request: Request<NoDto>): Promise<OutputDto<LocationOutputCrudDto>> {
+    return this.locationsService.getLocation(request.query);
+  }
 
+  @Get('list')
+  getLocations(
+    @Req() request: Request<PaginationDto>,
+  ): Promise<OutputDto<LocationOutputCrudDto[]>> {
+    return this.locationsService.getLocations(request.query);
+  }
 
-    @Get() 
-    getLocations(
-        @Req() request: Request<PaginationDto> 
-    ): Promise<OutputDto<LocationOutputCrudDto[]>> {
-        return this.locationsService.getLocations(request.query);
-    }
-
-    @Post()
-    createLocation(
-        @Body() payload: LocationCrudDto
-    ):Promise<OutputDto<LocationOutputCrudDto>> {
-        return this.locationsService.createLocation(payload);
-    }
+  @Post()
+  createLocation(@Body() payload: LocationCrudDto): Promise<OutputDto<LocationOutputCrudDto>> {
+    return this.locationsService.createLocation(payload);
+  }
 }

@@ -1,46 +1,50 @@
+import { PickType } from '@nestjs/mapped-types';
 import { IsArray, IsNumber, IsString } from 'class-validator';
 export class LocationCrudDto {
-    @IsString()
-    name: string;
+  @IsNumber()
+  no?: number;
 
-    @IsNumber()
-    deposit: number;
+  @IsString()
+  name: string;
 
-    @IsNumber()
-    depositMonly: number;
+  @IsNumber()
+  deposit: number;
 
-    @IsNumber()
-    premium: number;
+  @IsNumber()
+  depositMonly: number;
 
-    @IsNumber()
-    manageCost: number;
+  @IsNumber()
+  premium: number;
 
-    @IsNumber()
-    brokerage: number;
+  @IsNumber()
+  manageCost: number;
 
-    @IsArray()
-    departments: string[];
+  @IsNumber()
+  brokerage: number;
 
-    @IsArray()
-    keywords: string[];
+  @IsArray()
+  departments: string[];
 
-    @IsNumber()
-    dedicatedArea: number;
+  @IsArray()
+  keywords: string[];
 
-    @IsNumber()
-    supplyArea: number;
+  @IsNumber()
+  dedicatedArea: number;
 
-    @IsString()
-    readonly etc?: string;
+  @IsNumber()
+  supplyArea: number;
 
-    @IsString()
-    address: string;
+  @IsString()
+  readonly etc?: string;
 
-    @IsString()
-    detail: string;
+  @IsString()
+  address: string;
 
-    @IsArray()
-    imgs: string[];
+  @IsString()
+  detail: string;
+
+  @IsArray()
+  imgs: string[];
 }
-
-export class LocationOutputCrudDto extends LocationCrudDto  {}
+export class LocationOutputCrudDto extends LocationCrudDto {}
+export class LocationUpdateApprovedCrudDto extends PickType(LocationCrudDto, ['no']) {}

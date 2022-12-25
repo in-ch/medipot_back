@@ -3,7 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { OutputDto, PaginationDto } from 'src/commons/dtos';
-import { LocationCrudDto, LocationOutputCrudDto } from './dto/location.dto';
+import {
+  LocationCrudDto,
+  LocationOutputCrudDto,
+  LocationUpdateApprovedCrudDto,
+} from './dto/location.dto';
 import { Location } from './entities/location.entitiy';
 import { NoDto } from 'src/commons/dtos/no.dto';
 
@@ -81,6 +85,38 @@ export class LocationService {
         isDone: true,
         status: 200,
         data: newLocation,
+      };
+    } catch (e) {
+      return {
+        isDone: false,
+        status: 400,
+        error: '오류가 발생하였습니다.',
+      };
+    }
+  }
+
+  /**
+   * @param {LocationCrudDto} no 변경할 입지의 number
+   * @description 입지의 승인 여부를 수정한다,
+   * @return {OutputDto<LocationOutputCrudDto>}
+   * @author in-ch, 2022-12-25
+   */
+  async updateApproveredLocation(
+    payload: LocationUpdateApprovedCrudDto,
+  ): Promise<OutputDto<LocationOutputCrudDto>> {
+    try {
+      const { no } = payload;
+      const location = await this.locations.findOne({
+        where: {
+          no,
+        },
+      });
+      location.isApproved = !location.isApproved;
+      this.locations.save(location);
+      return {
+        isDone: true,
+        status: 200,
+        data: location,
       };
     } catch (e) {
       return {

@@ -1,9 +1,6 @@
 import { PickType } from '@nestjs/mapped-types';
 import { IsArray, IsNumber, IsString } from 'class-validator';
 export class LocationCrudDto {
-  @IsNumber()
-  no?: number;
-
   @IsString()
   name: string;
 
@@ -47,4 +44,8 @@ export class LocationCrudDto {
   imgs: string[];
 }
 export class LocationOutputCrudDto extends LocationCrudDto {}
-export class LocationUpdateApprovedCrudDto extends PickType(LocationCrudDto, ['no']) {}
+// export class LocationUpdateApprovedCrudDto extends PickType(LocationCrudDto, ['no']) {}
+export class LocationUpdateApprovedCrudDto {
+  @IsNumber()
+  no: number;
+}

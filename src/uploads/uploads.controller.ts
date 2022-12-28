@@ -2,7 +2,26 @@ import { Controller, Post, UploadedFile, UseInterceptors } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as AWS from 'aws-sdk';
 
+const sharp = require('sharp');
 const BUCKET_NAME = 'medipot-uploads';
+
+const generateRandomString = (num) => {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  let result = '';
+  const charactersLength = characters.length;
+  for (let i = 0; i < num; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+
+  const date = new Date();
+
+  const year = date.getFullYear();
+  const month = ('0' + (date.getMonth() + 1)).slice(-2);
+  const day = ('0' + date.getDate()).slice(-2);
+  const dateStr = year + '_' + month + '_' + day;
+
+  return `${dateStr}_${result}`;
+};
 
 @Controller('uploads')
 export class UploadsController {
@@ -15,13 +34,22 @@ export class UploadsController {
         secretAccessKey: process.env.S3_SECRET_KEY,
       },
     });
+    const Image = await sharp(file.buffer, { failOnError: false })
+      .withMetadata()
+      .resize(320)
+      .jpeg({ mozjpeg: true })
+      .png()
+      .toBuffer();
+
     try {
-      const objectName = `${Date.now() + file.originalname}`;
+      const objectName = `${generateRandomString(10)}.png`;
       await new AWS.S3()
         .putObject({
-          Body: file.buffer,
+          Body: Image,
           Bucket: BUCKET_NAME,
           Key: objectName,
+          ContentEncoding: 'base64',
+          ContentType: 'image/png',
           ACL: 'public-read',
         })
         .promise();

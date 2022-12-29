@@ -42,6 +42,12 @@ export class LocationCrudDto {
 
   @IsArray()
   imgs: string[];
+
+  @IsNumber()
+  lat: number;
+
+  @IsNumber()
+  lng: number;
 }
 export class LocationOutputCrudDto extends LocationCrudDto {}
 // export class LocationUpdateApprovedCrudDto extends PickType(LocationCrudDto, ['no']) {}

@@ -49,7 +49,7 @@ export class Location extends BaseEntity {
   @Column({ type: 'varchar', length: 150, comment: '입지 주소' })
   address: string;
 
-  @Column({ type: 'varchar', length: 5550, comment: '상세 설명' })
+  @Column({ type: 'varchar', comment: '상세 설명' })
   detail: string;
 
   @Column('text', { comment: '이미지들', array: true })

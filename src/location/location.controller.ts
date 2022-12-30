@@ -4,6 +4,7 @@ import { Request } from 'express';
 import { OutputDto, PaginationDto } from 'src/commons/dtos';
 import { NoDto } from 'src/commons/dtos/no.dto';
 import {
+  GetGeoLocationsPaginationDto,
   LocationCrudDto,
   LocationOutputCrudDto,
   LocationUpdateApprovedCrudDto,
@@ -24,6 +25,13 @@ export class LocationController {
     @Req() request: Request<PaginationDto>,
   ): Promise<OutputDto<LocationOutputCrudDto[]>> {
     return this.locationsService.getLocations(request.query);
+  }
+
+  @Get('list/geo')
+  getGeoLocations(
+    @Req() request: Request<GetGeoLocationsPaginationDto>,
+  ): Promise<OutputDto<LocationOutputCrudDto[]>> {
+    return this.locationsService.getGeoLocations(request.query);
   }
 
   @Post()

@@ -1,15 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 
 import { OutputDto, PaginationDto } from 'src/commons/dtos';
+import { NoDto } from 'src/commons/dtos/no.dto';
 import {
+  GetGeoLocationsPaginationDto,
   LocationCrudDto,
   LocationOutputCrudDto,
   LocationUpdateApprovedCrudDto,
 } from './dto/location.dto';
 import { Location } from './entities/location.entitiy';
-import { NoDto } from 'src/commons/dtos/no.dto';
 
 @Injectable()
 export class LocationService {
@@ -55,6 +56,45 @@ export class LocationService {
         take: limit || 10,
         skip: page * limit || 0,
       });
+      const totalCount = await this.locations.count();
+      return {
+        totalCount,
+        isDone: true,
+        status: 200,
+        data: locations,
+      };
+    } catch (e) {
+      return {
+        isDone: false,
+        status: 400,
+        error: '오류가 발생하였습니다.',
+      };
+    }
+  }
+
+  /**
+   * @param {GetGeoLocationsPaginationDto} query 쿼리값 + zoom, lat, lng
+   * @description zoom, lat, lng 정보들을 통해 입지 정보들을 가져온다.
+   * @return {OutputDto<LocationOutputCrudDto[]>}  입지 정보들을 리턴.
+   * @author in-ch, 2022-12-30
+   */
+  async getGeoLocations(
+    query: GetGeoLocationsPaginationDto,
+  ): Promise<OutputDto<LocationOutputCrudDto[]>> {
+    const { limit, page, zoom, lat, lng } = query;
+
+    const parseZoom = (zoom * 0.3) / 2;
+
+    try {
+      const locations = await this.locations.find({
+        take: limit || 10,
+        skip: page * limit || 0,
+        where: {
+          lat: Between(lat - parseZoom, lat + parseZoom),
+          lng: Between(lng - parseZoom, lng + parseZoom),
+        },
+      });
+
       const totalCount = await this.locations.count();
       return {
         totalCount,

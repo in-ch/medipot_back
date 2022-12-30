@@ -1,5 +1,5 @@
-import { PickType } from '@nestjs/mapped-types';
 import { IsArray, IsNumber, IsString } from 'class-validator';
+import { PaginationDto } from 'src/commons/dtos';
 export class LocationCrudDto {
   @IsString()
   name: string;
@@ -50,8 +50,19 @@ export class LocationCrudDto {
   lng: number;
 }
 export class LocationOutputCrudDto extends LocationCrudDto {}
-// export class LocationUpdateApprovedCrudDto extends PickType(LocationCrudDto, ['no']) {}
+
 export class LocationUpdateApprovedCrudDto {
   @IsNumber()
   no: number;
+}
+
+export class GetGeoLocationsPaginationDto extends PaginationDto {
+  @IsNumber()
+  zoom?: number;
+
+  @IsNumber()
+  lat?: number;
+
+  @IsNumber()
+  lng?: number;
 }

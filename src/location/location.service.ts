@@ -56,7 +56,7 @@ export class LocationService {
         take: limit || 10,
         skip: page * limit || 0,
       });
-      const totalCount = await this.locations.count();
+      const totalCount = locations.length;
       return {
         totalCount,
         isDone: true,
@@ -83,19 +83,20 @@ export class LocationService {
   ): Promise<OutputDto<LocationOutputCrudDto[]>> {
     const { limit, page, zoom, lat, lng } = query;
 
-    const parseZoom = (zoom * 0.3) / 2;
+    const parseZoom = (zoom * 0.31) / 2;
 
     try {
       const locations = await this.locations.find({
         take: limit || 10,
         skip: page * limit || 0,
         where: {
-          lat: Between(lat - parseZoom, lat + parseZoom),
-          lng: Between(lng - parseZoom, lng + parseZoom),
+          lat: Between(Number(lat) - Number(parseZoom), Number(lat) + Number(parseZoom)),
+          lng: Between(Number(lng) - Number(parseZoom), Number(lng) + Number(parseZoom)),
         },
       });
 
-      const totalCount = await this.locations.count();
+      const totalCount = locations.length;
+
       return {
         totalCount,
         isDone: true,

@@ -65,4 +65,25 @@ export class GetGeoLocationsPaginationDto extends PaginationDto {
 
   @IsNumber()
   lng?: number;
+
+  @IsArray()
+  deposit?: number[];
+
+  @IsArray()
+  depositMonly?: number[];
+
+  @IsArray()
+  manageCost?: number[];
+
+  @IsArray()
+  dedicatedArea?: number[];
+
+  @IsArray()
+  supplyArea?: number[];
+
+  @IsArray()
+  keywords?: string[];
+
+  @IsArray()
+  departmentsValue?: string[];
 }

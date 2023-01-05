@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ArrayContains, Between, Like, Repository } from 'typeorm';
+import { ArrayContains, Between, Repository } from 'typeorm';
 
 import { OutputDto, PaginationDto } from 'src/commons/dtos';
 import { NoDto } from 'src/commons/dtos/no.dto';

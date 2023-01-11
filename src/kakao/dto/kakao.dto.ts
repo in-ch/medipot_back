@@ -44,3 +44,28 @@ export class MeErrorOutputDto {
   @IsNumber()
   code: number;
 }
+
+export class RefreshInputDto {
+  @IsString()
+  refresh_token: string;
+}
+
+export class RefreshOkOutputDto {
+  @IsString()
+  access_token: string;
+
+  @IsString()
+  token_type: string;
+
+  @IsString()
+  refresh_token: string;
+
+  @IsString()
+  id_token: string;
+
+  @IsNumber()
+  expires_in: number;
+
+  @IsNumber()
+  refresh_token_expires_in: number;
+}

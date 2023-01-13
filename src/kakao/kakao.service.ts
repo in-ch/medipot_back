@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import {
+  LogoutInputDto,
+  LogoutOutputDto,
   MeErrorOutputDto,
   MeInputDto,
   MeOkOutputDto,
@@ -14,15 +16,15 @@ import { catchError, firstValueFrom } from 'rxjs';
 export class KakaoService {
   constructor(private readonly httpService: HttpService) {}
 
-  async me(payload: MeInputDto): Promise<OutputDto<MeOkOutputDto | MeErrorOutputDto>> {
+  async me(header: MeInputDto): Promise<OutputDto<MeOkOutputDto | MeErrorOutputDto>> {
     try {
-      const { access_token } = payload;
+      const { authorization } = header;
       const { data } = await firstValueFrom(
         this.httpService
           .get(`${process.env.KAKAO_API}/v2/user/me`, {
             headers: {
               ContentType: 'application/x-www-form-urlencoded',
-              Authorization: `Bearer ${access_token}`,
+              Authorization: `${authorization}`,
             },
           })
           .pipe(
@@ -79,6 +81,38 @@ export class KakaoService {
         isDone: false,
         status: 400,
         error: '서버 에러가 발생하였습니다. Kakao refresh',
+      };
+    }
+  }
+
+  async logout(header: LogoutInputDto): Promise<OutputDto<LogoutOutputDto>> {
+    try {
+      const { authorization } = header;
+      const { data } = await firstValueFrom(
+        this.httpService
+          .post(`${process.env.KAKAO_API}/v1/user/logout`, {
+            headers: {
+              ContentType: 'application/x-www-form-urlencoded',
+              Authorization: `${authorization}`,
+            },
+          })
+          .pipe(
+            catchError((error) => {
+              console.error(error);
+              throw error;
+            }),
+          ),
+      );
+      return {
+        isDone: true,
+        status: 200,
+        data,
+      };
+    } catch (e) {
+      return {
+        isDone: false,
+        status: 400,
+        error: '서버 에러가 발생하였습니다. Kakao logout',
       };
     }
   }

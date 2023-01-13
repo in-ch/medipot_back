@@ -2,7 +2,7 @@ import { IsArray, IsNumber, IsString } from 'class-validator';
 
 export class MeInputDto {
   @IsString()
-  access_token: string;
+  authorization: string;
 }
 
 export class MeOkOutputDto {
@@ -68,4 +68,10 @@ export class RefreshOkOutputDto {
 
   @IsNumber()
   refresh_token_expires_in: number;
+}
+
+export class LogoutInputDto extends MeInputDto {}
+export class LogoutOutputDto {
+  @IsNumber()
+  id: number;
 }

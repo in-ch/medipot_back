@@ -90,12 +90,16 @@ export class KakaoService {
       const { authorization } = header;
       const { data } = await firstValueFrom(
         this.httpService
-          .post(`${process.env.KAKAO_API}/v1/user/logout`, {
-            headers: {
-              ContentType: 'application/x-www-form-urlencoded',
-              Authorization: `${authorization}`,
+          .post(
+            `${process.env.KAKAO_API}/v1/user/logout`,
+            {},
+            {
+              headers: {
+                ContentType: 'application/x-www-form-urlencoded',
+                Authorization: `${authorization}`,
+              },
             },
-          })
+          )
           .pipe(
             catchError((error) => {
               console.error(error);

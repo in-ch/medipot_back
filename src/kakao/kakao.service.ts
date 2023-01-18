@@ -50,10 +50,6 @@ export class KakaoService {
   async refresh(payload: RefreshInputDto): Promise<OutputDto<RefreshOkOutputDto>> {
     try {
       const { refresh_token } = payload;
-
-      console.log(
-        `${process.env.KAKAO_API}/oauth/token?grant_type=refresh_token&client_id=${process.env.KAKAO_API_KEY}&refresh_token=${refresh_token}`,
-      );
       const { data } = await firstValueFrom(
         this.httpService
           .post(

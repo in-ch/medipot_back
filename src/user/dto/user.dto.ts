@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsBoolean, IsString } from 'class-validator';
 
 export class UserCreateInputCrudDto {
   @IsString()
@@ -9,6 +9,9 @@ export class UserCreateInputCrudDto {
 
   @IsString()
   password: string;
+
+  @IsBoolean()
+  marketingConsent: boolean;
 }
 
 export class UserCreateOutputCrudDto extends UserCreateInputCrudDto {

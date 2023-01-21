@@ -79,6 +79,7 @@ export class UserService {
           email: (await newUser).email,
           nickname: (await newUser).nickname,
           password: encryptedPassowrd,
+          marketingConsent: (await newUser).marketingConsent,
           access_token: access_token,
           refresh_token,
         },

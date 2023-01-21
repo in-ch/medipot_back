@@ -1,34 +1,34 @@
-import { PickType } from "@nestjs/mapped-types";
-import { IsEnum, IsString } from "class-validator";
+import { PickType } from '@nestjs/mapped-types';
+import { IsEnum, IsString } from 'class-validator';
 
-import { grant } from "../entities/user.entitiy";
+import { grant } from '../entities/user.entitiy';
 
 export class AdminUserCrudDto {
-    @IsString()
-    name: string;
+  @IsString()
+  name: string;
 
-    @IsString()
-    id: string;
+  @IsString()
+  id: string;
 
-    @IsString()
-    password: string;
+  @IsString()
+  password: string;
 
-    @IsEnum(grant)
-    grant: grant;
+  @IsEnum(grant)
+  grant: grant;
 }
-export class AdminUserLoginCrudDto extends PickType(AdminUserCrudDto, ['id', 'password']){}
+export class AdminUserLoginCrudDto extends PickType(AdminUserCrudDto, ['id', 'password']) {}
 
-export class AdminUserCreateCrudDto extends AdminUserCrudDto  {}
-export class AdminUserOutputCrudDto extends AdminUserCrudDto  {
-    token?: string;
-    refresh_token?: string;
+export class AdminUserCreateCrudDto extends AdminUserCrudDto {}
+export class AdminUserOutputCrudDto extends AdminUserCrudDto {
+  token?: string;
+  refresh_token?: string;
 }
 
 export class AdminUserRefreshCrudDto {
-    name: string;
-    refresh_token: string;
+  name: string;
+  refresh_token: string;
 }
 export class AdminUserRefreshOutputCrudDto extends AdminUserCrudDto {
-    token?: string;
-    refresh_token?: string;
-};
+  token?: string;
+  refresh_token?: string;
+}

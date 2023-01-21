@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Headers, Post, UseGuards } from '@nestjs/common';
 
 import { OutputDto } from 'src/commons/dtos';
 import {
@@ -13,6 +13,8 @@ import {
   UserCreateInputCrudDto,
   UserLoginCrudDto,
   UserLoginOutputCrudDto,
+  MeInputDto,
+  MeOutputCrudDto,
 } from './dto/user.dto';
 import { LocalAuthenticationGuard } from './strategy/localAuthentication.guard';
 
@@ -51,5 +53,10 @@ export class UserController {
     @Body() payload: AdminUserRefreshCrudDto,
   ): Promise<OutputDto<AdminUserRefreshOutputCrudDto>> {
     return this.usersService.adminRefresh(payload);
+  }
+
+  @Post('/me')
+  me(@Headers() header: MeInputDto): Promise<OutputDto<MeOutputCrudDto>> {
+    return this.usersService.me(header);
   }
 }

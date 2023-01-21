@@ -25,3 +25,9 @@ export class UserLoginOutputCrudDto extends UserCreateInputCrudDto {
   token?: string;
   refresh_token?: string;
 }
+
+export class MeInputDto {
+  @IsString()
+  authorization: string;
+}
+export class MeOutputCrudDto extends UserLoginOutputCrudDto {}

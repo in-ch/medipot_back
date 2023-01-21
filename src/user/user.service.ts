@@ -13,6 +13,8 @@ import { OutputDto } from 'src/commons/dtos';
 import { AdminUser, User } from './entities/user.entitiy';
 import { JwtService } from '@nestjs/jwt';
 import {
+  MeInputDto,
+  MeOutputCrudDto,
   UserCreateInputCrudDto,
   UserCreateOutputCrudDto,
   UserLoginCrudDto,
@@ -309,7 +311,6 @@ export class UserService {
     try {
       const { name, refresh_token } = payload;
       const verify = this.jwtService.verify(refresh_token, { secret: process.env.PRIVATE_KEY });
-      console.log('인증 결과 ' + verify);
       if (!verify) {
         return {
           isDone: false,
@@ -342,6 +343,26 @@ export class UserService {
           ...getAdmin,
           token: new_access_token,
         },
+      };
+    } catch (e) {
+      return {
+        isDone: false,
+        status: 400,
+        error: e,
+      };
+    }
+  }
+
+  async me(header: MeInputDto): Promise<OutputDto<MeOutputCrudDto>> {
+    try {
+      const { authorization } = header;
+      const UnSignToken = this.jwtService.verify(authorization.replace('Bearer ', ''), {
+        secret: process.env.PRIVATE_KEY,
+      });
+      return {
+        isDone: true,
+        status: 200,
+        data: UnSignToken,
       };
     } catch (e) {
       return {

@@ -1,3 +1,4 @@
+import { PickType } from '@nestjs/mapped-types';
 import { IsBoolean, IsString } from 'class-validator';
 
 export class UserCreateInputCrudDto {
@@ -16,5 +17,11 @@ export class UserCreateInputCrudDto {
 
 export class UserCreateOutputCrudDto extends UserCreateInputCrudDto {
   access_token?: string;
+  refresh_token?: string;
+}
+
+export class UserLoginCrudDto extends PickType(UserCreateInputCrudDto, ['email', 'password']) {}
+export class UserLoginOutputCrudDto extends UserCreateInputCrudDto {
+  token?: string;
   refresh_token?: string;
 }

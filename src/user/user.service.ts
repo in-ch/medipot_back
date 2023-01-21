@@ -1,4 +1,4 @@
-import { ConsoleLogger, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -12,7 +12,12 @@ import {
 import { OutputDto } from 'src/commons/dtos';
 import { AdminUser, User } from './entities/user.entitiy';
 import { JwtService } from '@nestjs/jwt';
-import { UserCreateInputCrudDto, UserCreateOutputCrudDto } from './dto/user.dto';
+import {
+  UserCreateInputCrudDto,
+  UserCreateOutputCrudDto,
+  UserLoginCrudDto,
+  UserLoginOutputCrudDto,
+} from './dto/user.dto';
 
 const bcrypt = require('bcrypt'); // 패스워드 암호화
 
@@ -173,6 +178,58 @@ export class UserService {
         isDone: true,
         status: 200,
         data: adminUser,
+      };
+    } catch (e) {
+      return {
+        isDone: false,
+        status: 400,
+        error: e,
+      };
+    }
+  }
+
+  /**
+   * @param {string} email 이메일
+   * @param {string} password 비밀번호
+   * @description 아이디와 비밀번호 로그인을 한다.
+   * @return {OutputDto<UserLoginOutputCrudDto>}
+   * @author in-ch, 2023-01-21
+   */
+  async login(payload: UserLoginCrudDto): Promise<OutputDto<UserLoginOutputCrudDto>> {
+    try {
+      const { email, password } = payload;
+      const user = await this.users.findOne({
+        where: {
+          email,
+        },
+      });
+      await this.verifyPassword(password, user.password);
+      const access_token = this.jwtService.sign({
+        ...user,
+        token: '',
+        refresh_token: '',
+        password: '11',
+      });
+
+      const refresh_token = this.jwtService.sign(
+        {
+          ...user,
+          token: '',
+          refresh_token: '',
+          password: '22',
+        },
+        {
+          expiresIn: '100s',
+        },
+      );
+      return {
+        isDone: true,
+        status: 200,
+        data: {
+          ...user,
+          token: access_token,
+          refresh_token,
+        },
       };
     } catch (e) {
       return {

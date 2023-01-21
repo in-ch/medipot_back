@@ -8,7 +8,12 @@ import {
   AdminUserRefreshCrudDto,
   AdminUserRefreshOutputCrudDto,
 } from './dto/admin.user.dto';
-import { UserCreateOutputCrudDto, UserCreateInputCrudDto } from './dto/user.dto';
+import {
+  UserCreateOutputCrudDto,
+  UserCreateInputCrudDto,
+  UserLoginCrudDto,
+  UserLoginOutputCrudDto,
+} from './dto/user.dto';
 import { LocalAuthenticationGuard } from './strategy/localAuthentication.guard';
 
 import { UserService } from './user.service';
@@ -29,6 +34,11 @@ export class UserController {
     @Body() payload: AdminUserCreateCrudDto,
   ): Promise<OutputDto<AdminUserOutputCrudDto>> {
     return this.usersService.createAdminUser(payload);
+  }
+
+  @Post('/login')
+  login(@Body() payload: UserLoginCrudDto): Promise<OutputDto<UserLoginOutputCrudDto>> {
+    return this.usersService.login(payload);
   }
 
   @Post('/admin/login')

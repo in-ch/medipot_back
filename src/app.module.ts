@@ -7,9 +7,19 @@ import { UserModule } from './user/user.module';
 import { UploadsModule } from './uploads/uploads.module';
 import { KakaoModule } from './kakao/kakao.module';
 import { EmailModule } from './email/email.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [ConfigAppModule, TypeormModule, LocationModule, UserModule, UploadsModule, KakaoModule, EmailModule],
+  imports: [
+    ConfigAppModule,
+    TypeormModule,
+    LocationModule,
+    UserModule,
+    UploadsModule,
+    KakaoModule,
+    EmailModule,
+    AuthModule,
+  ],
   controllers: [],
   providers: [],
 })

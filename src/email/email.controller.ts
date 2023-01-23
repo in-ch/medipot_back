@@ -1,5 +1,4 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import * as AWS from 'aws-sdk';
 import { SendEmailParams } from './dto/email.dto';
 import { EmailService } from './email.service';
 

@@ -4,11 +4,6 @@ import { Injectable } from '@nestjs/common';
 
 import { SendEmailParams } from './dto/email.dto';
 
-// const createRandNum = (min, max) => {
-//   var ntemp = Math.floor(Math.random() * (max - min + 1)) + min;
-//   return ntemp;
-// };
-
 @Injectable()
 export class EmailService {
   /**
@@ -34,8 +29,6 @@ export class EmailService {
           apiVersion: '2010-12-01',
         }),
       });
-
-      // const verificationCode = createRandNum(111111, 999999);
 
       transporter.sendMail(
         {

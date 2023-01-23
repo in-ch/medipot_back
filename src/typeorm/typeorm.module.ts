@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Location } from 'src/location/entities/location.entitiy';
 import { AdminUser, User } from 'src/user/entities/user.entitiy';
+import { Auth } from 'src/auth/entities/auth.entitiy';
 
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { AdminUser, User } from 'src/user/entities/user.entitiy';
       database: process.env.DB_NAME,
       synchronize: process.env.NODE_ENV !== 'prod',
       logging: process.env.NODE_ENV !== 'prod',
-      entities: [Location, AdminUser, User], // db 들어가는 곳
+      entities: [Location, AdminUser, User, Auth], // db 들어가는 곳
     }),
   ],
 })

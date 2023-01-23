@@ -15,4 +15,11 @@ export class EmailValidationParams extends PickType(AuthEmailParams, ['email']) 
   code: string;
 }
 
+export class NicknameValidationParams {
+  @IsString()
+  nickname: string;
+}
+
+export class NicknameValidationResponse {}
+
 export class EmailValidationOutput extends AuthEmailOutput {}

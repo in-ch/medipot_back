@@ -3,7 +3,13 @@ import { Repository } from 'typeorm';
 
 import { User } from 'src/user/entities/user.entitiy';
 import { Auth } from './entities/auth.entitiy';
-import { AuthEmailParams, EmailValidationOutput, EmailValidationParams } from './dto/auth.dto';
+import {
+  AuthEmailParams,
+  EmailValidationOutput,
+  EmailValidationParams,
+  NicknameValidationParams,
+  NicknameValidationResponse,
+} from './dto/auth.dto';
 import { EmailService } from 'src/email/email.service';
 import { OutputDto } from 'src/commons/dtos';
 
@@ -36,7 +42,7 @@ export class AuthService {
       if (existedUsersCount > 0) {
         return {
           isDone: false,
-          status: 400,
+          status: 450,
           error: `이미 존재하는 이메일입니다.`,
         };
       }
@@ -58,7 +64,9 @@ export class AuthService {
       return {
         isDone: true,
         status: 200,
-        message: '이메일 보냈습니다.',
+        data: {
+          message: '이메일 전송이 완료되었습니다.',
+        },
       };
     } catch (e) {
       return {
@@ -108,6 +116,43 @@ export class AuthService {
         isDone: false,
         status: 400,
         error: `서버 에러가 발생하였습니다. email validation ${e}`,
+      };
+    }
+  }
+
+  /**
+   * @param {NicknameValidationParams} params nickname -> 닉네임
+   * @description nickname을 받아 중복이면 false, 아니면 true
+   * @return {OutputDto<NicknameValidationResponse>}
+   * @author in-ch, 2023-01-24
+   */
+  async nicknameValidation(
+    params: NicknameValidationParams,
+  ): Promise<OutputDto<NicknameValidationResponse>> {
+    try {
+      const { nickname } = params;
+      const existedUsersCount = await this.users.count({
+        where: {
+          nickname,
+        },
+      });
+      if (existedUsersCount > 0) {
+        return {
+          isDone: false,
+          status: 450,
+          error: `이미 존재하는 닉네임입니다.`,
+        };
+      } else {
+        return {
+          isDone: true,
+          status: 200,
+        };
+      }
+    } catch (e) {
+      return {
+        isDone: false,
+        status: 400,
+        error: `서버 에러가 발생하였습니다. nickname validation ${e}`,
       };
     }
   }

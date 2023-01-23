@@ -3,8 +3,9 @@ import { Repository } from 'typeorm';
 
 import { User } from 'src/user/entities/user.entitiy';
 import { Auth } from './entities/auth.entitiy';
-import { AuthEmailParams } from './dto/auth.dto';
+import { AuthEmailParams, EmailValidationOutput, EmailValidationParams } from './dto/auth.dto';
 import { EmailService } from 'src/email/email.service';
+import { OutputDto } from 'src/commons/dtos';
 
 const createRandNum = (min, max) => {
   var ntemp = Math.floor(Math.random() * (max - min + 1)) + min;
@@ -64,6 +65,49 @@ export class AuthService {
         isDone: false,
         status: 400,
         error: `서버 에러가 발생하였습니다. auth email ${e}`,
+      };
+    }
+  }
+
+  /**
+   * @param {EmailValidationParams} params email -> 이메일, code -> 인증 코드
+   * @description email, code를 받아서 인증 정보가 있다면 true, 없다면 false
+   * @return {OutputDto<EmailValidationOutput>} message: string
+   * @author in-ch, 2023-01-23
+   */
+  async emailValidation(params: EmailValidationParams): Promise<OutputDto<EmailValidationOutput>> {
+    try {
+      const { email, code } = params;
+      const existedUsersCount = await this.auths.count({
+        where: {
+          email,
+          code,
+        },
+      });
+      if (existedUsersCount > 0) {
+        await this.auths.delete({
+          email,
+          code,
+        });
+        return {
+          isDone: true,
+          status: 200,
+          data: {
+            message: '인증 성공',
+          },
+        };
+      } else {
+        return {
+          isDone: false,
+          status: 400,
+          error: `인증에 실패하였습니다.`,
+        };
+      }
+    } catch (e) {
+      return {
+        isDone: false,
+        status: 400,
+        error: `서버 에러가 발생하였습니다. email validation ${e}`,
       };
     }
   }

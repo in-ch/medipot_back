@@ -1,7 +1,12 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { OutputDto } from 'src/commons/dtos';
 import { AuthService } from './auth.service';
-import { AuthEmailOutput, AuthEmailParams } from './dto/auth.dto';
+import {
+  AuthEmailOutput,
+  AuthEmailParams,
+  EmailValidationOutput,
+  EmailValidationParams,
+} from './dto/auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -10,5 +15,12 @@ export class AuthController {
   @Post('/email/send')
   async sendAuthEmail(@Body() payload: AuthEmailParams): Promise<OutputDto<AuthEmailOutput>> {
     return this.authsService.sendAuthEmail(payload);
+  }
+
+  @Post('/email/validation')
+  async emailValidation(
+    @Body() payload: EmailValidationParams,
+  ): Promise<OutputDto<EmailValidationOutput>> {
+    return this.authsService.emailValidation(payload);
   }
 }

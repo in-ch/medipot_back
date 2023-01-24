@@ -8,6 +8,7 @@ import { UploadsModule } from './uploads/uploads.module';
 import { KakaoModule } from './kakao/kakao.module';
 import { EmailModule } from './email/email.module';
 import { AuthModule } from './auth/auth.module';
+import { QuestionModule } from './question/question.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { AuthModule } from './auth/auth.module';
     KakaoModule,
     EmailModule,
     AuthModule,
+    QuestionModule,
   ],
   controllers: [],
   providers: [],

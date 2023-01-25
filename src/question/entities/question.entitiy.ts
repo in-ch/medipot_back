@@ -18,11 +18,11 @@ export class Question extends BaseEntity {
   no: number;
 
   @ManyToOne((_) => User, (user) => user.question, { onDelete: 'CASCADE' })
-  @Column({ type: 'varchar', length: 30, comment: '유저' })
+  @Column({ type: 'varchar', comment: '유저' })
   user: User;
 
   @ManyToOne((_) => Location, (location) => location.question, { onDelete: 'CASCADE' })
-  @Column({ type: 'varchar', length: 30, comment: '입지' })
+  @Column({ type: 'varchar', comment: '입지' })
   location: Location;
 
   @Column({ comment: '삭제 여부', default: false })

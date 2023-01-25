@@ -1,9 +1,15 @@
-import { IsString } from 'class-validator';
+import { PickType } from '@nestjs/mapped-types';
+import { IsNumber, IsString } from 'class-validator';
 import { User } from 'src/user/entities/user.entitiy';
 export class QuestionCrudDto {
-  @IsString()
-  name: string;
+  @IsNumber()
+  userNo: number;
 
-  user: User;
+  @IsNumber()
+  locationNo: number;
 }
-export class QuestionOutputCrudDto extends QuestionCrudDto {}
+export class QuestionOutputCrudDto extends PickType(QuestionCrudDto, ['userNo', 'locationNo']) {
+  user: User;
+
+  location: Location;
+}

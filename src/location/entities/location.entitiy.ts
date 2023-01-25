@@ -1,9 +1,11 @@
+import { Question } from 'src/question/entities/question.entitiy';
 import {
   BaseEntity,
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -66,6 +68,10 @@ export class Location extends BaseEntity {
 
   @Column({ comment: '승인 여부', default: false })
   isApproved: boolean;
+
+  @OneToMany((_) => Question, (question) => question.location)
+  @Column('int', { array: true, comment: '입지 문의 목록', nullable: true })
+  question: Question[];
 
   @CreateDateColumn({ name: 'create_at', comment: '생성일' })
   createdAt: Date;

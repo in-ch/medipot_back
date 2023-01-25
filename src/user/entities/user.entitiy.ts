@@ -1,9 +1,11 @@
+import { Question } from 'src/question/entities/question.entitiy';
 import {
   BaseEntity,
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -45,6 +47,10 @@ export class User extends BaseEntity {
 
   @Column({ comment: '마케팅 동의 여부', default: false })
   marketingConsent: boolean;
+
+  @OneToMany((_) => Question, (question) => question.user)
+  @Column('int', { array: true, comment: '입지 문의 목록', nullable: true })
+  question: Question[];
 
   @Column({ comment: '삭제 여부', default: false })
   isDeleted: boolean;

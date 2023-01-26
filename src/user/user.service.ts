@@ -167,6 +167,33 @@ export class UserService {
    * @param {string} id 유저의 아이디
    * @description 이름으로 유저 정보를 가져온다.
    * @return {OutputDto<AdminUserOutputCrudDto>}
+   * @author in-ch, 2023-01-26
+   */
+  async findOneUser(id: string): Promise<OutputDto<UserLoginOutputCrudDto>> {
+    try {
+      const User = await this.users.findOne({
+        where: {
+          no: Number(id),
+        },
+      });
+      return {
+        isDone: true,
+        status: 200,
+        data: User,
+      };
+    } catch (e) {
+      return {
+        isDone: false,
+        status: 400,
+        error: e,
+      };
+    }
+  }
+
+  /**
+   * @param {string} id 유저의 아이디
+   * @description 이름으로 유저 정보를 가져온다.
+   * @return {OutputDto<AdminUserOutputCrudDto>}
    * @author in-ch, 2022-12-12
    */
   async findOneAdminUser(id: string): Promise<OutputDto<AdminUserOutputCrudDto>> {

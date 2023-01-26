@@ -1,4 +1,5 @@
 import { IsArray, IsNumber, IsString } from 'class-validator';
+import { UserCreateInputCrudDto } from 'src/user/dto/user.dto';
 
 export class MeInputDto {
   @IsString()
@@ -74,4 +75,13 @@ export class LogoutInputDto extends MeInputDto {}
 export class LogoutOutputDto {
   @IsNumber()
   id: number;
+}
+
+export class KakaoLoginInputDto {
+  @IsString()
+  authorization: string;
+}
+export class KakaoLoginOutputDto extends UserCreateInputCrudDto {
+  token?: string;
+  refresh_token?: string;
 }

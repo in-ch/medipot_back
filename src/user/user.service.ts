@@ -203,6 +203,7 @@ export class UserService {
       const user = await this.users.findOne({
         where: {
           email,
+          isSocialLogin: false,
         },
       });
       await this.verifyPassword(password, user.password);

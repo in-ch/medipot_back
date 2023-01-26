@@ -52,6 +52,9 @@ export class User extends BaseEntity {
   @Column('int', { array: true, comment: '입지 문의 목록', nullable: true })
   question: Question[];
 
+  @Column({ comment: '소셜 로그인 여부', default: false })
+  isSocialLogin: boolean;
+
   @Column({ comment: '삭제 여부', default: false })
   isDeleted: boolean;
 

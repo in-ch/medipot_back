@@ -8,6 +8,8 @@ import {
   RefreshOkOutputDto,
   LogoutInputDto,
   LogoutOutputDto,
+  KakaoLoginInputDto,
+  KakaoLoginOutputDto,
 } from './dto/kakao.dto';
 import { KakaoService } from './kakao.service';
 
@@ -28,5 +30,10 @@ export class KakaoController {
   @Post('/logout')
   logout(@Headers() header: LogoutInputDto): Promise<OutputDto<LogoutOutputDto>> {
     return this.kakaoService.logout(header);
+  }
+
+  @Post('/login')
+  kakaoLogin(@Body() params: KakaoLoginInputDto): Promise<OutputDto<KakaoLoginOutputDto>> {
+    return this.kakaoService.kakaoLogin(params);
   }
 }

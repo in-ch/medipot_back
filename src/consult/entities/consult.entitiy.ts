@@ -8,7 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-enum CONSULT_CONSULT {
+export enum CONSULT_CONSULT {
   '사업 제휴',
   '입지 문의',
   '입지 등록',
@@ -29,8 +29,11 @@ export class Consult extends BaseEntity {
   @Column({ type: 'varchar', length: 50, comment: '문의자 번호' })
   phone: string;
 
-  @Column({ type: 'varchar', length: 50, comment: '문의 내용' })
+  @Column({ type: 'varchar', length: 9999, comment: '문의 내용' })
   detail: string;
+
+  @Column({ type: 'boolean', comment: '문의 완료', default: false })
+  isDone: boolean;
 
   @CreateDateColumn({ name: 'create_at', comment: '생성일' })
   createdAt: Date;

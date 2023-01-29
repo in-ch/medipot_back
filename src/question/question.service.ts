@@ -4,9 +4,10 @@ import { Repository } from 'typeorm';
 
 import { OutputDto } from 'src/commons/dtos';
 import { Question } from './entities/question.entitiy';
-import { QuestionCrudDto, QuestionOutputCrudDto } from './dto/question';
+import { QuestionCrudDto, QuestionHeaderDto, QuestionOutputCrudDto } from './dto/question';
 import { User } from 'src/user/entities/user.entitiy';
 import { Location } from 'src/location/entities/location.entitiy';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class QuestionService {
@@ -14,15 +15,24 @@ export class QuestionService {
     @InjectRepository(Question) private readonly questions: Repository<Question>,
     @InjectRepository(User) private readonly users: Repository<User>,
     @InjectRepository(Location) private readonly locations: Repository<Location>,
+    private readonly jwtService: JwtService,
   ) {}
 
-  async addDetail(payload: QuestionCrudDto): Promise<OutputDto<QuestionOutputCrudDto>> {
-    const { userNo, locationNo } = payload;
+  async addDetail(
+    payload: QuestionCrudDto,
+    header: QuestionHeaderDto,
+  ): Promise<OutputDto<QuestionOutputCrudDto>> {
+    const { locationNo } = payload;
+    const { authorization } = header;
+    const UnSignToken = await this.jwtService.verify(authorization.replace('Bearer ', ''), {
+      secret: process.env.PRIVATE_KEY,
+    });
+    const { no } = UnSignToken;
 
     try {
       const user = await this.users.findOne({
         where: {
-          no: userNo,
+          no,
         },
       });
       const location = await this.locations.findOne({
@@ -33,7 +43,7 @@ export class QuestionService {
       const newQuestion = {
         user,
         location,
-        userNo,
+        userNo: no,
         locationNo,
       };
       this.questions.save(this.questions.create(newQuestion));

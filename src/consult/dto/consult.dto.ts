@@ -1,4 +1,4 @@
-import { IsEnum, IsString } from 'class-validator';
+import { IsEnum, IsNumber, IsString } from 'class-validator';
 import { CONSULT_CONSULT } from '../entities/consult.entitiy';
 
 export class SendConsultAddParams {
@@ -14,5 +14,10 @@ export class SendConsultAddParams {
   @IsString()
   detail: string;
 }
-
 export class SendConsultAddResponse extends SendConsultAddParams {}
+
+export class DoneConsultParams {
+  @IsNumber()
+  no: number;
+}
+export class DoneConsultResponse extends SendConsultAddParams {}

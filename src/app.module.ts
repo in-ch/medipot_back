@@ -9,6 +9,7 @@ import { KakaoModule } from './kakao/kakao.module';
 import { EmailModule } from './email/email.module';
 import { AuthModule } from './auth/auth.module';
 import { QuestionModule } from './question/question.module';
+import { ConsultModule } from './consult/consult.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { QuestionModule } from './question/question.module';
     EmailModule,
     AuthModule,
     QuestionModule,
+    ConsultModule,
   ],
   controllers: [],
   providers: [],

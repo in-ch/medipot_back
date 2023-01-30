@@ -22,16 +22,19 @@ export class ConsultService {
    */
   async sendConsultAdd(params: SendConsultAddParams): Promise<OutputDto<SendConsultAddResponse>> {
     try {
+      const { name, phone, type } = params;
       const CONSULT = await this.consults.findOne({
         where: {
-          ...params,
+          name,
+          phone,
+          type,
           isDone: false,
         },
       });
       if (Number(CONSULT?.no > 0)) {
         return {
           isDone: false,
-          status: 400,
+          status: 410,
           error: '이미 신청이 완료되었습니다.',
         };
       }
@@ -40,7 +43,6 @@ export class ConsultService {
       return {
         isDone: true,
         status: 200,
-        error: '문의 등록이 완료되었습니다.',
       };
     } catch (e) {
       console.error(e);

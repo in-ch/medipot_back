@@ -15,6 +15,9 @@ import { JwtService } from '@nestjs/jwt';
 import {
   MeInputDto,
   MeOutputCrudDto,
+  UpdateProfileCrudDto,
+  UpdateProfileHeaderDto,
+  UpdateProfileOutputDto,
   UserCreateInputCrudDto,
   UserCreateOutputCrudDto,
   UserLoginCrudDto,
@@ -28,6 +31,7 @@ export class UserService {
   constructor(
     @InjectRepository(AdminUser) private readonly adminUsers: Repository<AdminUser>,
     @InjectRepository(User) private readonly users: Repository<User>,
+
     private readonly jwtService: JwtService,
   ) {}
 
@@ -391,6 +395,37 @@ export class UserService {
         isDone: true,
         status: 200,
         data: UnSignToken,
+      };
+    } catch (e) {
+      return {
+        isDone: false,
+        status: 400,
+        error: e,
+      };
+    }
+  }
+
+  async updateProfile(
+    payload: UpdateProfileCrudDto,
+    header: UpdateProfileHeaderDto,
+  ): Promise<OutputDto<UpdateProfileOutputDto>> {
+    try {
+      const { authorization } = header;
+      const { profile, nickname } = payload;
+      const UnSignToken = await this.jwtService.verify(authorization.replace('Bearer ', ''), {
+        secret: process.env.PRIVATE_KEY,
+      });
+      const User = await this.users.findOne({
+        where: {
+          no: UnSignToken.no,
+        },
+      });
+      User.nickname = nickname ? nickname : User.nickname;
+      User.profile = profile ? profile : User.profile;
+      await this.users.save(User);
+      return {
+        isDone: true,
+        status: 200,
       };
     } catch (e) {
       return {

@@ -48,7 +48,7 @@ export class User extends BaseEntity {
   @Column({ comment: '마케팅 동의 여부', default: false })
   marketingConsent: boolean;
 
-  @OneToMany((_) => Question, (question) => question.user)
+  @OneToMany((_) => Question, (question) => question.user, { nullable: true })
   @Column('int', { array: true, comment: '입지 문의 목록', nullable: true })
   question: Question[];
 

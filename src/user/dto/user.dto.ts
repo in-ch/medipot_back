@@ -31,3 +31,10 @@ export class MeInputDto {
   authorization: string;
 }
 export class MeOutputCrudDto extends UserLoginOutputCrudDto {}
+
+export class UpdateProfileCrudDto {
+  profile?: string;
+  nickname?: string;
+}
+export class UpdateProfileHeaderDto extends MeInputDto {}
+export class UpdateProfileOutputDto {}

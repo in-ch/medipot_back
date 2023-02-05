@@ -1,4 +1,3 @@
-import { userInfo } from 'os';
 import { Location } from 'src/location/entities/location.entitiy';
 import { User } from 'src/user/entities/user.entitiy';
 import {
@@ -17,8 +16,8 @@ export class Question extends BaseEntity {
   @PrimaryGeneratedColumn()
   no: number;
 
-  @ManyToOne((_) => User, (user) => user.question, { onDelete: 'CASCADE' })
-  @Column({ type: 'varchar', comment: '유저' })
+  @ManyToOne((_) => User, (user) => user.question, { onDelete: 'CASCADE', nullable: true })
+  @Column({ type: 'varchar', comment: '유저', nullable: true })
   user: User;
 
   @ManyToOne((_) => Location, (location) => location.question, { onDelete: 'CASCADE' })

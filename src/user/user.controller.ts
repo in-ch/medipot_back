@@ -15,7 +15,11 @@ import {
   UserLoginOutputCrudDto,
   MeInputDto,
   MeOutputCrudDto,
+  UpdateProfileCrudDto,
+  UpdateProfileHeaderDto,
+  UpdateProfileOutputDto,
 } from './dto/user.dto';
+import { JwtAuthGuard } from './strategy/jwtAuthentication.guard';
 import { LocalAuthenticationGuard } from './strategy/localAuthentication.guard';
 
 import { UserService } from './user.service';
@@ -55,8 +59,18 @@ export class UserController {
     return this.usersService.adminRefresh(payload);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('/me')
   me(@Headers() header: MeInputDto): Promise<OutputDto<MeOutputCrudDto>> {
     return this.usersService.me(header);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/profile/update')
+  updateProfile(
+    @Body() payload: UpdateProfileCrudDto,
+    @Headers() header: UpdateProfileHeaderDto,
+  ): Promise<OutputDto<UpdateProfileOutputDto>> {
+    return this.usersService.updateProfile(payload, header);
   }
 }

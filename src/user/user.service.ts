@@ -412,6 +412,7 @@ export class UserService {
     try {
       const { authorization } = header;
       const { profile, nickname } = payload;
+
       const UnSignToken = await this.jwtService.verify(authorization.replace('Bearer ', ''), {
         secret: process.env.PRIVATE_KEY,
       });
@@ -426,6 +427,7 @@ export class UserService {
       return {
         isDone: true,
         status: 200,
+        data: User,
       };
     } catch (e) {
       return {

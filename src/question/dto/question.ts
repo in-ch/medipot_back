@@ -1,5 +1,7 @@
 import { PickType } from '@nestjs/mapped-types';
 import { IsNumber, IsString } from 'class-validator';
+
+import { PaginationDto } from 'src/commons/dtos';
 import { User } from 'src/user/entities/user.entitiy';
 export class QuestionCrudDto {
   @IsNumber()
@@ -15,3 +17,5 @@ export class QuestionHeaderDto {
   @IsString()
   authorization: string;
 }
+
+export class QuestionListPagination extends PaginationDto {}

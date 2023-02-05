@@ -1,8 +1,15 @@
-import { Body, Controller, Headers, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Post, Req, UseGuards } from '@nestjs/common';
+import { Request } from 'express';
 
 import { OutputDto } from 'src/commons/dtos';
 import { JwtAuthGuard } from 'src/user/strategy/jwtAuthentication.guard';
-import { QuestionCrudDto, QuestionHeaderDto, QuestionOutputCrudDto } from './dto/question';
+import {
+  QuestionCrudDto,
+  QuestionHeaderDto,
+  QuestionListPagination,
+  QuestionOutputCrudDto,
+} from './dto/question';
+import { Question } from './entities/question.entitiy';
 import { QuestionService } from './question.service';
 
 @Controller('question')
@@ -16,5 +23,10 @@ export class QuestionController {
     @Headers() header: QuestionHeaderDto,
   ): Promise<OutputDto<QuestionOutputCrudDto>> {
     return this.questionService.addDetail(payload, header);
+  }
+
+  @Get('/list')
+  getQuestion(@Req() request: Request<QuestionListPagination>): Promise<OutputDto<Question[]>> {
+    return this.questionService.getQuestion(request.query);
   }
 }

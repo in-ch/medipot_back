@@ -4,7 +4,12 @@ import { Repository } from 'typeorm';
 
 import { OutputDto } from 'src/commons/dtos';
 import { Question } from './entities/question.entitiy';
-import { QuestionCrudDto, QuestionHeaderDto, QuestionOutputCrudDto } from './dto/question';
+import {
+  QuestionCrudDto,
+  QuestionHeaderDto,
+  QuestionListPagination,
+  QuestionOutputCrudDto,
+} from './dto/question';
 import { User } from 'src/user/entities/user.entitiy';
 import { Location } from 'src/location/entities/location.entitiy';
 import { JwtService } from '@nestjs/jwt';
@@ -53,6 +58,34 @@ export class QuestionService {
         status: 200,
       };
     } catch (e) {
+      return {
+        isDone: false,
+        status: 400,
+        error: '오류가 발생하였습니다.',
+      };
+    }
+  }
+
+  async getQuestion(query: QuestionListPagination): Promise<OutputDto<Question[]>> {
+    const { limit, page } = query;
+    try {
+      const questions = await this.questions.find({
+        take: limit || 10,
+        skip: page * limit || 0,
+      });
+      const totalCount = questions.length;
+
+      questions.map((question) => {
+        console.log(question?.user?.no);
+      });
+      return {
+        totalCount,
+        isDone: true,
+        status: 200,
+        data: questions,
+      };
+    } catch (e) {
+      console.error(e);
       return {
         isDone: false,
         status: 400,

@@ -5,6 +5,8 @@ import { OutputDto } from 'src/commons/dtos';
 import { User } from 'src/user/entities/user.entitiy';
 import { Repository } from 'typeorm';
 import {
+  ConsultListHeaders,
+  ConsultListPagination,
   DoneConsultParams,
   DoneConsultResponse,
   SendConsultAddHeaders,
@@ -20,6 +22,45 @@ export class ConsultService {
     @InjectRepository(User) private readonly users: Repository<User>,
     private readonly jwtService: JwtService,
   ) {}
+
+  async list(
+    query: ConsultListPagination,
+    header: ConsultListHeaders,
+  ): Promise<OutputDto<Consult[]>> {
+    try {
+      const { page, limit } = query;
+      const { authorization } = header;
+      const UnSignToken = await this.jwtService.verify(authorization.replace('Bearer ', ''), {
+        secret: process.env.PRIVATE_KEY,
+      });
+      const { no } = UnSignToken;
+
+      const consults = await this.consults.find({
+        take: limit || 10,
+        skip: page * limit || 0,
+        where: {
+          user: {
+            no,
+          },
+        },
+        relations: ['user'],
+      });
+      const totalCount = consults.length;
+      return {
+        totalCount,
+        isDone: true,
+        status: 200,
+        data: consults,
+      };
+    } catch (e) {
+      console.error(e);
+      return {
+        isDone: false,
+        status: 400,
+        error: `서버 에러가 발생하였습니다. consult list`,
+      };
+    }
+  }
 
   /**
    * @param {SendConsultAddParams} params name, type, phone, detail

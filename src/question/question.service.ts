@@ -86,7 +86,7 @@ export class QuestionService {
             no,
           },
         },
-        relations: ['user', 'location'],
+        relations: ['location'],
       });
       const totalCount = questions.length;
 

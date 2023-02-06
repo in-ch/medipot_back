@@ -1,9 +1,13 @@
+import { User } from 'src/user/entities/user.entitiy';
 import {
   BaseEntity,
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -34,6 +38,10 @@ export class Consult extends BaseEntity {
 
   @Column({ type: 'boolean', comment: '문의 완료', default: false })
   isDone: boolean;
+
+  @ManyToOne((_) => User, (user) => user.consult, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 
   @CreateDateColumn({ name: 'create_at', comment: '생성일' })
   createdAt: Date;

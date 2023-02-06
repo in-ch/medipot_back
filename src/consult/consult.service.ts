@@ -1,10 +1,13 @@
 import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OutputDto } from 'src/commons/dtos';
+import { User } from 'src/user/entities/user.entitiy';
 import { Repository } from 'typeorm';
 import {
   DoneConsultParams,
   DoneConsultResponse,
+  SendConsultAddHeaders,
   SendConsultAddParams,
   SendConsultAddResponse,
 } from './dto/consult.dto';
@@ -12,17 +15,27 @@ import { Consult } from './entities/consult.entitiy';
 
 @Injectable()
 export class ConsultService {
-  constructor(@InjectRepository(Consult) private readonly consults: Repository<Consult>) {}
+  constructor(
+    @InjectRepository(Consult) private readonly consults: Repository<Consult>,
+    @InjectRepository(User) private readonly users: Repository<User>,
+    private readonly jwtService: JwtService,
+  ) {}
 
   /**
    * @param {SendConsultAddParams} params name, type, phone, detail
+   * @param {SendConsultAddHeaders} header authorization
    * @description 문의를 등록해준다.
    * @return {OutputDto<SendConsultAddResponse>} 문의 등록 성공 여부 리턴
    * @author in-ch, 2023-01-30
    */
-  async sendConsultAdd(params: SendConsultAddParams): Promise<OutputDto<SendConsultAddResponse>> {
+  async sendConsultAdd(
+    params: SendConsultAddParams,
+    header: SendConsultAddHeaders,
+  ): Promise<OutputDto<SendConsultAddResponse>> {
     try {
       const { name, phone, type } = params;
+      const { authorization } = header;
+
       const CONSULT = await this.consults.findOne({
         where: {
           name,
@@ -38,7 +51,19 @@ export class ConsultService {
           error: '이미 신청이 완료되었습니다.',
         };
       }
-      const NEW_CONSULT = await this.consults.create(params);
+      const UnSignToken = await this.jwtService.verify(authorization.replace('Bearer ', ''), {
+        secret: process.env.PRIVATE_KEY,
+      });
+      const { no } = UnSignToken;
+      const User = await this.users.findOne({
+        where: {
+          no,
+        },
+      });
+      const NEW_CONSULT = await this.consults.create({
+        ...params,
+        user: User,
+      });
       await this.consults.save(NEW_CONSULT);
       return {
         isDone: true,

@@ -23,6 +23,7 @@ import {
   UserLoginCrudDto,
   UserLoginOutputCrudDto,
 } from './dto/user.dto';
+import { Question } from 'src/question/entities/question.entitiy';
 
 const bcrypt = require('bcrypt'); // 패스워드 암호화
 
@@ -430,6 +431,7 @@ export class UserService {
         data: User,
       };
     } catch (e) {
+      console.error(e);
       return {
         isDone: false,
         status: 400,

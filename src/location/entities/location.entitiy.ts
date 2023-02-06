@@ -70,7 +70,6 @@ export class Location extends BaseEntity {
   isApproved: boolean;
 
   @OneToMany((_) => Question, (question) => question.location)
-  @Column('int', { array: true, comment: '입지 문의 목록', nullable: true })
   question: Question[];
 
   @CreateDateColumn({ name: 'create_at', comment: '생성일' })

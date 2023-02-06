@@ -6,6 +6,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -16,12 +17,12 @@ export class Question extends BaseEntity {
   @PrimaryGeneratedColumn()
   no: number;
 
-  @ManyToOne((_) => User, (user) => user.question, { onDelete: 'CASCADE', nullable: true })
-  @Column({ type: 'varchar', comment: '유저', nullable: true })
+  @ManyToOne((_) => User, (user) => user.question, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'user_id' })
   user: User;
 
   @ManyToOne((_) => Location, (location) => location.question, { onDelete: 'CASCADE' })
-  @Column({ type: 'varchar', comment: '입지' })
+  @JoinColumn({ name: 'location_id' })
   location: Location;
 
   @Column({ comment: '삭제 여부', default: false })

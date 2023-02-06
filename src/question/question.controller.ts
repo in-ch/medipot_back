@@ -25,8 +25,12 @@ export class QuestionController {
     return this.questionService.addDetail(payload, header);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('/list')
-  getQuestion(@Req() request: Request<QuestionListPagination>): Promise<OutputDto<Question[]>> {
-    return this.questionService.getQuestion(request.query);
+  getQuestion(
+    @Req() request: Request<QuestionListPagination>,
+    @Headers() header: QuestionHeaderDto,
+  ): Promise<OutputDto<Question[]>> {
+    return this.questionService.getQuestions(request.query, header);
   }
 }

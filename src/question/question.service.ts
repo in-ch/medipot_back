@@ -66,18 +66,30 @@ export class QuestionService {
     }
   }
 
-  async getQuestion(query: QuestionListPagination): Promise<OutputDto<Question[]>> {
+  async getQuestions(
+    query: QuestionListPagination,
+    header: QuestionHeaderDto,
+  ): Promise<OutputDto<Question[]>> {
     const { limit, page } = query;
+    const { authorization } = header;
     try {
+      const UnSignToken = await this.jwtService.verify(authorization.replace('Bearer ', ''), {
+        secret: process.env.PRIVATE_KEY,
+      });
+      const { no } = UnSignToken;
+
       const questions = await this.questions.find({
         take: limit || 10,
         skip: page * limit || 0,
+        where: {
+          user: {
+            no,
+          },
+        },
+        relations: ['user', 'location'],
       });
       const totalCount = questions.length;
 
-      questions.map((question) => {
-        console.log(question?.user?.no);
-      });
       return {
         totalCount,
         isDone: true,

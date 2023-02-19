@@ -1,5 +1,6 @@
 import { Consult } from 'src/consult/entities/consult.entitiy';
 import { Question } from 'src/question/entities/question.entitiy';
+import { Writing } from 'src/writing/entities/writing';
 import {
   BaseEntity,
   Column,
@@ -54,6 +55,9 @@ export class User extends BaseEntity {
 
   @OneToMany((_) => Consult, (consult) => consult.user)
   consult: Consult[];
+
+  @OneToMany((_) => Writing, (writing) => writing.user)
+  writing: Writing[];
 
   @Column({ comment: '소셜 로그인 여부', default: false })
   isSocialLogin: boolean;

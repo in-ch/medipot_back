@@ -8,10 +8,11 @@ import { UserService } from './user.service';
 import { AdminUser, User } from './entities/user.entitiy';
 import { LocalStrategy } from './strategy/local.strategy';
 import { JwtStrategy } from './strategy/jwt.strategy';
+import { Writing } from 'src/writing/entities/writing';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([AdminUser, User]),
+    TypeOrmModule.forFeature([AdminUser, User, Writing]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

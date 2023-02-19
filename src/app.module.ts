@@ -10,6 +10,7 @@ import { EmailModule } from './email/email.module';
 import { AuthModule } from './auth/auth.module';
 import { QuestionModule } from './question/question.module';
 import { ConsultModule } from './consult/consult.module';
+import { WritingModule } from './writing/writing.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { ConsultModule } from './consult/consult.module';
     AuthModule,
     QuestionModule,
     ConsultModule,
+    WritingModule,
   ],
   controllers: [],
   providers: [],

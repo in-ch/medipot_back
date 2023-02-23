@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ArrayContains, ILike, In, Repository } from 'typeorm';
 import { Writing } from './entities/writing';
 import { MeInputDto } from 'src/user/dto/user.dto';
-import { WritingCreateDto, WritingCreateOutputDto } from './dto/writing.dto';
+import { WritingCreateDto, WritingCreateOutputDto, WritingListDto } from './dto/writing.dto';
 import { OutputDto } from 'src/commons/dtos';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/user/entities/user.entitiy';
@@ -16,6 +16,42 @@ export class WritingService {
     @InjectRepository(User) private readonly users: Repository<User>,
     private readonly jwtService: JwtService,
   ) {}
+
+  /**
+   * @param {WritingListDto} query tag, userNo, title, text, limit, page
+   * @description 커뮤니티 글들을 가져온다.
+   * @return {OutputDto<Writing[]>} 글 목록
+   * @author in-ch, 2023-02-23
+   */
+  async getWritings(query: WritingListDto): Promise<OutputDto<Writing[]>> {
+    const { tag, userNo, title, text, limit, page } = query;
+    try {
+      const writings = await this.writings.find({
+        take: limit || 10,
+        skip: page * limit || 0,
+        where: {
+          user: {
+            no: userNo,
+          },
+          tags: tag ? ArrayContains([tag]) : ArrayContains([]),
+          title: title ? ILike(`%${title}%`) : ILike(`%%`),
+          text: text ? ILike(`%${text}%`) : ILike(`%%`),
+        },
+      });
+      return {
+        totalCount: writings.length,
+        isDone: true,
+        status: 200,
+        data: writings,
+      };
+    } catch (e) {
+      return {
+        isDone: false,
+        status: 400,
+        error: e,
+      };
+    }
+  }
 
   /**
    * @param {MeInputDto} header 헤더값

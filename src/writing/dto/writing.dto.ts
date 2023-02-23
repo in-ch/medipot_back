@@ -1,5 +1,6 @@
 import { PickType } from '@nestjs/mapped-types';
 import { IsArray, IsString } from 'class-validator';
+import { PaginationDto } from 'src/commons/dtos';
 
 export class Writing {
   @IsString()
@@ -16,3 +17,10 @@ export class Writing {
 }
 export class WritingCreateDto extends Writing {}
 export class WritingCreateOutputDto extends Writing {}
+
+export class WritingListDto extends PaginationDto {
+  tag?: string;
+  userNo?: number;
+  title?: string;
+  text?: string;
+}

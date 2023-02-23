@@ -1,8 +1,10 @@
-import { Controller, Post, Headers, UseGuards, Body } from '@nestjs/common';
+import { Controller, Post, Headers, UseGuards, Body, Get, Req } from '@nestjs/common';
+import { Request } from 'express';
 import { OutputDto } from 'src/commons/dtos';
 import { MeInputDto } from 'src/user/dto/user.dto';
 import { JwtAuthGuard } from 'src/user/strategy/jwtAuthentication.guard';
-import { WritingCreateDto, WritingCreateOutputDto } from './dto/writing.dto';
+import { WritingCreateDto, WritingCreateOutputDto, WritingListDto } from './dto/writing.dto';
+import { Writing } from './entities/writing';
 import { WritingService } from './writing.service';
 
 @Controller('writing')
@@ -16,5 +18,11 @@ export class WritingController {
     @Body() payload: WritingCreateDto,
   ): Promise<OutputDto<WritingCreateOutputDto>> {
     return this.writingService.create(header, payload);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/list')
+  getWritings(@Req() request: Request<WritingListDto>): Promise<OutputDto<Writing[]>> {
+    return this.writingService.getWritings(request.query);
   }
 }

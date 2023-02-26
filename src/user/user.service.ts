@@ -23,7 +23,6 @@ import {
   UserLoginCrudDto,
   UserLoginOutputCrudDto,
 } from './dto/user.dto';
-import { Question } from 'src/question/entities/question.entitiy';
 
 const bcrypt = require('bcrypt'); // 패스워드 암호화
 
@@ -243,7 +242,6 @@ export class UserService {
         ...user,
         token: '',
         refresh_token: '',
-        password: '11',
       });
 
       const refresh_token = this.jwtService.sign(
@@ -251,7 +249,6 @@ export class UserService {
           ...user,
           token: '',
           refresh_token: '',
-          password: '22',
         },
         {
           expiresIn: '100s',

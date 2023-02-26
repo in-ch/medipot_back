@@ -43,7 +43,10 @@ export class WritingService {
         totalCount: writings.length,
         isDone: true,
         status: 200,
-        data: writings,
+        data: writings.map((writing) => {
+          delete writing.user.password;
+          return writing;
+        }),
       };
     } catch (e) {
       return {

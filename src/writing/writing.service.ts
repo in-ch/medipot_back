@@ -4,7 +4,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ArrayContains, ILike, In, Repository } from 'typeorm';
 import { Writing } from './entities/writing';
 import { MeInputDto } from 'src/user/dto/user.dto';
-import { WritingCreateDto, WritingCreateOutputDto, WritingListDto } from './dto/writing.dto';
+import {
+  WritingCreateDto,
+  WritingCreateOutputDto,
+  WritingDetailDto,
+  WritingListDto,
+} from './dto/writing.dto';
 import { OutputDto } from 'src/commons/dtos';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/user/entities/user.entitiy';
@@ -47,6 +52,36 @@ export class WritingService {
           delete writing.user.password;
           return writing;
         }),
+      };
+    } catch (e) {
+      return {
+        isDone: false,
+        status: 400,
+        error: e,
+      };
+    }
+  }
+
+  /**
+   * @param {WritingListDto} payload no
+   * @description 커뮤니티 글을 하나 가져온다.
+   * @return {OutputDto<Writing>} 커뮤니티 글
+   * @author in-ch, 2023-02-26
+   */
+  async getWriting(payload: WritingDetailDto): Promise<OutputDto<Writing>> {
+    const { no } = payload;
+    try {
+      const Writing = await this.writings.findOne({
+        where: {
+          no,
+        },
+        relations: ['user'],
+      });
+      delete Writing.user.password;
+      return {
+        isDone: true,
+        status: 200,
+        data: Writing,
       };
     } catch (e) {
       return {

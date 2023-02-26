@@ -22,6 +22,32 @@ export enum UserGrant {
   'CLIENT',
   'DOCTOR',
 }
+export enum DEPARTMENT {
+  FM = 'FM',
+  TB = 'TB',
+  IM = 'IM',
+  PED = 'PED',
+  NR = 'NR',
+  NP = 'NP',
+  RM = 'RM',
+  DER = 'DER',
+  UR = 'UR',
+  OBGY = 'OBGY',
+  PS = 'PS',
+  NS = 'NS',
+  EY = 'EY',
+  GS = 'GS',
+  ENT = 'ENT',
+  OS = 'OS',
+  CS = 'CS',
+  AN = 'AN',
+  RO = 'RO',
+  DR = 'DR',
+  EM = 'EM',
+  OEM = 'OEM',
+  LM = 'LM',
+  NM = 'NM',
+}
 
 @Entity()
 export class User extends BaseEntity {
@@ -64,6 +90,9 @@ export class User extends BaseEntity {
 
   @Column({ comment: '삭제 여부', default: false })
   isDeleted: boolean;
+
+  @Column({ type: 'enum', comment: '과', nullable: true, enum: DEPARTMENT })
+  department: DEPARTMENT;
 
   @CreateDateColumn({ name: 'create_at', comment: '생성일' })
   createdAt: Date;

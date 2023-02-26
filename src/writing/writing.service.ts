@@ -37,6 +37,7 @@ export class WritingService {
           title: title ? ILike(`%${title}%`) : ILike(`%%`),
           text: text ? ILike(`%${text}%`) : ILike(`%%`),
         },
+        relations: ['user'],
       });
       return {
         totalCount: writings.length,

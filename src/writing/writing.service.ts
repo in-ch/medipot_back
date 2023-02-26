@@ -63,13 +63,13 @@ export class WritingService {
   }
 
   /**
-   * @param {WritingListDto} payload no
+   * @param {WritingListDto} query no
    * @description 커뮤니티 글을 하나 가져온다.
    * @return {OutputDto<Writing>} 커뮤니티 글
    * @author in-ch, 2023-02-26
    */
-  async getWriting(payload: WritingDetailDto): Promise<OutputDto<Writing>> {
-    const { no } = payload;
+  async getWriting(query: WritingDetailDto): Promise<OutputDto<Writing>> {
+    const { no } = query;
     try {
       const Writing = await this.writings.findOne({
         where: {

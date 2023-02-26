@@ -27,5 +27,5 @@ export class WritingListDto extends PaginationDto {
 
 export class WritingDetailDto {
   @IsNumber()
-  no: number;
+  no?: number;
 }

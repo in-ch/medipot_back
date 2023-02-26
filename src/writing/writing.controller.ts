@@ -32,8 +32,8 @@ export class WritingController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('/detail')
-  getWriting(@Body() payload: WritingDetailDto): Promise<OutputDto<Writing>> {
-    return this.writingService.getWriting(payload);
+  @Get('/detail')
+  getWriting(@Req() request: Request<WritingDetailDto>): Promise<OutputDto<Writing>> {
+    return this.writingService.getWriting(request.query);
   }
 }

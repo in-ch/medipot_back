@@ -11,6 +11,7 @@ import { AuthModule } from './auth/auth.module';
 import { QuestionModule } from './question/question.module';
 import { ConsultModule } from './consult/consult.module';
 import { WritingModule } from './writing/writing.module';
+import { LikeModule } from './like/like.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { WritingModule } from './writing/writing.module';
     QuestionModule,
     ConsultModule,
     WritingModule,
+    LikeModule,
   ],
   controllers: [],
   providers: [],

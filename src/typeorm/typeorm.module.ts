@@ -7,6 +7,7 @@ import { Auth } from 'src/auth/entities/auth.entitiy';
 import { Question } from 'src/question/entities/question.entitiy';
 import { Consult } from 'src/consult/entities/consult.entitiy';
 import { Writing } from 'src/writing/entities/writing';
+import { Like } from 'src/like/entities/like.entitiy';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { Writing } from 'src/writing/entities/writing';
       database: process.env.DB_NAME,
       synchronize: process.env.NODE_ENV !== 'prod',
       logging: process.env.NODE_ENV !== 'prod',
-      entities: [Location, AdminUser, User, Auth, Question, Consult, Writing], // db 들어가는 곳
+      entities: [Location, AdminUser, User, Auth, Question, Consult, Writing, Like], // db 들어가는 곳
     }),
   ],
 })

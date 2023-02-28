@@ -1,4 +1,3 @@
-import { User } from 'src/user/entities/user.entitiy';
 import {
   BaseEntity,
   Column,
@@ -11,6 +10,9 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+
+import { Like } from 'src/like/entities/like.entitiy';
+import { User } from 'src/user/entities/user.entitiy';
 
 @Entity()
 export class Writing extends BaseEntity {
@@ -32,6 +34,9 @@ export class Writing extends BaseEntity {
   @ManyToOne((_) => User, (user) => user.writing, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user: User;
+
+  @OneToMany((_) => Like, (like) => like.writing)
+  like: Like[];
 
   @CreateDateColumn({ name: 'create_at', comment: '생성일' })
   createdAt: Date;

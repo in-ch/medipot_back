@@ -1,4 +1,5 @@
 import { Consult } from 'src/consult/entities/consult.entitiy';
+import { Like } from 'src/like/entities/like.entitiy';
 import { Question } from 'src/question/entities/question.entitiy';
 import { Writing } from 'src/writing/entities/writing';
 import {
@@ -81,6 +82,9 @@ export class User extends BaseEntity {
 
   @OneToMany((_) => Consult, (consult) => consult.user)
   consult: Consult[];
+
+  @OneToMany((_) => Like, (like) => like.user)
+  like: Like[];
 
   @OneToMany((_) => Writing, (writing) => writing.user)
   writing: Writing[];

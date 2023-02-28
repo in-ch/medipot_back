@@ -8,3 +8,6 @@ export class LikeHeaderDto {
   @IsString()
   authorization: string;
 }
+export class UnlikeCrudDto extends LikeCrudDto {}
+
+export class UnlikeHeaderDto extends LikeHeaderDto {}

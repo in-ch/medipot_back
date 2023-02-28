@@ -1,7 +1,7 @@
-import { Body, Controller, Headers, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Headers, Post, UseGuards } from '@nestjs/common';
 import { OutputDto } from 'src/commons/dtos';
 import { JwtAuthGuard } from 'src/user/strategy/jwtAuthentication.guard';
-import { LikeCrudDto, LikeHeaderDto } from './dto/like';
+import { LikeCrudDto, LikeHeaderDto, UnlikeCrudDto, UnlikeHeaderDto } from './dto/like';
 import { LikeService } from './like.service';
 
 @Controller('like')
@@ -15,5 +15,14 @@ export class LikeController {
     @Headers() header: LikeHeaderDto,
   ): Promise<OutputDto<boolean>> {
     return this.likesService.like(payload, header);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('')
+  unlike(
+    @Body() payload: UnlikeCrudDto,
+    @Headers() header: UnlikeHeaderDto,
+  ): Promise<OutputDto<boolean>> {
+    return this.likesService.unlike(payload, header);
   }
 }

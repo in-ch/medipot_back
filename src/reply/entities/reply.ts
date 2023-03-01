@@ -2,6 +2,7 @@ import { User } from 'src/user/entities/user.entitiy';
 import { Writing } from 'src/writing/entities/writing';
 import {
   BaseEntity,
+  Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
@@ -12,7 +13,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class Like extends BaseEntity {
+export class Reply extends BaseEntity {
   @PrimaryGeneratedColumn()
   no: number;
 
@@ -23,6 +24,9 @@ export class Like extends BaseEntity {
   @ManyToOne((_) => Writing, (writing) => writing.like, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'writing_id' })
   writing: Writing;
+
+  @Column({ type: 'varchar', length: 250, comment: '댓글' })
+  comment: string;
 
   @CreateDateColumn({ name: 'create_at', comment: '생성일' })
   createdAt: Date;

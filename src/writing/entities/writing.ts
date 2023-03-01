@@ -13,6 +13,7 @@ import {
 
 import { Like } from 'src/like/entities/like.entitiy';
 import { User } from 'src/user/entities/user.entitiy';
+import { Reply } from 'src/reply/entities/reply';
 
 @Entity()
 export class Writing extends BaseEntity {
@@ -37,6 +38,9 @@ export class Writing extends BaseEntity {
 
   @OneToMany((_) => Like, (like) => like.writing)
   like: Like[];
+
+  @OneToMany((_) => Reply, (reply) => reply.writing)
+  reply: Reply[];
 
   @CreateDateColumn({ name: 'create_at', comment: '생성일' })
   createdAt: Date;

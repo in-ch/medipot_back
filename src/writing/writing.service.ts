@@ -42,7 +42,7 @@ export class WritingService {
           title: title ? ILike(`%${title}%`) : ILike(`%%`),
           text: text ? ILike(`%${text}%`) : ILike(`%%`),
         },
-        relations: ['user'],
+        relations: ['user', 'like', 'like.user'],
       });
       return {
         totalCount: writings.length,
@@ -75,7 +75,7 @@ export class WritingService {
         where: {
           no,
         },
-        relations: ['user'],
+        relations: ['user', 'like', 'like.user'],
       });
       delete Writing.user.password;
       return {

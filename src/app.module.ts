@@ -12,6 +12,7 @@ import { QuestionModule } from './question/question.module';
 import { ConsultModule } from './consult/consult.module';
 import { WritingModule } from './writing/writing.module';
 import { LikeModule } from './like/like.module';
+import { ReplyModule } from './reply/reply.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { LikeModule } from './like/like.module';
     ConsultModule,
     WritingModule,
     LikeModule,
+    ReplyModule,
   ],
   controllers: [],
   providers: [],

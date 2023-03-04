@@ -6,7 +6,7 @@ import { OutputDto } from 'src/commons/dtos';
 import { User } from 'src/user/entities/user.entitiy';
 import { Writing } from 'src/writing/entities/writing';
 import { Repository } from 'typeorm';
-import { ReplyCrudDto, ReplyHeaderDto, ReplyPaginationDto } from './dto/reply.dto';
+import { ReplyCrudDto, ReplyDeleteDto, ReplyHeaderDto, ReplyPaginationDto } from './dto/reply.dto';
 import { Reply } from './entities/reply';
 
 @Injectable()
@@ -17,6 +17,43 @@ export class ReplyService {
     @InjectRepository(Reply) private readonly replys: Repository<Reply>,
     private readonly jwtService: JwtService,
   ) {}
+
+  /**
+   * @param {Request<ReplyPaginationDto>} query 쿼리값
+   * @description writing no에 따른 댓글 리스트를 가져온다.
+   * @return {OutputDto<Reply[]>}
+   * @author in-ch, 2023-03-04
+   */
+  async getReplys(request: Request<ReplyPaginationDto>): Promise<OutputDto<Reply[]>> {
+    const {
+      query: { writingNo, limit, page },
+    } = request;
+    try {
+      const replys = await this.replys.find({
+        take: Number(limit) || 10,
+        skip: Number(page) * Number(limit) || 0,
+        where: {
+          writing: {
+            no: Number(writingNo),
+          },
+          isDeleted: false,
+        },
+      });
+      const totalCount = replys.length;
+      return {
+        totalCount,
+        isDone: true,
+        status: 200,
+        data: replys,
+      };
+    } catch (e) {
+      return {
+        isDone: false,
+        status: 400,
+        error: `오류가 발생하였습니다. ${e}`,
+      };
+    }
+  }
 
   /**
    * @param {Request<ReplyCrudDto>} payload writingNo, comment
@@ -68,32 +105,37 @@ export class ReplyService {
   }
 
   /**
-   * @param {Request<ReplyPaginationDto>} query 쿼리값
-   * @description writing no에 따른 댓글 리스트를 가져온다.
-   * @return {OutputDto<Reply[]>}
+   * @param {ReplyDeleteDto} payload replyNo
+   * @description 댓글을 삭제한다.
+   * @return {boolean}
    * @author in-ch, 2023-03-04
    */
-  async getReplys(request: Request<ReplyPaginationDto>): Promise<OutputDto<Reply[]>> {
-    const {
-      query: { writingNo, limit, page },
-    } = request;
-    console.log(request);
+  async delete(
+    @Body() payload: ReplyDeleteDto,
+    @Headers() header: ReplyHeaderDto,
+  ): Promise<OutputDto<boolean>> {
     try {
-      const replys = await this.replys.find({
-        take: Number(limit) || 10,
-        skip: Number(page) * Number(limit) || 0,
+      const { replyNo } = payload;
+      const { authorization } = header;
+      const UnSignToken = await this.jwtService.verify(authorization.replace('Bearer ', ''), {
+        secret: process.env.PRIVATE_KEY,
+      });
+      const { no } = UnSignToken;
+
+      const Reply = await this.replys.findOne({
         where: {
-          writing: {
-            no: Number(writingNo),
+          no: replyNo,
+          user: {
+            no,
           },
         },
       });
-      const totalCount = replys.length;
+      Reply.isDeleted = true;
+      await this.replys.save(Reply);
       return {
-        totalCount,
         isDone: true,
         status: 200,
-        data: replys,
+        data: true,
       };
     } catch (e) {
       return {

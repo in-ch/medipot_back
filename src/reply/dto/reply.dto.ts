@@ -19,3 +19,8 @@ export class ReplyPaginationDto extends PaginationDto {
   @IsNumber()
   writingNo: number;
 }
+
+export class ReplyDeleteDto {
+  @IsNumber()
+  replyNo: number;
+}

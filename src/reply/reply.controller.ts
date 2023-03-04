@@ -1,8 +1,8 @@
-import { Body, Controller, Get, Headers, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Headers, Post, Req, UseGuards } from '@nestjs/common';
 import { Request } from 'express';
 import { OutputDto } from 'src/commons/dtos';
 import { JwtAuthGuard } from 'src/user/strategy/jwtAuthentication.guard';
-import { ReplyCrudDto, ReplyHeaderDto, ReplyPaginationDto } from './dto/reply.dto';
+import { ReplyCrudDto, ReplyDeleteDto, ReplyHeaderDto, ReplyPaginationDto } from './dto/reply.dto';
 import { Reply } from './entities/reply';
 import { ReplyService } from './reply.service';
 
@@ -10,6 +10,11 @@ import { ReplyService } from './reply.service';
 export class ReplyController {
   constructor(private readonly replysService: ReplyService) {}
 
+  @UseGuards(JwtAuthGuard)
+  @Get('')
+  getReplys(@Req() request: Request<ReplyPaginationDto>): Promise<OutputDto<Reply[]>> {
+    return this.replysService.getReplys(request);
+  }
   @UseGuards(JwtAuthGuard)
   @Post('/create')
   like(
@@ -20,8 +25,11 @@ export class ReplyController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('')
-  getReplys(@Req() request: Request<ReplyPaginationDto>): Promise<OutputDto<Reply[]>> {
-    return this.replysService.getReplys(request);
+  @Delete('')
+  replyDelete(
+    @Body() payload: ReplyDeleteDto,
+    @Headers() header: ReplyHeaderDto,
+  ): Promise<OutputDto<boolean>> {
+    return this.replysService.delete(payload, header);
   }
 }

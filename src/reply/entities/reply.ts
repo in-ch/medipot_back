@@ -28,6 +28,9 @@ export class Reply extends BaseEntity {
   @Column({ type: 'varchar', length: 250, comment: '댓글' })
   comment: string;
 
+  @Column({ type: 'boolean', comment: '삭제 여부', default: false })
+  isDeleted: boolean;
+
   @CreateDateColumn({ name: 'create_at', comment: '생성일' })
   createdAt: Date;
 

@@ -24,3 +24,8 @@ export class ReplyDeleteDto {
   @IsNumber()
   replyNo: number;
 }
+
+export class TotalCountDto {
+  @IsNumber()
+  writingNo: number;
+}

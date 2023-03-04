@@ -2,7 +2,13 @@ import { Body, Controller, Delete, Get, Headers, Post, Req, UseGuards } from '@n
 import { Request } from 'express';
 import { OutputDto } from 'src/commons/dtos';
 import { JwtAuthGuard } from 'src/user/strategy/jwtAuthentication.guard';
-import { ReplyCrudDto, ReplyDeleteDto, ReplyHeaderDto, ReplyPaginationDto } from './dto/reply.dto';
+import {
+  ReplyCrudDto,
+  ReplyDeleteDto,
+  ReplyHeaderDto,
+  ReplyPaginationDto,
+  TotalCountDto,
+} from './dto/reply.dto';
 import { Reply } from './entities/reply';
 import { ReplyService } from './reply.service';
 
@@ -31,5 +37,11 @@ export class ReplyController {
     @Headers() header: ReplyHeaderDto,
   ): Promise<OutputDto<boolean>> {
     return this.replysService.delete(payload, header);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/total')
+  totalCount(@Body() payload: TotalCountDto): Promise<OutputDto<number>> {
+    return this.replysService.totalCount(payload);
   }
 }

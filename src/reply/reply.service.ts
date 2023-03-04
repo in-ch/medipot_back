@@ -6,7 +6,13 @@ import { OutputDto } from 'src/commons/dtos';
 import { User } from 'src/user/entities/user.entitiy';
 import { Writing } from 'src/writing/entities/writing';
 import { Repository } from 'typeorm';
-import { ReplyCrudDto, ReplyDeleteDto, ReplyHeaderDto, ReplyPaginationDto } from './dto/reply.dto';
+import {
+  ReplyCrudDto,
+  ReplyDeleteDto,
+  ReplyHeaderDto,
+  ReplyPaginationDto,
+  TotalCountDto,
+} from './dto/reply.dto';
 import { Reply } from './entities/reply';
 
 @Injectable()
@@ -136,6 +142,37 @@ export class ReplyService {
         isDone: true,
         status: 200,
         data: true,
+      };
+    } catch (e) {
+      return {
+        isDone: false,
+        status: 400,
+        error: `오류가 발생하였습니다. ${e}`,
+      };
+    }
+  }
+
+  /**
+   * @param {TotalCountDto} payload writingNo
+   * @description 댓글의 갯수를 구한다.
+   * @return {number}
+   * @author in-ch, 2023-03-04
+   */
+  async totalCount(@Body() payload: TotalCountDto): Promise<OutputDto<number>> {
+    try {
+      const { writingNo } = payload;
+      const replys = await this.replys.count({
+        where: {
+          writing: {
+            no: Number(writingNo),
+          },
+          isDeleted: false,
+        },
+      });
+      return {
+        isDone: true,
+        status: 200,
+        data: replys,
       };
     } catch (e) {
       return {

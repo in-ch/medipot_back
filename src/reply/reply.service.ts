@@ -44,13 +44,20 @@ export class ReplyService {
           },
           isDeleted: false,
         },
+        relations: ['user'],
       });
       const totalCount = replys.length;
       return {
         totalCount,
         isDone: true,
         status: 200,
-        data: replys,
+        data: replys.map((v) => {
+          delete v.user.password;
+          delete v.user.grant;
+          delete v.user.marketingConsent;
+          delete v.user.isSocialLogin;
+          return v;
+        }),
       };
     } catch (e) {
       return {

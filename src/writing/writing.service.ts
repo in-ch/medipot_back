@@ -42,7 +42,7 @@ export class WritingService {
           title: title ? ILike(`%${title}%`) : ILike(`%%`),
           text: text ? ILike(`%${text}%`) : ILike(`%%`),
         },
-        relations: ['user', 'like', 'like.user'],
+        relations: ['user', 'like', 'like.user', 'reply'],
       });
       return {
         totalCount: writings.length,

@@ -1,4 +1,4 @@
-import { Body, Headers, Injectable } from '@nestjs/common';
+import { Body, Headers, Injectable, Req } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
@@ -165,9 +165,11 @@ export class ReplyService {
    * @return {number}
    * @author in-ch, 2023-03-04
    */
-  async totalCount(@Body() payload: TotalCountDto): Promise<OutputDto<number>> {
+  async totalCount(@Req() request: Request<TotalCountDto>): Promise<OutputDto<number>> {
     try {
-      const { writingNo } = payload;
+      const {
+        query: { writingNo },
+      } = request;
       const replys = await this.replys.count({
         where: {
           writing: {

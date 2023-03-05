@@ -40,8 +40,8 @@ export class ReplyController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('/total')
-  totalCount(@Body() payload: TotalCountDto): Promise<OutputDto<number>> {
-    return this.replysService.totalCount(payload);
+  @Get('/total')
+  totalCount(@Req() request: Request<TotalCountDto>): Promise<OutputDto<number>> {
+    return this.replysService.totalCount(request);
   }
 }

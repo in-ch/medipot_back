@@ -50,6 +50,11 @@ export class WritingService {
         status: 200,
         data: writings.map((writing) => {
           delete writing.user.password;
+          writing.reply.map((replyData, index) => {
+            replyData.isDeleted && delete writing.reply[index];
+            delete replyData.deletedAt;
+            delete replyData.isDeleted;
+          });
           return writing;
         }),
       };
@@ -75,9 +80,14 @@ export class WritingService {
         where: {
           no,
         },
-        relations: ['user', 'like', 'like.user'],
+        relations: ['user', 'like', 'like.user', 'reply'],
       });
       delete Writing.user.password;
+      Writing.reply.map((replyData, index) => {
+        replyData.isDeleted && delete Writing.reply[index];
+        delete replyData.deletedAt;
+        delete replyData.isDeleted;
+      });
       return {
         isDone: true,
         status: 200,

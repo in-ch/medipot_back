@@ -13,6 +13,7 @@ import { ConsultModule } from './consult/consult.module';
 import { WritingModule } from './writing/writing.module';
 import { LikeModule } from './like/like.module';
 import { ReplyModule } from './reply/reply.module';
+import { ReportModule } from './report/report.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { ReplyModule } from './reply/reply.module';
     WritingModule,
     LikeModule,
     ReplyModule,
+    ReportModule,
   ],
   controllers: [],
   providers: [],

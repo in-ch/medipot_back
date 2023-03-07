@@ -8,7 +8,8 @@ import { Question } from 'src/question/entities/question.entitiy';
 import { Consult } from 'src/consult/entities/consult.entitiy';
 import { Writing } from 'src/writing/entities/writing';
 import { Like } from 'src/like/entities/like.entitiy';
-import { Reply } from 'src/reply/entities/reply';
+import { Reply } from 'src/reply/entities/reply.entity';
+import { Report } from 'src/report/entities/report.entity';
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { Reply } from 'src/reply/entities/reply';
       database: process.env.DB_NAME,
       synchronize: process.env.NODE_ENV !== 'prod',
       logging: process.env.NODE_ENV !== 'prod',
-      entities: [Location, AdminUser, User, Auth, Question, Consult, Writing, Like, Reply], // db 들어가는 곳
+      entities: [Location, AdminUser, User, Auth, Question, Consult, Writing, Like, Reply, Report], // db 들어가는 곳
     }),
   ],
 })

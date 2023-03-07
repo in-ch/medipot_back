@@ -13,7 +13,7 @@ import {
   ReplyPaginationDto,
   TotalCountDto,
 } from './dto/reply.dto';
-import { Reply } from './entities/reply';
+import { Reply } from './entities/reply.entity';
 
 @Injectable()
 export class ReplyService {

@@ -9,7 +9,7 @@ import {
   ReplyPaginationDto,
   TotalCountDto,
 } from './dto/reply.dto';
-import { Reply } from './entities/reply';
+import { Reply } from './entities/reply.entity';
 import { ReplyService } from './reply.service';
 
 @Controller('reply')

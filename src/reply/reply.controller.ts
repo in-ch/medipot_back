@@ -16,7 +16,7 @@ import { ReplyService } from './reply.service';
 export class ReplyController {
   constructor(private readonly replysService: ReplyService) {}
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Get('')
   getReplys(@Req() request: Request<ReplyPaginationDto>): Promise<OutputDto<Reply[]>> {
     return this.replysService.getReplys(request);
@@ -39,7 +39,7 @@ export class ReplyController {
     return this.replysService.delete(payload, header);
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Get('/total')
   totalCount(@Req() request: Request<TotalCountDto>): Promise<OutputDto<number>> {
     return this.replysService.totalCount(request);

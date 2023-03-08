@@ -26,7 +26,7 @@ export class ReplyController {
   like(
     @Body() payload: ReplyCrudDto,
     @Headers() header: ReplyHeaderDto,
-  ): Promise<OutputDto<boolean>> {
+  ): Promise<OutputDto<Reply>> {
     return this.replysService.create(payload, header);
   }
 

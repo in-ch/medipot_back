@@ -77,7 +77,7 @@ export class ReplyService {
   async create(
     @Body() payload: ReplyCrudDto,
     @Headers() header: ReplyHeaderDto,
-  ): Promise<OutputDto<boolean>> {
+  ): Promise<OutputDto<Reply>> {
     try {
       const { writingNo, comment } = payload;
       const { authorization } = header;
@@ -96,7 +96,7 @@ export class ReplyService {
           no: writingNo,
         },
       });
-      this.replys.save(
+      const NewWriting = await this.replys.save(
         this.replys.create({
           user: User,
           writing: Writing,
@@ -106,7 +106,7 @@ export class ReplyService {
       return {
         isDone: true,
         status: 200,
-        data: true,
+        data: NewWriting,
       };
     } catch (e) {
       return {

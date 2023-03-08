@@ -120,15 +120,17 @@ export class ReplyService {
   /**
    * @param {ReplyDeleteDto} payload replyNo
    * @description 댓글을 삭제한다.
-   * @return {boolean}
+   * @return {Reply}
    * @author in-ch, 2023-03-04
    */
   async delete(
-    @Body() payload: ReplyDeleteDto,
+    @Body() request: Request<ReplyDeleteDto>,
     @Headers() header: ReplyHeaderDto,
-  ): Promise<OutputDto<boolean>> {
+  ): Promise<OutputDto<Reply>> {
     try {
-      const { replyNo } = payload;
+      const {
+        query: { replyNo },
+      } = request;
       const { authorization } = header;
       const UnSignToken = await this.jwtService.verify(authorization.replace('Bearer ', ''), {
         secret: process.env.PRIVATE_KEY,
@@ -137,18 +139,18 @@ export class ReplyService {
 
       const Reply = await this.replys.findOne({
         where: {
-          no: replyNo,
+          no: Number(replyNo),
           user: {
             no,
           },
         },
       });
       Reply.isDeleted = true;
-      await this.replys.save(Reply);
+      const DeletedReply = await this.replys.save(Reply);
       return {
         isDone: true,
         status: 200,
-        data: true,
+        data: DeletedReply,
       };
     } catch (e) {
       return {

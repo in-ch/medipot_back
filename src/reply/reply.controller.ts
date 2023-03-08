@@ -33,10 +33,10 @@ export class ReplyController {
   @UseGuards(JwtAuthGuard)
   @Delete('')
   replyDelete(
-    @Body() payload: ReplyDeleteDto,
+    @Req() request: Request<ReplyDeleteDto>,
     @Headers() header: ReplyHeaderDto,
-  ): Promise<OutputDto<boolean>> {
-    return this.replysService.delete(payload, header);
+  ): Promise<OutputDto<Reply>> {
+    return this.replysService.delete(request, header);
   }
 
   // @UseGuards(JwtAuthGuard)

@@ -1,3 +1,4 @@
+import { Report } from 'src/report/entities/report.entity';
 import { User } from 'src/user/entities/user.entitiy';
 import { Writing } from 'src/writing/entities/writing';
 import {
@@ -8,6 +9,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -24,6 +26,9 @@ export class Reply extends BaseEntity {
   @ManyToOne((_) => Writing, (writing) => writing.like, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'writing_id' })
   writing: Writing;
+
+  @OneToMany((_) => Report, (repory) => repory.reply)
+  reported: Report[];
 
   @Column({ type: 'varchar', length: 250, comment: '댓글' })
   comment: string;

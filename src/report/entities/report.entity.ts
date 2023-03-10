@@ -1,3 +1,4 @@
+import { Reply } from 'src/reply/entities/reply.entity';
 import { User } from 'src/user/entities/user.entitiy';
 import { Writing } from 'src/writing/entities/writing';
 import {
@@ -28,6 +29,10 @@ export class Report extends BaseEntity {
   @ManyToOne((_) => Writing, (writing) => writing.reported, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'writing_id' })
   writing: Writing;
+
+  @ManyToOne((_) => Reply, (reply) => reply.reported, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'reply_id' })
+  reply: Reply;
 
   @Column({ type: 'boolean', comment: '처리 여부', default: false })
   isProcessing: boolean;

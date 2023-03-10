@@ -12,3 +12,8 @@ export class ReportHeaderDto {
 }
 
 export class ReportListPagination extends PaginationDto {}
+
+export class ReportReplyCrudDto {
+  @IsNumber()
+  replyNo: number;
+}

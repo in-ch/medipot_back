@@ -38,11 +38,16 @@ export class WritingService {
           user: {
             no: userNo,
           },
-          tags: tag ? ArrayContains([tag]) : ArrayContains([]),
+          tags: tag !== '인기게시판' && tag ? ArrayContains([tag]) : ArrayContains([]),
           title: title ? ILike(`%${title}%`) : ILike(`%%`),
           text: text ? ILike(`%${text}%`) : ILike(`%%`),
         },
         relations: ['user', 'like', 'like.user', 'reply'],
+        order: tag === '인기게시판' && {
+          like: {
+            no: 'DESC',
+          },
+        },
       });
       return {
         totalCount: writings.length,

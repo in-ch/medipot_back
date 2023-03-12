@@ -29,7 +29,7 @@ export class WritingService {
    * @author in-ch, 2023-02-23
    */
   async getWritings(query: WritingListDto): Promise<OutputDto<Writing[]>> {
-    const { tag, userNo, title, text, limit, page } = query;
+    const { tag, userNo, text, limit, page } = query;
     try {
       const writings = await this.writings.find({
         take: limit || 10,
@@ -39,7 +39,7 @@ export class WritingService {
             no: userNo,
           },
           tags: tag !== '인기게시판' && tag ? ArrayContains([tag]) : ArrayContains([]),
-          title: title ? ILike(`%${title}%`) : ILike(`%%`),
+          title: text ? ILike(`%${text}%`) : ILike(`%%`),
           text: text ? ILike(`%${text}%`) : ILike(`%%`),
         },
         relations: ['user', 'like', 'like.user', 'reply'],

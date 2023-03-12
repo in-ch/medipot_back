@@ -21,7 +21,6 @@ export class WritingCreateOutputDto extends Writing {}
 export class WritingListDto extends PaginationDto {
   tag?: string;
   userNo?: number;
-  title?: string;
   text?: string;
 }
 

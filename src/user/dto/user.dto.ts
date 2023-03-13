@@ -38,3 +38,7 @@ export class UpdateProfileCrudDto {
 }
 export class UpdateProfileHeaderDto extends MeInputDto {}
 export class UpdateProfileOutputDto {}
+
+export class SearchUserCrudDto {
+  no: number;
+}

@@ -1,4 +1,5 @@
-import { Body, Controller, Headers, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Post, Req, UseGuards } from '@nestjs/common';
+import { Request } from 'express';
 
 import { OutputDto } from 'src/commons/dtos';
 import {
@@ -18,7 +19,9 @@ import {
   UpdateProfileCrudDto,
   UpdateProfileHeaderDto,
   UpdateProfileOutputDto,
+  SearchUserCrudDto,
 } from './dto/user.dto';
+import { User } from './entities/user.entitiy';
 import { JwtAuthGuard } from './strategy/jwtAuthentication.guard';
 import { LocalAuthenticationGuard } from './strategy/localAuthentication.guard';
 
@@ -72,5 +75,11 @@ export class UserController {
     @Headers() header: UpdateProfileHeaderDto,
   ): Promise<OutputDto<UpdateProfileOutputDto>> {
     return this.usersService.updateProfile(payload, header);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/search')
+  searchUser(@Req() request: Request<SearchUserCrudDto>): Promise<OutputDto<User>> {
+    return this.usersService.searchUser(request);
   }
 }

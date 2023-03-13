@@ -15,6 +15,7 @@ import { JwtService } from '@nestjs/jwt';
 import {
   MeInputDto,
   MeOutputCrudDto,
+  SearchUserCrudDto,
   UpdateProfileCrudDto,
   UpdateProfileHeaderDto,
   UpdateProfileOutputDto,
@@ -23,6 +24,7 @@ import {
   UserLoginCrudDto,
   UserLoginOutputCrudDto,
 } from './dto/user.dto';
+import { Request } from 'express';
 
 const bcrypt = require('bcrypt'); // 패스워드 암호화
 
@@ -422,6 +424,45 @@ export class UserService {
       User.nickname = nickname ? nickname : User.nickname;
       User.profile = profile ? profile : User.profile;
       await this.users.save(User);
+      return {
+        isDone: true,
+        status: 200,
+        data: User,
+      };
+    } catch (e) {
+      console.error(e);
+      return {
+        isDone: false,
+        status: 400,
+        error: e,
+      };
+    }
+  }
+
+  /**
+   * @param {SearchUserCrudDto} payload
+   * @description 유저를 검색한다.
+   * @return {OutputDto<User>}
+   * @author in-ch, 2023-03-13
+   */
+  async searchUser(request: Request<SearchUserCrudDto>): Promise<OutputDto<User>> {
+    try {
+      const {
+        query: { no },
+      } = request;
+      const User = await this.users.findOne({
+        where: {
+          no: Number(no),
+          isDeleted: false,
+        },
+      });
+      delete User.password;
+      delete User.isDeleted;
+      delete User.marketingConsent;
+      delete User.isSocialLogin;
+      delete User.createdAt;
+      delete User.updatedAt;
+
       return {
         isDone: true,
         status: 200,

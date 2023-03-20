@@ -10,7 +10,7 @@ import {
   WritingDetailDto,
   WritingListDto,
 } from './dto/writing.dto';
-import { OutputDto } from 'src/commons/dtos';
+import { OutputDto, PageOutput } from 'src/commons/dtos';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/user/entities/user.entitiy';
 
@@ -28,7 +28,7 @@ export class WritingService {
    * @return {OutputDto<Writing[]>} 글 목록
    * @author in-ch, 2023-02-23
    */
-  async getWritings(query: WritingListDto): Promise<OutputDto<Writing[]>> {
+  async getWritings(query: WritingListDto): Promise<OutputDto<PageOutput<Writing[]>>> {
     const { tag, userNo, text, limit, page } = query;
     try {
       const writings = await this.writings.find({
@@ -45,7 +45,7 @@ export class WritingService {
         relations: ['user', 'like', 'like.user', 'reply'],
         order: tag === '인기게시판' && {
           like: {
-            no: 'DESC',
+            no: 'ASC',
           },
         },
       });
@@ -53,15 +53,18 @@ export class WritingService {
         totalCount: writings.length,
         isDone: true,
         status: 200,
-        data: writings.map((writing) => {
-          delete writing.user.password;
-          writing.reply.map((replyData, index) => {
-            replyData.isDeleted && delete writing.reply[index];
-            delete replyData.deletedAt;
-            delete replyData.isDeleted;
-          });
-          return writing;
-        }),
+        data: {
+          page,
+          list: writings.map((writing) => {
+            delete writing.user.password;
+            writing.reply.map((replyData, index) => {
+              replyData.isDeleted && delete writing.reply[index];
+              delete replyData.deletedAt;
+              delete replyData.isDeleted;
+            });
+            return writing;
+          }),
+        },
       };
     } catch (e) {
       return {

@@ -14,3 +14,8 @@ export class OutputDto<T> {
 
   totalCount?: number;
 }
+
+export class PageOutput<T> {
+  page: number;
+  list: T;
+}

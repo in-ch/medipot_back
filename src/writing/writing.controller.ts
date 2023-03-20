@@ -1,6 +1,7 @@
 import { Controller, Post, Headers, UseGuards, Body, Get, Req } from '@nestjs/common';
 import { Request } from 'express';
-import { OutputDto } from 'src/commons/dtos';
+
+import { OutputDto, PageOutput } from 'src/commons/dtos';
 import { MeInputDto } from 'src/user/dto/user.dto';
 import { JwtAuthGuard } from 'src/user/strategy/jwtAuthentication.guard';
 import {
@@ -27,7 +28,7 @@ export class WritingController {
 
   @UseGuards(JwtAuthGuard)
   @Get('/list')
-  getWritings(@Req() request: Request<WritingListDto>): Promise<OutputDto<Writing[]>> {
+  getWritings(@Req() request: Request<WritingListDto>): Promise<OutputDto<PageOutput<Writing[]>>> {
     return this.writingService.getWritings(request.query);
   }
 

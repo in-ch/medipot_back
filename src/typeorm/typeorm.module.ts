@@ -10,6 +10,7 @@ import { Writing } from 'src/writing/entities/writing';
 import { Like } from 'src/like/entities/like.entitiy';
 import { Reply } from 'src/reply/entities/reply.entity';
 import { Report } from 'src/report/entities/report.entity';
+import { NestedReply } from 'src/nested-reply/entities/nestedReply.entitiy';
 
 @Module({
   imports: [
@@ -22,7 +23,19 @@ import { Report } from 'src/report/entities/report.entity';
       database: process.env.DB_NAME,
       synchronize: process.env.NODE_ENV !== 'prod',
       logging: process.env.NODE_ENV !== 'prod',
-      entities: [Location, AdminUser, User, Auth, Question, Consult, Writing, Like, Reply, Report], // db 들어가는 곳
+      entities: [
+        Location,
+        AdminUser,
+        User,
+        Auth,
+        Question,
+        Consult,
+        Writing,
+        Like,
+        Reply,
+        Report,
+        NestedReply,
+      ], // db 들어가는 곳
     }),
   ],
 })

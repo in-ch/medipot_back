@@ -1,3 +1,4 @@
+import { NestedReply } from 'src/nested-reply/entities/nestedReply.entitiy';
 import { Reply } from 'src/reply/entities/reply.entity';
 import { User } from 'src/user/entities/user.entitiy';
 import { Writing } from 'src/writing/entities/writing';
@@ -33,6 +34,10 @@ export class Report extends BaseEntity {
   @ManyToOne((_) => Reply, (reply) => reply.reported, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'reply_id' })
   reply: Reply;
+
+  @ManyToOne((_) => NestedReply, (nestedReply) => nestedReply.reported, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'nestedReply_id' })
+  nestedReply: NestedReply;
 
   @Column({ type: 'boolean', comment: '처리 여부', default: false })
   isProcessing: boolean;

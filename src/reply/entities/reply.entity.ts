@@ -1,3 +1,4 @@
+import { NestedReply } from 'src/nested-reply/entities/nestedReply.entitiy';
 import { Report } from 'src/report/entities/report.entity';
 import { User } from 'src/user/entities/user.entitiy';
 import { Writing } from 'src/writing/entities/writing';
@@ -27,11 +28,14 @@ export class Reply extends BaseEntity {
   @JoinColumn({ name: 'writing_id' })
   writing: Writing;
 
-  @OneToMany((_) => Report, (repory) => repory.reply)
+  @OneToMany((_) => Report, (report) => report.reply)
   reported: Report[];
 
   @Column({ type: 'varchar', length: 250, comment: '댓글' })
   comment: string;
+
+  @OneToMany((_) => NestedReply, (nestedReply) => nestedReply.reply)
+  nestedReply: NestedReply[];
 
   @Column({ type: 'boolean', comment: '삭제 여부', default: false })
   isDeleted: boolean;

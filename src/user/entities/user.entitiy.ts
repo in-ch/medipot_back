@@ -1,5 +1,6 @@
 import { Consult } from 'src/consult/entities/consult.entitiy';
 import { Like } from 'src/like/entities/like.entitiy';
+import { NestedReply } from 'src/nested-reply/entities/nestedReply.entitiy';
 import { Question } from 'src/question/entities/question.entitiy';
 import { Reply } from 'src/reply/entities/reply.entity';
 import { Report } from 'src/report/entities/report.entity';
@@ -102,6 +103,9 @@ export class User extends BaseEntity {
 
   @Column({ comment: '소셜 로그인 여부', default: false })
   isSocialLogin: boolean;
+
+  @OneToMany((_) => NestedReply, (nestedReply) => nestedReply.user)
+  nestedReply: NestedReply[];
 
   @Column({ comment: '삭제 여부', default: false })
   isDeleted: boolean;

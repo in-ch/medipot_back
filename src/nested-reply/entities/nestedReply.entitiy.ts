@@ -26,7 +26,7 @@ export class NestedReply extends BaseEntity {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @ManyToOne((_) => User, (user) => user.nestedReply, { onDelete: 'CASCADE' })
+  @ManyToOne((_) => Reply, (reply) => reply.nestedReply, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'reply_id' })
   reply: Reply;
 

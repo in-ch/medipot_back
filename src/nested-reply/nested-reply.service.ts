@@ -1,12 +1,18 @@
-import { Body, Headers, Injectable } from '@nestjs/common';
+import { Body, Headers, Injectable, Req } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Request } from 'express';
 import { OutputDto } from 'src/commons/dtos';
 import { Reply } from 'src/reply/entities/reply.entity';
 import { User } from 'src/user/entities/user.entitiy';
 import { Repository } from 'typeorm';
 
-import { CreateNestedReplyHeaderParams, CreateNestedReplyParams } from './dto/nestedReply.dto';
+import {
+  CreateNestedReplyHeaderParams,
+  CreateNestedReplyParams,
+  NestedHeaderDto,
+  NestedReplyListPagination,
+} from './dto/nestedReply.dto';
 import { NestedReply } from './entities/nestedReply.entitiy';
 
 @Injectable()
@@ -18,6 +24,13 @@ export class NestedReplyService {
     private readonly jwtService: JwtService,
   ) {}
 
+  /**
+   * @param {CreateNestedReplyParams} request replyNo, comment
+   * @param {CreateNestedReplyHeaderParams} header authorization
+   * @description 대댓글을 생성한다.
+   * @return {OutputDto<NestedReply>} 생성된 대댓글
+   * @author in-ch, 2023-03-25
+   */
   async addNestedReply(
     @Body() params: CreateNestedReplyParams,
     @Headers() header: CreateNestedReplyHeaderParams,
@@ -57,6 +70,43 @@ export class NestedReplyService {
         isDone: false,
         status: 400,
         error: `오류가 발생하였습니다. ${e}`,
+      };
+    }
+  }
+
+  /**
+   * @param {NestedReplyListPagination} request limit, page, replyNo
+   * @description 대댓글 리스트를 가져온다.
+   * @return {OutputDto<NestedReply[]>} 대댓글 리스트
+   * @author in-ch, 2023-03-25
+   */
+  async getNestedReplys(
+    @Req() request: Request<NestedReplyListPagination>,
+  ): Promise<OutputDto<NestedReply[]>> {
+    const {
+      query: { limit, page, replyNo },
+    } = request;
+
+    try {
+      const nestedReplys: NestedReply[] = await this.nestedReplys.find({
+        take: Number(limit) || 10,
+        skip: Number(page) * Number(limit) || 0,
+        where: {
+          reply: {
+            no: Number(replyNo),
+          },
+        },
+      });
+      return {
+        isDone: true,
+        status: 200,
+        data: nestedReplys,
+      };
+    } catch (e) {
+      return {
+        isDone: false,
+        status: 400,
+        error: `getNestedReplys에서 오류가 발생하였습니다. ${e}`,
       };
     }
   }

@@ -1,4 +1,5 @@
 import { IsNumber, IsString } from 'class-validator';
+import { PaginationDto } from 'src/commons/dtos';
 
 export class CreateNestedReplyParams {
   @IsNumber()
@@ -12,3 +13,9 @@ export class CreateNestedReplyHeaderParams {
   @IsString()
   authorization: string;
 }
+
+export class NestedReplyListPagination extends PaginationDto {
+  @IsNumber()
+  replyNo: number;
+}
+export class NestedHeaderDto extends CreateNestedReplyHeaderParams {}

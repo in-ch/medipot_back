@@ -96,6 +96,7 @@ export class NestedReplyService {
             no: Number(replyNo),
           },
         },
+        relations: ['user'],
       });
       return {
         isDone: true,

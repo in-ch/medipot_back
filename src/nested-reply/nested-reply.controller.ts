@@ -24,7 +24,7 @@ export class NestedReplyController {
     return this.nestedReplyService.addNestedReply(params, header);
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Get('/list')
   async getNestedReplys(
     @Req() request: Request<NestedReplyListPagination>,

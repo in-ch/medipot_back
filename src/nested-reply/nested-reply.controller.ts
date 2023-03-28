@@ -39,7 +39,7 @@ export class NestedReplyController {
   async deleteNestedReply(
     @Body() payload: DeletedNestedReplyCrudDto,
     @Headers() header: DeletedNestedReplyHeaderDto,
-  ): Promise<OutputDto<boolean>> {
+  ): Promise<OutputDto<NestedReply>> {
     return this.nestedReplyService.deletedNestedReply(payload, header);
   }
 }

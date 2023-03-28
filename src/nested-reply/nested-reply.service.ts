@@ -119,13 +119,13 @@ export class NestedReplyService {
    * @param {DeletedNestedReplyCrudDto} payload nestedReply: number
    * @param {DeletedNestedReplyCrudDto} header  authorization: string
    * @description 대댓글을 삭제한다
-   * @return {OutputDto<boolean>} 대댓글 삭제 결과
+   * @return {OutputDto<NestedReply>} 대댓글 삭제 결과
    * @author in-ch, 2023-03-28
    */
   async deletedNestedReply(
     payload: DeletedNestedReplyCrudDto,
     header: DeletedNestedReplyHeaderDto,
-  ): Promise<OutputDto<boolean>> {
+  ): Promise<OutputDto<NestedReply>> {
     const { nestedReplyNo } = payload;
     const { authorization } = header;
     const UnSignToken = await this.jwtService.verify(authorization.replace('Bearer ', ''), {
@@ -147,7 +147,7 @@ export class NestedReplyService {
       return {
         isDone: true,
         status: 200,
-        data: true,
+        data: NestedReply,
       };
     } catch (e) {
       return {

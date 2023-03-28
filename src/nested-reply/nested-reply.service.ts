@@ -116,10 +116,11 @@ export class NestedReplyService {
   }
 
   /**
-   * @param {NestedReplyListPagination} request limit, page, replyNo
-   * @description 대댓글 리스트를 가져온다.
-   * @return {OutputDto<NestedReply[]>} 대댓글 리스트
-   * @author in-ch, 2023-03-25
+   * @param {DeletedNestedReplyCrudDto} payload nestedReply: number
+   * @param {DeletedNestedReplyCrudDto} header  authorization: string
+   * @description 대댓글을 삭제한다
+   * @return {OutputDto<boolean>} 대댓글 삭제 결과
+   * @author in-ch, 2023-03-28
    */
   async deletedNestedReply(
     payload: DeletedNestedReplyCrudDto,

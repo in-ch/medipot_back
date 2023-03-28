@@ -19,3 +19,9 @@ export class NestedReplyListPagination extends PaginationDto {
   replyNo: number;
 }
 export class NestedHeaderDto extends CreateNestedReplyHeaderParams {}
+
+export class DeletedNestedReplyCrudDto {
+  @IsNumber()
+  nestedReplyNo: number;
+}
+export class DeletedNestedReplyHeaderDto extends CreateNestedReplyHeaderParams {}

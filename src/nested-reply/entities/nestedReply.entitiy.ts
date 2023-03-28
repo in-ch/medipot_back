@@ -33,6 +33,9 @@ export class NestedReply extends BaseEntity {
   @OneToMany((_) => Report, (report) => report.nestedReply)
   reported: Report[];
 
+  @Column({ comment: '삭제 여부', default: false })
+  isDeleted: boolean;
+
   @CreateDateColumn({ name: 'create_at', comment: '생성일' })
   createdAt: Date;
 

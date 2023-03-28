@@ -10,6 +10,8 @@ import { Repository } from 'typeorm';
 import {
   CreateNestedReplyHeaderParams,
   CreateNestedReplyParams,
+  DeletedNestedReplyCrudDto,
+  DeletedNestedReplyHeaderDto,
   NestedHeaderDto,
   NestedReplyListPagination,
 } from './dto/nestedReply.dto';
@@ -95,6 +97,7 @@ export class NestedReplyService {
           reply: {
             no: Number(replyNo),
           },
+          isDeleted: false,
         },
         relations: ['user'],
       });
@@ -108,6 +111,48 @@ export class NestedReplyService {
         isDone: false,
         status: 400,
         error: `getNestedReplys에서 오류가 발생하였습니다. ${e}`,
+      };
+    }
+  }
+
+  /**
+   * @param {NestedReplyListPagination} request limit, page, replyNo
+   * @description 대댓글 리스트를 가져온다.
+   * @return {OutputDto<NestedReply[]>} 대댓글 리스트
+   * @author in-ch, 2023-03-25
+   */
+  async deletedNestedReply(
+    payload: DeletedNestedReplyCrudDto,
+    header: DeletedNestedReplyHeaderDto,
+  ): Promise<OutputDto<boolean>> {
+    const { nestedReplyNo } = payload;
+    const { authorization } = header;
+    const UnSignToken = await this.jwtService.verify(authorization.replace('Bearer ', ''), {
+      secret: process.env.PRIVATE_KEY,
+    });
+    const { no } = UnSignToken;
+    try {
+      const NestedReply = await this.nestedReplys.findOne({
+        where: {
+          no: nestedReplyNo,
+          isDeleted: false,
+          user: {
+            no,
+          },
+        },
+      });
+      NestedReply.isDeleted = true;
+      await this.nestedReplys.save(NestedReply);
+      return {
+        isDone: true,
+        status: 200,
+        data: true,
+      };
+    } catch (e) {
+      return {
+        isDone: false,
+        status: 400,
+        error: `deletedNestedReply에서 오류가 발생하였습니다. ${e}`,
       };
     }
   }

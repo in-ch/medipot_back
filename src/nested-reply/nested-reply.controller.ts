@@ -1,10 +1,12 @@
-import { Body, Controller, Get, Headers, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Headers, Post, Req, UseGuards } from '@nestjs/common';
 import { Request } from 'express';
 import { OutputDto } from 'src/commons/dtos';
 import { JwtAuthGuard } from 'src/user/strategy/jwtAuthentication.guard';
 import {
   CreateNestedReplyHeaderParams,
   CreateNestedReplyParams,
+  DeletedNestedReplyCrudDto,
+  DeletedNestedReplyHeaderDto,
   NestedHeaderDto,
   NestedReplyListPagination,
 } from './dto/nestedReply.dto';
@@ -30,5 +32,14 @@ export class NestedReplyController {
     @Req() request: Request<NestedReplyListPagination>,
   ): Promise<OutputDto<NestedReply[]>> {
     return this.nestedReplyService.getNestedReplys(request);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('')
+  async deleteNestedReply(
+    @Body() payload: DeletedNestedReplyCrudDto,
+    @Headers() header: DeletedNestedReplyHeaderDto,
+  ): Promise<OutputDto<boolean>> {
+    return this.nestedReplyService.deletedNestedReply(payload, header);
   }
 }

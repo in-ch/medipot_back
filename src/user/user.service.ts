@@ -63,28 +63,34 @@ export class UserService {
         ...payload,
       });
       const encryptedPassowrd = bcrypt.hashSync(newUserData.password, 10);
-      const newUser = this.users.save({
+      const newUser = await this.users.save({
         ...newUserData,
         password: encryptedPassowrd,
       });
-      const access_token = this.jwtService.sign(
+      const access_token = await this.jwtService.sign(
         {
           ...newUser,
           password: '11',
         },
         {
-          expiresIn: '1800000',
+          expiresIn: 1000 * 60 * 60 * 30,
         },
       );
-      const refresh_token = this.jwtService.sign(
+      const refresh_token = await this.jwtService.sign(
         {
           ...newUser,
           password: '11',
         },
         {
-          expiresIn: '604800000',
+          expiresIn: 1000 * 60 * 60 * 60 * 24,
         },
       );
+
+      newUser.token = access_token;
+      newUser.refresh_token = refresh_token;
+
+      await this.users.save(newUser);
+
       return {
         isDone: true,
         status: 200,
@@ -135,7 +141,7 @@ export class UserService {
           password: '11',
         },
         {
-          expiresIn: '1800000',
+          expiresIn: 1000 * 60 * 60 * 30,
         },
       );
 
@@ -147,7 +153,7 @@ export class UserService {
           password: '22',
         },
         {
-          expiresIn: '604800000',
+          expiresIn: 1000 * 60 * 60 * 60 * 24,
         },
       );
       return {
@@ -240,22 +246,32 @@ export class UserService {
         },
       });
       await this.verifyPassword(password, user.password);
-      const access_token = this.jwtService.sign({
-        ...user,
-        token: '',
-        refresh_token: '',
-      });
-
-      const refresh_token = this.jwtService.sign(
+      const access_token = await this.jwtService.sign(
         {
           ...user,
           token: '',
           refresh_token: '',
         },
         {
-          expiresIn: '100s',
+          expiresIn: 1000 * 60 * 60 * 30,
         },
       );
+
+      const refresh_token = await this.jwtService.sign(
+        {
+          ...user,
+          token: '',
+          refresh_token: '',
+        },
+        {
+          expiresIn: 1000 * 60 * 60 * 60 * 24,
+        },
+      );
+      user.token = access_token;
+      user.refresh_token = refresh_token;
+
+      await this.users.save(user);
+
       return {
         isDone: true,
         status: 200,
@@ -290,12 +306,17 @@ export class UserService {
         },
       });
       await this.verifyPassword(password, adminUser.password);
-      const access_token = this.jwtService.sign({
-        ...adminUser,
-        token: '',
-        refresh_token: '',
-        password: '11',
-      });
+      const access_token = this.jwtService.sign(
+        {
+          ...adminUser,
+          token: '',
+          refresh_token: '',
+          password: '11',
+        },
+        {
+          expiresIn: 1000 * 60 * 60 * 30,
+        },
+      );
 
       const refresh_token = this.jwtService.sign(
         {
@@ -305,7 +326,7 @@ export class UserService {
           password: '22',
         },
         {
-          expiresIn: '100s',
+          expiresIn: 1000 * 60 * 60 * 60 * 24,
         },
       );
       await this.adminUsers.save({
@@ -356,12 +377,17 @@ export class UserService {
           refresh_token,
         },
       });
-      const new_access_token = this.jwtService.sign({
-        ...getAdmin,
-        token: '',
-        refresh_token: '',
-        password: '11',
-      });
+      const new_access_token = this.jwtService.sign(
+        {
+          ...getAdmin,
+          token: '',
+          refresh_token: '',
+          password: '11',
+        },
+        {
+          expiresIn: 1000 * 60 * 60 * 30,
+        },
+      );
 
       await this.adminUsers.save({
         ...getAdmin,

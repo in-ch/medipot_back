@@ -155,12 +155,17 @@ export class KakaoService {
 
       if (Number(User?.no) > 0) {
         // 로그인 실시
-        const access_token = await this.jwtService.sign({
-          ...User,
-          token: '',
-          refresh_token: '',
-          password: '11',
-        });
+        const access_token = await this.jwtService.sign(
+          {
+            ...User,
+            token: '',
+            refresh_token: '',
+            password: '11',
+          },
+          {
+            expiresIn: 1000 * 60 * 60 * 30,
+          },
+        );
 
         const refresh_token = await this.jwtService.sign(
           {
@@ -170,9 +175,14 @@ export class KakaoService {
             password: '22',
           },
           {
-            expiresIn: '100s',
+            expiresIn: 1000 * 60 * 60 * 60 * 24,
           },
         );
+
+        User.token = access_token;
+        User.refresh_token = refresh_token;
+        await this.users.save(User);
+
         return {
           isDone: true,
           status: 200,
@@ -193,13 +203,13 @@ export class KakaoService {
         });
         await this.users.save(NewUser);
 
-        const access_token = this.jwtService.sign(
+        const access_token = await this.jwtService.sign(
           {
             ...NewUser,
             password: '11',
           },
           {
-            expiresIn: '1800000',
+            expiresIn: 1000 * 60 * 60 * 30,
           },
         );
         const refresh_token = this.jwtService.sign(
@@ -208,9 +218,13 @@ export class KakaoService {
             password: '11',
           },
           {
-            expiresIn: '604800000',
+            expiresIn: 1000 * 60 * 60 * 60 * 24,
           },
         );
+
+        NewUser.token = access_token;
+        NewUser.refresh_token = refresh_token;
+        await this.users.save(NewUser);
         return {
           isDone: true,
           status: 200,

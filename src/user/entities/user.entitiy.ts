@@ -113,6 +113,12 @@ export class User extends BaseEntity {
   @Column({ type: 'enum', comment: '과', nullable: true, enum: DEPARTMENT })
   department: DEPARTMENT;
 
+  @Column({ comment: '엑세스 토큰', default: '' })
+  token?: string;
+
+  @Column({ comment: '리프레쉬 토큰', default: '' })
+  refresh_token?: string;
+
   @CreateDateColumn({ name: 'create_at', comment: '생성일' })
   createdAt: Date;
 

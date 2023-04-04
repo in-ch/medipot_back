@@ -15,6 +15,9 @@ import { JwtService } from '@nestjs/jwt';
 import {
   MeInputDto,
   MeOutputCrudDto,
+  RefreshHeader,
+  RefreshOutputDto,
+  RefreshParams,
   SearchUserCrudDto,
   UpdateProfileCrudDto,
   UpdateProfileHeaderDto,
@@ -264,11 +267,12 @@ export class UserService {
           refresh_token: '',
         },
         {
-          expiresIn: 1000 * 60 * 60 * 60 * 24,
+          expiresIn: 1000 * 60 * 60 * 60 * 24 * 7,
         },
       );
-      user.token = access_token;
-      user.refresh_token = refresh_token;
+
+      user.token = await access_token;
+      user.refresh_token = await refresh_token;
 
       await this.users.save(user);
 
@@ -282,6 +286,84 @@ export class UserService {
         },
       };
     } catch (e) {
+      return {
+        isDone: false,
+        status: 400,
+        error: e,
+      };
+    }
+  }
+
+  /**
+   * @param {number} no 유저 넘버
+   * @param {string} authorization 엑세스 토큰
+   * @param {string} refresh_token 리프레쉬 토큰
+   * @description 리프레쉬를 발급한다.
+   * @return {OutputDto<RefreshOutputDto>}
+   * @author in-ch, 2023-04-03
+   */
+  async refresh(
+    payload: RefreshParams,
+    header: RefreshHeader,
+  ): Promise<OutputDto<RefreshOutputDto>> {
+    try {
+      const { no, refresh_token } = payload;
+      const { authorization } = header;
+      const USER = await this.users.findOne({
+        where: {
+          no,
+        },
+      });
+
+      if (`Bearer ${USER.token}` !== authorization) {
+        return {
+          isDone: false,
+          status: 400,
+          error: '엑세스 토큰이 변조되었습니다.',
+        };
+      }
+
+      if (USER.refresh_token !== refresh_token) {
+        return {
+          isDone: false,
+          status: 400,
+          error: '리프레쉬 토큰이 변조되었습니다.',
+        };
+      }
+      const verify = await this.jwtService.verify(refresh_token, {
+        secret: process.env.PRIVATE_KEY,
+      });
+      if (!verify) {
+        return {
+          isDone: false,
+          status: 400,
+          error: '리프레쉬 토큰이 만료되었습니다.',
+        };
+      } else {
+        const access_token = await this.jwtService.sign(
+          {
+            ...USER,
+            token: '',
+            refresh_token: '',
+          },
+          {
+            expiresIn: 1000 * 60 * 60 * 30,
+          },
+        );
+
+        USER.token = await access_token;
+        await this.users.save(USER);
+
+        return {
+          isDone: true,
+          status: 200,
+          data: {
+            authorization: access_token,
+          },
+        };
+      }
+    } catch (e) {
+      console.error(e);
       return {
         isDone: false,
         status: 400,
@@ -306,7 +388,7 @@ export class UserService {
         },
       });
       await this.verifyPassword(password, adminUser.password);
-      const access_token = this.jwtService.sign(
+      const access_token = await this.jwtService.sign(
         {
           ...adminUser,
           token: '',
@@ -318,7 +400,7 @@ export class UserService {
         },
       );
 
-      const refresh_token = this.jwtService.sign(
+      const refresh_token = await this.jwtService.sign(
         {
           ...adminUser,
           token: '',
@@ -377,7 +459,7 @@ export class UserService {
           refresh_token,
         },
       });
-      const new_access_token = this.jwtService.sign(
+      const new_access_token = await this.jwtService.sign(
         {
           ...getAdmin,
           token: '',
@@ -414,7 +496,7 @@ export class UserService {
   async me(header: MeInputDto): Promise<OutputDto<MeOutputCrudDto>> {
     try {
       const { authorization } = header;
-      const UnSignToken = this.jwtService.verify(authorization.replace('Bearer ', ''), {
+      const UnSignToken = await this.jwtService.verify(authorization.replace('Bearer ', ''), {
         secret: process.env.PRIVATE_KEY,
       });
       return {

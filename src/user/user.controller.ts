@@ -20,6 +20,9 @@ import {
   UpdateProfileHeaderDto,
   UpdateProfileOutputDto,
   SearchUserCrudDto,
+  RefreshParams,
+  RefreshHeader,
+  RefreshOutputDto,
 } from './dto/user.dto';
 import { User } from './entities/user.entitiy';
 import { JwtAuthGuard } from './strategy/jwtAuthentication.guard';
@@ -75,6 +78,15 @@ export class UserController {
     @Headers() header: UpdateProfileHeaderDto,
   ): Promise<OutputDto<UpdateProfileOutputDto>> {
     return this.usersService.updateProfile(payload, header);
+  }
+
+  // @UseGuards(JwtAuthGuard)
+  @Post('/refresh')
+  refresh(
+    @Body() payload: RefreshParams,
+    @Headers() header: RefreshHeader,
+  ): Promise<OutputDto<RefreshOutputDto>> {
+    return this.usersService.refresh(payload, header);
   }
 
   @UseGuards(JwtAuthGuard)

@@ -1,5 +1,5 @@
 import { PickType } from '@nestjs/mapped-types';
-import { IsBoolean, IsString } from 'class-validator';
+import { IsBoolean, IsNumber, IsString } from 'class-validator';
 
 export class UserCreateInputCrudDto {
   @IsString()
@@ -42,3 +42,13 @@ export class UpdateProfileOutputDto {}
 export class SearchUserCrudDto {
   no: number;
 }
+
+export class RefreshParams {
+  @IsNumber()
+  no: number;
+
+  @IsString()
+  refresh_token: string;
+}
+export class RefreshHeader extends MeInputDto {}
+export class RefreshOutputDto extends MeInputDto {}

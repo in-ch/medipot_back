@@ -80,13 +80,9 @@ export class UserController {
     return this.usersService.updateProfile(payload, header);
   }
 
-  // @UseGuards(JwtAuthGuard)
   @Post('/refresh')
-  refresh(
-    @Body() payload: RefreshParams,
-    @Headers() header: RefreshHeader,
-  ): Promise<OutputDto<RefreshOutputDto>> {
-    return this.usersService.refresh(payload, header);
+  refresh(@Body() payload: RefreshParams): Promise<OutputDto<RefreshOutputDto>> {
+    return this.usersService.refresh(payload);
   }
 
   @UseGuards(JwtAuthGuard)

@@ -76,7 +76,7 @@ export class UserService {
           password: '11',
         },
         {
-          expiresIn: 1000 * 60 * 60 * 30,
+          expiresIn: 60 * 60,
         },
       );
       const refresh_token = await this.jwtService.sign(
@@ -85,7 +85,7 @@ export class UserService {
           password: '11',
         },
         {
-          expiresIn: 1000 * 60 * 60 * 60 * 24,
+          expiresIn: 60 * 60 * 24,
         },
       );
 
@@ -144,7 +144,7 @@ export class UserService {
           password: '11',
         },
         {
-          expiresIn: 1000 * 60 * 60 * 30,
+          expiresIn: 60 * 60,
         },
       );
 
@@ -156,7 +156,7 @@ export class UserService {
           password: '22',
         },
         {
-          expiresIn: 1000 * 60 * 60 * 60 * 24,
+          expiresIn: 60 * 60 * 24,
         },
       );
       return {
@@ -256,7 +256,7 @@ export class UserService {
           refresh_token: '',
         },
         {
-          expiresIn: 1000 * 60 * 60 * 30,
+          expiresIn: 60 * 60,
         },
       );
 
@@ -267,7 +267,7 @@ export class UserService {
           refresh_token: '',
         },
         {
-          expiresIn: 1000 * 60 * 60 * 60 * 24 * 7,
+          expiresIn: 60 * 60 * 24 * 7,
         },
       );
 
@@ -302,26 +302,14 @@ export class UserService {
    * @return {OutputDto<RefreshOutputDto>}
    * @author in-ch, 2023-04-03
    */
-  async refresh(
-    payload: RefreshParams,
-    header: RefreshHeader,
-  ): Promise<OutputDto<RefreshOutputDto>> {
+  async refresh(payload: RefreshParams): Promise<OutputDto<RefreshOutputDto>> {
     try {
       const { no, refresh_token } = payload;
-      const { authorization } = header;
       const USER = await this.users.findOne({
         where: {
           no,
         },
       });
-
-      if (`Bearer ${USER.token}` !== authorization) {
-        return {
-          isDone: false,
-          status: 400,
-          error: '엑세스 토큰이 변조되었습니다.',
-        };
-      }
 
       if (USER.refresh_token !== refresh_token) {
         return {
@@ -347,7 +335,7 @@ export class UserService {
             refresh_token: '',
           },
           {
-            expiresIn: 1000 * 60 * 60 * 30,
+            expiresIn: 60 * 60,
           },
         );
 
@@ -396,7 +384,7 @@ export class UserService {
           password: '11',
         },
         {
-          expiresIn: 1000 * 60 * 60 * 30,
+          expiresIn: 60 * 60,
         },
       );
 
@@ -408,7 +396,7 @@ export class UserService {
           password: '22',
         },
         {
-          expiresIn: 1000 * 60 * 60 * 60 * 24,
+          expiresIn: 60 * 60 * 24,
         },
       );
       await this.adminUsers.save({
@@ -467,7 +455,7 @@ export class UserService {
           password: '11',
         },
         {
-          expiresIn: 1000 * 60 * 60 * 30,
+          expiresIn: 60 * 60,
         },
       );
 

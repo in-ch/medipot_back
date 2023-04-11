@@ -11,6 +11,7 @@ import { Like } from 'src/like/entities/like.entitiy';
 import { Reply } from 'src/reply/entities/reply.entity';
 import { Report } from 'src/report/entities/report.entity';
 import { NestedReply } from 'src/nested-reply/entities/nestedReply.entitiy';
+import { Chat } from 'src/chat/entities/chat.entitiy';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { NestedReply } from 'src/nested-reply/entities/nestedReply.entitiy';
         Reply,
         Report,
         NestedReply,
+        Chat,
       ], // db 들어가는 곳
     }),
   ],

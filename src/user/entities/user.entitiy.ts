@@ -1,3 +1,4 @@
+import { Chat } from 'src/chat/entities/chat.entitiy';
 import { Consult } from 'src/consult/entities/consult.entitiy';
 import { Like } from 'src/like/entities/like.entitiy';
 import { NestedReply } from 'src/nested-reply/entities/nestedReply.entitiy';
@@ -85,6 +86,9 @@ export class User extends BaseEntity {
 
   @OneToMany((_) => Consult, (consult) => consult.user)
   consult: Consult[];
+
+  @OneToMany((_) => Chat, (chat) => chat.user)
+  chats: Chat[];
 
   @OneToMany((_) => Like, (like) => like.user)
   like: Like[];

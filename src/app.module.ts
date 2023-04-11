@@ -15,6 +15,7 @@ import { LikeModule } from './like/like.module';
 import { ReplyModule } from './reply/reply.module';
 import { ReportModule } from './report/report.module';
 import { NestedReplyModule } from './nested-reply/nested-reply.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { NestedReplyModule } from './nested-reply/nested-reply.module';
     ReplyModule,
     ReportModule,
     NestedReplyModule,
+    ChatModule,
   ],
   controllers: [],
   providers: [],

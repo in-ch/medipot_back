@@ -1,20 +1,9 @@
+import { CommonEntity } from 'src/commons/entities/common.entity';
 import { Question } from 'src/question/entities/question.entitiy';
-import {
-  BaseEntity,
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
-  Entity,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 
 @Entity()
-export class Location extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  no: number;
-
+export class Location extends CommonEntity {
   @Column({ type: 'varchar', length: 30, comment: '입지 이름' })
   name: string;
 
@@ -71,13 +60,4 @@ export class Location extends BaseEntity {
 
   @OneToMany((_) => Question, (question) => question.location)
   question: Question[];
-
-  @CreateDateColumn({ name: 'create_at', comment: '생성일' })
-  createdAt: Date;
-
-  @UpdateDateColumn({ name: 'update_at', comment: '수정일' })
-  updatedAt: Date;
-
-  @DeleteDateColumn({ name: 'delete_at', comment: '삭제일' })
-  deletedAt?: Date | null;
 }

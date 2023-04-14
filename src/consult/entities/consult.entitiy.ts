@@ -1,16 +1,6 @@
+import { CommonEntity } from 'src/commons/entities/common.entity';
 import { User } from 'src/user/entities/user.entitiy';
-import {
-  BaseEntity,
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 export enum CONSULT_CONSULT {
   '사업 제휴',
@@ -20,10 +10,7 @@ export enum CONSULT_CONSULT {
 }
 
 @Entity()
-export class Consult extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  no: number;
-
+export class Consult extends CommonEntity {
   @Column({ type: 'varchar', length: 50, comment: '문의자 이름' })
   name: string;
 
@@ -42,13 +29,4 @@ export class Consult extends BaseEntity {
   @ManyToOne((_) => User, (user) => user.consult, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user: User;
-
-  @CreateDateColumn({ name: 'create_at', comment: '생성일' })
-  createdAt: Date;
-
-  @UpdateDateColumn({ name: 'update_at', comment: '수정일' })
-  updatedAt: Date;
-
-  @DeleteDateColumn({ name: 'delete_at', comment: '삭제일' })
-  deletedAt?: Date | null;
 }

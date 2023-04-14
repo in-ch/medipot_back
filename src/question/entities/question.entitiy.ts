@@ -1,22 +1,10 @@
+import { CommonEntity } from 'src/commons/entities/common.entity';
 import { Location } from 'src/location/entities/location.entitiy';
 import { User } from 'src/user/entities/user.entitiy';
-import {
-  BaseEntity,
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 @Entity()
-export class Question extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  no: number;
-
+export class Question extends CommonEntity {
   @ManyToOne((_) => User, (user) => user.question, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user: User;
@@ -30,13 +18,4 @@ export class Question extends BaseEntity {
 
   @Column({ comment: '답변 여부', default: false })
   isResponse: boolean;
-
-  @CreateDateColumn({ name: 'create_at', comment: '생성일' })
-  createdAt: Date;
-
-  @UpdateDateColumn({ name: 'update_at', comment: '수정일' })
-  updatedAt: Date;
-
-  @DeleteDateColumn({ name: 'delete_at', comment: '삭제일' })
-  deletedAt?: Date | null;
 }

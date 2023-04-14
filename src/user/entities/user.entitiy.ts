@@ -1,4 +1,5 @@
 import { Chat } from 'src/chat/entities/chat.entitiy';
+import { CommonEntity } from 'src/commons/entities/common.entity';
 import { Consult } from 'src/consult/entities/consult.entitiy';
 import { Like } from 'src/like/entities/like.entitiy';
 import { NestedReply } from 'src/nested-reply/entities/nestedReply.entitiy';
@@ -55,10 +56,7 @@ export enum DEPARTMENT {
 }
 
 @Entity()
-export class User extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  no: number;
-
+export class User extends CommonEntity {
   @Column({ type: 'varchar', length: 30, comment: '이메일' })
   email: string;
 
@@ -122,15 +120,6 @@ export class User extends BaseEntity {
 
   @Column({ comment: '리프레쉬 토큰', default: '' })
   refresh_token?: string;
-
-  @CreateDateColumn({ name: 'create_at', comment: '생성일' })
-  createdAt: Date;
-
-  @UpdateDateColumn({ name: 'update_at', comment: '수정일' })
-  updatedAt: Date;
-
-  @DeleteDateColumn({ name: 'delete_at', comment: '삭제일' })
-  deletedAt?: Date | null;
 }
 
 @Entity()

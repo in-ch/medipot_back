@@ -1,26 +1,13 @@
-import {
-  BaseEntity,
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 import { Like } from 'src/like/entities/like.entitiy';
 import { User } from 'src/user/entities/user.entitiy';
 import { Reply } from 'src/reply/entities/reply.entity';
 import { Report } from 'src/report/entities/report.entity';
+import { CommonEntity } from 'src/commons/entities/common.entity';
 
 @Entity()
-export class Writing extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  no: number;
-
+export class Writing extends CommonEntity {
   @Column({ comment: '글 제목' })
   title: string;
 
@@ -45,13 +32,4 @@ export class Writing extends BaseEntity {
 
   @OneToMany((_) => Report, (report) => report.writing)
   reported: Report[];
-
-  @CreateDateColumn({ name: 'create_at', comment: '생성일' })
-  createdAt: Date;
-
-  @UpdateDateColumn({ name: 'update_at', comment: '수정일' })
-  updatedAt: Date;
-
-  @DeleteDateColumn({ name: 'delete_at', comment: '삭제일' })
-  deletedAt?: Date | null;
 }

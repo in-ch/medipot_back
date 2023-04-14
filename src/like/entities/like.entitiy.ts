@@ -1,21 +1,10 @@
+import { CommonEntity } from 'src/commons/entities/common.entity';
 import { User } from 'src/user/entities/user.entitiy';
 import { Writing } from 'src/writing/entities/writing';
-import {
-  BaseEntity,
-  CreateDateColumn,
-  DeleteDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 @Entity()
-export class Like extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  no: number;
-
+export class Like extends CommonEntity {
   @ManyToOne((_) => User, (user) => user.like, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user: User;
@@ -23,13 +12,4 @@ export class Like extends BaseEntity {
   @ManyToOne((_) => Writing, (writing) => writing.like, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'writing_id' })
   writing: Writing;
-
-  @CreateDateColumn({ name: 'create_at', comment: '생성일' })
-  createdAt: Date;
-
-  @UpdateDateColumn({ name: 'update_at', comment: '수정일' })
-  updatedAt: Date;
-
-  @DeleteDateColumn({ name: 'delete_at', comment: '삭제일' })
-  deletedAt?: Date | null;
 }

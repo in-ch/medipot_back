@@ -1,4 +1,5 @@
 import { Body, Controller, Delete, Get, Headers, Post, Req, UseGuards } from '@nestjs/common';
+import { ApiBody, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { OutputDto } from 'src/commons/dtos';
 import { JwtAuthGuard } from 'src/user/strategy/jwtAuthentication.guard';
@@ -7,16 +8,18 @@ import {
   CreateNestedReplyParams,
   DeletedNestedReplyCrudDto,
   DeletedNestedReplyHeaderDto,
-  NestedHeaderDto,
   NestedReplyListPagination,
 } from './dto/nestedReply.dto';
 import { NestedReply } from './entities/nestedReply.entitiy';
 import { NestedReplyService } from './nested-reply.service';
 
+@ApiTags('대댓글')
 @Controller('nestedReply')
 export class NestedReplyController {
   constructor(private readonly nestedReplyService: NestedReplyService) {}
 
+  @ApiBody({ type: CreateNestedReplyParams })
+  @ApiCreatedResponse({ description: '성공', type: OutputDto<NestedReply> })
   @UseGuards(JwtAuthGuard)
   @Post('/create')
   async addNestedReply(
@@ -27,6 +30,8 @@ export class NestedReplyController {
   }
 
   // @UseGuards(JwtAuthGuard)
+  @ApiBody({ type: NestedReplyListPagination })
+  @ApiCreatedResponse({ description: '성공', type: OutputDto<NestedReply[]> })
   @Get('/list')
   async getNestedReplys(
     @Req() request: Request<NestedReplyListPagination>,
@@ -34,6 +39,8 @@ export class NestedReplyController {
     return this.nestedReplyService.getNestedReplys(request);
   }
 
+  @ApiBody({ type: DeletedNestedReplyCrudDto })
+  @ApiCreatedResponse({ description: '성공', type: OutputDto<NestedReply> })
   @UseGuards(JwtAuthGuard)
   @Delete('')
   async deleteNestedReply(

@@ -1,4 +1,5 @@
 import { PickType } from '@nestjs/mapped-types';
+import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsNumber, IsString } from 'class-validator';
 
 export class UserCreateInputCrudDto {
@@ -27,26 +28,36 @@ export class UserLoginOutputCrudDto extends UserCreateInputCrudDto {
 }
 
 export class MeInputDto {
+  @ApiProperty()
   @IsString()
   authorization: string;
 }
 export class MeOutputCrudDto extends UserLoginOutputCrudDto {}
 
 export class UpdateProfileCrudDto {
+  @ApiProperty()
+  @IsString()
   profile?: string;
+
+  @ApiProperty()
+  @IsString()
   nickname?: string;
 }
 export class UpdateProfileHeaderDto extends MeInputDto {}
 export class UpdateProfileOutputDto {}
 
 export class SearchUserCrudDto {
+  @ApiProperty()
+  @IsNumber()
   no: number;
 }
 
 export class RefreshParams {
+  @ApiProperty()
   @IsNumber()
   no: number;
 
+  @ApiProperty()
   @IsString()
   refresh_token: string;
 }

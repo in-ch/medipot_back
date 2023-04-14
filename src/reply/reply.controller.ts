@@ -1,4 +1,5 @@
 import { Body, Controller, Delete, Get, Headers, Post, Req, UseGuards } from '@nestjs/common';
+import { ApiBody, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { OutputDto } from 'src/commons/dtos';
 import { JwtAuthGuard } from 'src/user/strategy/jwtAuthentication.guard';
@@ -12,15 +13,21 @@ import {
 import { Reply } from './entities/reply.entity';
 import { ReplyService } from './reply.service';
 
+@ApiTags('댓글')
 @Controller('reply')
 export class ReplyController {
   constructor(private readonly replysService: ReplyService) {}
 
   // @UseGuards(JwtAuthGuard)
+  @ApiBody({ type: ReplyPaginationDto })
+  @ApiCreatedResponse({ description: '성공', type: OutputDto<Reply[]> })
   @Get('')
   getReplys(@Req() request: Request<ReplyPaginationDto>): Promise<OutputDto<Reply[]>> {
     return this.replysService.getReplys(request);
   }
+
+  @ApiBody({ type: ReplyCrudDto })
+  @ApiCreatedResponse({ description: '성공', type: OutputDto<Reply> })
   @UseGuards(JwtAuthGuard)
   @Post('/create')
   like(
@@ -30,6 +37,8 @@ export class ReplyController {
     return this.replysService.create(payload, header);
   }
 
+  @ApiBody({ type: ReplyDeleteDto })
+  @ApiCreatedResponse({ description: '성공', type: OutputDto<Reply> })
   @UseGuards(JwtAuthGuard)
   @Delete('')
   replyDelete(
@@ -40,6 +49,8 @@ export class ReplyController {
   }
 
   // @UseGuards(JwtAuthGuard)
+  @ApiBody({ type: TotalCountDto })
+  @ApiCreatedResponse({ description: '성공', type: OutputDto<number> })
   @Get('/total')
   totalCount(@Req() request: Request<TotalCountDto>): Promise<OutputDto<number>> {
     return this.replysService.totalCount(request);

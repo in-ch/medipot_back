@@ -1,18 +1,23 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsNumber, IsString } from 'class-validator';
 import { UserCreateInputCrudDto } from 'src/user/dto/user.dto';
 
 export class MeInputDto {
+  @ApiProperty()
   @IsString()
   authorization: string;
 }
 
 export class MeOkOutputDto {
+  @ApiProperty()
   @IsNumber()
   id: number;
 
+  @ApiProperty()
   @IsString()
   connected_at: string;
 
+  @ApiProperty()
   @IsArray()
   properties: {
     nickname: string;
@@ -20,6 +25,7 @@ export class MeOkOutputDto {
     thumbnail_image: string;
   };
 
+  @ApiProperty()
   @IsArray()
   kakao_account: {
     profile_nickname_needs_agreement: boolean;
@@ -39,49 +45,65 @@ export class MeOkOutputDto {
 }
 
 export class MeErrorOutputDto {
+  @ApiProperty()
   @IsString()
   msg: string;
 
+  @ApiProperty()
   @IsNumber()
   code: number;
 }
 
 export class RefreshInputDto {
+  @ApiProperty()
   @IsString()
   refresh_token: string;
 }
 
 export class RefreshOkOutputDto {
+  @ApiProperty()
   @IsString()
   access_token: string;
 
+  @ApiProperty()
   @IsString()
   token_type: string;
 
+  @ApiProperty()
   @IsString()
   refresh_token: string;
 
+  @ApiProperty()
   @IsString()
   id_token: string;
 
+  @ApiProperty()
   @IsNumber()
   expires_in: number;
 
+  @ApiProperty()
   @IsNumber()
   refresh_token_expires_in: number;
 }
 
 export class LogoutInputDto extends MeInputDto {}
 export class LogoutOutputDto {
+  @ApiProperty()
   @IsNumber()
   id: number;
 }
 
 export class KakaoLoginInputDto {
+  @ApiProperty()
   @IsString()
   authorization: string;
 }
 export class KakaoLoginOutputDto extends UserCreateInputCrudDto {
+  @ApiProperty()
+  @IsString()
   token?: string;
+
+  @ApiProperty()
+  @IsString()
   refresh_token?: string;
 }

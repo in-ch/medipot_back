@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Headers, Post, Req, UseGuards } from '@nestjs/common';
+import { ApiBody, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 
 import { OutputDto } from 'src/commons/dtos';
@@ -12,10 +13,13 @@ import {
 import { Question } from './entities/question.entitiy';
 import { QuestionService } from './question.service';
 
+@ApiTags('문의')
 @Controller('question')
 export class QuestionController {
   constructor(private readonly questionService: QuestionService) {}
 
+  @ApiBody({ type: QuestionCrudDto })
+  @ApiCreatedResponse({ description: '성공', type: OutputDto<QuestionOutputCrudDto> })
   @UseGuards(JwtAuthGuard)
   @Post('/detail/add')
   addDetail(
@@ -25,6 +29,8 @@ export class QuestionController {
     return this.questionService.addDetail(payload, header);
   }
 
+  @ApiBody({ type: QuestionListPagination })
+  @ApiCreatedResponse({ description: '성공', type: OutputDto<Question[]> })
   @UseGuards(JwtAuthGuard)
   @Get('/list')
   getQuestion(

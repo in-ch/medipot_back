@@ -1,5 +1,6 @@
 import { Controller, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiTags } from '@nestjs/swagger';
 import * as AWS from 'aws-sdk';
 
 const sharp = require('sharp');
@@ -23,6 +24,7 @@ const generateRandomString = (num) => {
   return `${dateStr}_${result}`;
 };
 
+@ApiTags('이미지 업로드')
 @Controller('uploads')
 export class UploadsController {
   @Post('')

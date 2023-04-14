@@ -19,7 +19,4 @@ export class NestedReply extends CommonEntity {
 
   @OneToMany((_) => Report, (report) => report.nestedReply)
   reported: Report[];
-
-  @Column({ comment: '삭제 여부', default: false })
-  isDeleted: boolean;
 }

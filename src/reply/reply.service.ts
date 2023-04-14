@@ -5,7 +5,7 @@ import { Request } from 'express';
 import { OutputDto } from 'src/commons/dtos';
 import { User } from 'src/user/entities/user.entitiy';
 import { Writing } from 'src/writing/entities/writing';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import {
   ReplyCrudDto,
   ReplyDeleteDto,
@@ -42,7 +42,7 @@ export class ReplyService {
           writing: {
             no: Number(writingNo),
           },
-          isDeleted: false,
+          deletedAt: IsNull(),
         },
         relations: ['user'],
       });
@@ -145,12 +145,17 @@ export class ReplyService {
           },
         },
       });
-      Reply.isDeleted = true;
-      const DeletedReply = await this.replys.save(Reply);
+
+      await this.replys.softDelete({
+        no: Number(replyNo),
+        user: {
+          no,
+        },
+      });
       return {
         isDone: true,
         status: 200,
-        data: DeletedReply,
+        data: Reply,
       };
     } catch (e) {
       return {
@@ -177,7 +182,7 @@ export class ReplyService {
           writing: {
             no: Number(writingNo),
           },
-          isDeleted: false,
+          deletedAt: IsNull(),
         },
       });
       return {

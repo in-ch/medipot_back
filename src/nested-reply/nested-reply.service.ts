@@ -5,14 +5,13 @@ import { Request } from 'express';
 import { OutputDto } from 'src/commons/dtos';
 import { Reply } from 'src/reply/entities/reply.entity';
 import { User } from 'src/user/entities/user.entitiy';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 
 import {
   CreateNestedReplyHeaderParams,
   CreateNestedReplyParams,
   DeletedNestedReplyCrudDto,
   DeletedNestedReplyHeaderDto,
-  NestedHeaderDto,
   NestedReplyListPagination,
 } from './dto/nestedReply.dto';
 import { NestedReply } from './entities/nestedReply.entitiy';
@@ -97,7 +96,7 @@ export class NestedReplyService {
           reply: {
             no: Number(replyNo),
           },
-          isDeleted: false,
+          deletedAt: IsNull(),
         },
         relations: ['user'],
       });
@@ -136,14 +135,20 @@ export class NestedReplyService {
       const NestedReply = await this.nestedReplys.findOne({
         where: {
           no: nestedReplyNo,
-          isDeleted: false,
+          deletedAt: IsNull(),
           user: {
             no,
           },
         },
       });
-      NestedReply.isDeleted = true;
-      await this.nestedReplys.save(NestedReply);
+
+      await this.nestedReplys.softDelete({
+        no: nestedReplyNo,
+        deletedAt: IsNull(),
+        user: {
+          no,
+        },
+      });
       return {
         isDone: true,
         status: 200,

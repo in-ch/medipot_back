@@ -13,9 +13,6 @@ export class Question extends CommonEntity {
   @JoinColumn({ name: 'location_id' })
   location: Location;
 
-  @Column({ comment: '삭제 여부', default: false })
-  isDeleted: boolean;
-
   @Column({ comment: '답변 여부', default: false })
   isResponse: boolean;
 }

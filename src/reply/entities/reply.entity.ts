@@ -23,7 +23,4 @@ export class Reply extends CommonEntity {
 
   @OneToMany((_) => NestedReply, (nestedReply) => nestedReply.reply)
   nestedReply: NestedReply[];
-
-  @Column({ type: 'boolean', comment: '삭제 여부', default: false })
-  isDeleted: boolean;
 }

@@ -58,9 +58,8 @@ export class WritingService {
           list: writings.map((writing) => {
             delete writing.user.password;
             writing.reply.map((replyData, index) => {
-              replyData.isDeleted && delete writing.reply[index];
+              replyData.deletedAt && delete writing.reply[index];
               delete replyData.deletedAt;
-              delete replyData.isDeleted;
             });
             return writing;
           }),
@@ -92,9 +91,8 @@ export class WritingService {
       });
       delete Writing.user.password;
       Writing.reply.map((replyData, index) => {
-        replyData.isDeleted && delete Writing.reply[index];
+        replyData.deletedAt && delete Writing.reply[index];
         delete replyData.deletedAt;
-        delete replyData.isDeleted;
       });
       return {
         isDone: true,

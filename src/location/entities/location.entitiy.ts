@@ -52,9 +52,6 @@ export class Location extends CommonEntity {
   @Column('text', { comment: '경도', default: 0 })
   lng: number;
 
-  @Column({ comment: '삭제 여부', default: false })
-  isDeleted: boolean;
-
   @Column({ comment: '승인 여부', default: false })
   isApproved: boolean;
 

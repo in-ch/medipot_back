@@ -109,9 +109,6 @@ export class User extends CommonEntity {
   @OneToMany((_) => NestedReply, (nestedReply) => nestedReply.user)
   nestedReply: NestedReply[];
 
-  @Column({ comment: '삭제 여부', default: false })
-  isDeleted: boolean;
-
   @Column({ type: 'enum', comment: '과', nullable: true, enum: DEPARTMENT })
   department: DEPARTMENT;
 
@@ -144,9 +141,6 @@ export class AdminUser extends BaseEntity {
 
   @Column({ comment: '리프레쉬 토큰', default: '' })
   refresh_token?: string;
-
-  @Column({ comment: '삭제 여부', default: false })
-  isDeleted: boolean;
 
   @CreateDateColumn({ name: 'create_at', comment: '생성일' })
   createdAt: Date;

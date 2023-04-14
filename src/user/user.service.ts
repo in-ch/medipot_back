@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 
 import {
   AdminUserCreateCrudDto,
@@ -15,7 +15,6 @@ import { JwtService } from '@nestjs/jwt';
 import {
   MeInputDto,
   MeOutputCrudDto,
-  RefreshHeader,
   RefreshOutputDto,
   RefreshParams,
   SearchUserCrudDto,
@@ -549,15 +548,15 @@ export class UserService {
       const User = await this.users.findOne({
         where: {
           no: Number(no),
-          isDeleted: false,
+          deletedAt: IsNull(),
         },
       });
       delete User.password;
-      delete User.isDeleted;
       delete User.marketingConsent;
       delete User.isSocialLogin;
       delete User.createdAt;
       delete User.updatedAt;
+      delete User.deletedAt;
 
       return {
         isDone: true,

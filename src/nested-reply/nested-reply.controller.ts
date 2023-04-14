@@ -39,7 +39,7 @@ export class NestedReplyController {
     return this.nestedReplyService.getNestedReplys(request);
   }
 
-  @ApiBody({ type: DeletedNestedReplyCrudDto })
+  @ApiBody({ type: NestedReplyListPagination })
   @ApiCreatedResponse({ description: '성공', type: OutputDto<NestedReply> })
   @UseGuards(JwtAuthGuard)
   @Delete('')

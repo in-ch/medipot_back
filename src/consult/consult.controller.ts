@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Headers, Post, Req, UseGuards } from '@nestjs/common';
-import { ApiBody, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { OutputDto } from 'src/commons/dtos';
 import { JwtAuthGuard } from 'src/user/strategy/jwtAuthentication.guard';
@@ -32,7 +32,7 @@ export class ConsultController {
   }
 
   @ApiBody({ type: ConsultListPagination })
-  @ApiCreatedResponse({ description: '성공', type: OutputDto<Consult[]> })
+  @ApiResponse({ description: '성공', type: OutputDto<Consult[]> })
   @Get('/list')
   async list(
     @Req() request: Request<ConsultListPagination>,
@@ -42,7 +42,7 @@ export class ConsultController {
   }
 
   @ApiBody({ type: DoneConsultParams })
-  @ApiCreatedResponse({ description: '성공', type: OutputDto<DoneConsultResponse> })
+  @ApiResponse({ description: '성공', type: OutputDto<DoneConsultResponse> })
   /// 어드민 유저 가드 추가해야 함.
   @Post('/done')
   async doneConsult(@Body() params: DoneConsultParams): Promise<OutputDto<DoneConsultResponse>> {

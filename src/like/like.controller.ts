@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Headers, Post, UseGuards } from '@nestjs/common';
-import { ApiBody, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { OutputDto } from 'src/commons/dtos';
 import { JwtAuthGuard } from 'src/user/strategy/jwtAuthentication.guard';
 import { LikeCrudDto, LikeHeaderDto, UnlikeCrudDto, UnlikeHeaderDto } from './dto/like';
@@ -11,7 +11,7 @@ export class LikeController {
   constructor(private readonly likesService: LikeService) {}
 
   @ApiBody({ type: LikeCrudDto })
-  @ApiCreatedResponse({ description: '성공', type: OutputDto<boolean> })
+  @ApiResponse({ description: '성공', type: OutputDto<boolean> })
   @UseGuards(JwtAuthGuard)
   @Post('')
   like(
@@ -22,7 +22,7 @@ export class LikeController {
   }
 
   @ApiBody({ type: UnlikeCrudDto })
-  @ApiCreatedResponse({ description: '성공', type: OutputDto<boolean> })
+  @ApiResponse({ description: '성공', type: OutputDto<boolean> })
   @UseGuards(JwtAuthGuard)
   @Delete('')
   unlike(

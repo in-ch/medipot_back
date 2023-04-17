@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Headers, Post, Req, UseGuards } from '@nestjs/common';
-import { ApiBody, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 
 import { OutputDto } from 'src/commons/dtos';
@@ -55,21 +55,21 @@ export class UserController {
   }
 
   @ApiBody({ type: UserLoginCrudDto })
-  @ApiCreatedResponse({ description: '성공', type: OutputDto<UserLoginOutputCrudDto> })
+  @ApiResponse({ description: '성공', type: OutputDto<UserLoginOutputCrudDto> })
   @Post('/login')
   login(@Body() payload: UserLoginCrudDto): Promise<OutputDto<UserLoginOutputCrudDto>> {
     return this.usersService.login(payload);
   }
 
   @ApiBody({ type: AdminUserLoginCrudDto })
-  @ApiCreatedResponse({ description: '성공', type: OutputDto<AdminUserOutputCrudDto> })
+  @ApiResponse({ description: '성공', type: OutputDto<AdminUserOutputCrudDto> })
   @Post('/admin/login')
   loginAdmin(@Body() payload: AdminUserLoginCrudDto): Promise<OutputDto<AdminUserOutputCrudDto>> {
     return this.usersService.adminLogin(payload);
   }
 
   @ApiBody({ type: AdminUserRefreshCrudDto })
-  @ApiCreatedResponse({ description: '성공', type: OutputDto<AdminUserRefreshOutputCrudDto> })
+  @ApiResponse({ description: '성공', type: OutputDto<AdminUserRefreshOutputCrudDto> })
   @Post('/admin/refresh')
   refreshAdmin(
     @Body() payload: AdminUserRefreshCrudDto,
@@ -78,7 +78,7 @@ export class UserController {
   }
 
   @ApiBody({})
-  @ApiCreatedResponse({ description: '성공', type: OutputDto<MeOutputCrudDto> })
+  @ApiResponse({ description: '성공', type: OutputDto<MeOutputCrudDto> })
   @UseGuards(JwtAuthGuard)
   @Post('/me')
   me(@Headers() header: MeInputDto): Promise<OutputDto<MeOutputCrudDto>> {
@@ -86,7 +86,7 @@ export class UserController {
   }
 
   @ApiBody({ type: UpdateProfileCrudDto })
-  @ApiCreatedResponse({ description: '성공', type: OutputDto<UpdateProfileOutputDto> })
+  @ApiResponse({ description: '성공', type: OutputDto<UpdateProfileOutputDto> })
   @UseGuards(JwtAuthGuard)
   @Post('/profile/update')
   updateProfile(
@@ -97,14 +97,14 @@ export class UserController {
   }
 
   @ApiBody({ type: RefreshParams })
-  @ApiCreatedResponse({ description: '성공', type: OutputDto<RefreshOutputDto> })
+  @ApiResponse({ description: '성공', type: OutputDto<RefreshOutputDto> })
   @Post('/refresh')
   refresh(@Body() payload: RefreshParams): Promise<OutputDto<RefreshOutputDto>> {
     return this.usersService.refresh(payload);
   }
 
   @ApiBody({ type: SearchUserCrudDto })
-  @ApiCreatedResponse({ description: '성공', type: OutputDto<User> })
+  @ApiResponse({ description: '성공', type: OutputDto<User> })
   @UseGuards(JwtAuthGuard)
   @Get('/search')
   searchUser(@Req() request: Request<SearchUserCrudDto>): Promise<OutputDto<User>> {

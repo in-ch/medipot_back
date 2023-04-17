@@ -1,5 +1,5 @@
 import { Controller, Post, Headers, UseGuards, Body, Get, Req } from '@nestjs/common';
-import { ApiBody, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 
 import { OutputDto, PageOutput } from 'src/commons/dtos';
@@ -31,7 +31,7 @@ export class WritingController {
   }
 
   @ApiBody({ type: WritingListDto })
-  @ApiCreatedResponse({ description: '성공', type: OutputDto<Writing> })
+  @ApiResponse({ description: '성공', type: OutputDto<Writing> })
   @UseGuards(JwtAuthGuard)
   @Get('/list')
   getWritings(@Req() request: Request<WritingListDto>): Promise<OutputDto<PageOutput<Writing[]>>> {
@@ -39,7 +39,7 @@ export class WritingController {
   }
 
   @ApiBody({ type: WritingDetailDto })
-  @ApiCreatedResponse({ description: '성공', type: OutputDto<Writing> })
+  @ApiResponse({ description: '성공', type: OutputDto<Writing> })
   @UseGuards(JwtAuthGuard)
   @Get('/detail')
   getWriting(@Req() request: Request<WritingDetailDto>): Promise<OutputDto<Writing>> {

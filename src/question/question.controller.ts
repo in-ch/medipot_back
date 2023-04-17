@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Headers, Post, Req, UseGuards } from '@nestjs/common';
-import { ApiBody, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 
 import { OutputDto } from 'src/commons/dtos';
@@ -30,7 +30,7 @@ export class QuestionController {
   }
 
   @ApiBody({ type: QuestionListPagination })
-  @ApiCreatedResponse({ description: '성공', type: OutputDto<Question[]> })
+  @ApiResponse({ description: '성공', type: OutputDto<Question[]> })
   @UseGuards(JwtAuthGuard)
   @Get('/list')
   getQuestion(

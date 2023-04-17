@@ -1,5 +1,5 @@
 import { Body, Controller, Headers, Post, UseGuards } from '@nestjs/common';
-import { ApiBody, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { OutputDto } from 'src/commons/dtos';
 import { JwtAuthGuard } from 'src/user/strategy/jwtAuthentication.guard';
 import { ReportCrudDto, ReportHeaderDto, ReportReplyCrudDto } from './dto/report.dto';
@@ -22,7 +22,7 @@ export class ReportController {
   }
 
   @ApiBody({ type: ReportReplyCrudDto })
-  @ApiCreatedResponse({ description: '성공', type: OutputDto<boolean> })
+  @ApiResponse({ description: '성공', type: OutputDto<boolean> })
   @UseGuards(JwtAuthGuard)
   @Post('/reply')
   createReply(

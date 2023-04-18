@@ -3,19 +3,19 @@ import { IsBoolean, IsNumber, IsString } from 'class-validator';
 
 export class OutputDto<T> {
   @ApiProperty()
-  @IsBoolean()
-  isDone: boolean;
-
-  @ApiProperty()
   @IsNumber()
-  status: number;
-
-  @ApiProperty()
-  data?: T;
+  statusCode: number;
 
   @ApiProperty()
   @IsString()
   error?: string;
+
+  @ApiProperty()
+  @IsString()
+  message?: string;
+
+  @ApiProperty()
+  data?: T;
 
   @ApiProperty()
   @IsNumber()

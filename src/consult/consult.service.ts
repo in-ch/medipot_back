@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OutputDto } from 'src/commons/dtos';
@@ -48,17 +48,12 @@ export class ConsultService {
       const totalCount = consults.length;
       return {
         totalCount,
-        isDone: true,
-        status: 200,
+        statusCode: 200,
         data: consults,
       };
     } catch (e) {
       console.error(e);
-      return {
-        isDone: false,
-        status: 400,
-        error: `서버 에러가 발생하였습니다. consult list`,
-      };
+      throw e;
     }
   }
 
@@ -86,11 +81,7 @@ export class ConsultService {
         },
       });
       if (Number(CONSULT?.no > 0)) {
-        return {
-          isDone: false,
-          status: 410,
-          error: '이미 신청이 완료되었습니다.',
-        };
+        throw new ConflictException('이미 신청이 완료되었습니다.');
       }
       const UnSignToken = await this.jwtService.verify(authorization.replace('Bearer ', ''), {
         secret: process.env.PRIVATE_KEY,
@@ -107,16 +98,11 @@ export class ConsultService {
       });
       await this.consults.save(NEW_CONSULT);
       return {
-        isDone: true,
-        status: 200,
+        statusCode: 200,
       };
     } catch (e) {
       console.error(e);
-      return {
-        isDone: false,
-        status: 400,
-        error: `서버 에러가 발생하였습니다. send consult add error`,
-      };
+      throw e;
     }
   }
 
@@ -138,17 +124,13 @@ export class ConsultService {
       CONSULT.isDone = true;
       await this.consults.save(CONSULT);
       return {
-        isDone: true,
-        status: 200,
-        error: `수정이 완료되었습니다.`,
+        statusCode: 200,
+        message: `수정이 완료되었습니다.`,
+        data: CONSULT,
       };
     } catch (e) {
       console.error(e);
-      return {
-        isDone: false,
-        status: 400,
-        error: `서버 에러가 발생하였습니다. done consult add error`,
-      };
+      throw e;
     }
   }
 }

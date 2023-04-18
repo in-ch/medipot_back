@@ -29,6 +29,6 @@ export class ReportController {
     @Body() payload: ReportReplyCrudDto,
     @Headers() header: ReportHeaderDto,
   ): Promise<OutputDto<boolean>> {
-    return this.reportService.createReply(payload, header);
+    return this.reportService.createReplyReport(payload, header);
   }
 }

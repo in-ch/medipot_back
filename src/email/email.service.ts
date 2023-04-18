@@ -45,15 +45,12 @@ export class EmailService {
       );
 
       return {
-        isDone: true,
-        status: 200,
+        data: true,
+        statusCode: 200,
       };
     } catch (e) {
-      return {
-        isDone: false,
-        status: 400,
-        error: '서버 에러가 발생하였습니다. send email error',
-      };
+      console.error(`SEND EMAIL ERROR ${e}`);
+      throw e;
     }
   }
 }

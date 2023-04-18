@@ -62,16 +62,12 @@ export class NestedReplyService {
         }),
       );
       return {
-        isDone: true,
-        status: 200,
+        statusCode: 200,
         data: NestedReply,
       };
     } catch (e) {
-      return {
-        isDone: false,
-        status: 400,
-        error: `오류가 발생하였습니다. ${e}`,
-      };
+      console.error(`addNestedReply API Error: ${e}`);
+      throw e;
     }
   }
 
@@ -101,16 +97,12 @@ export class NestedReplyService {
         relations: ['user'],
       });
       return {
-        isDone: true,
-        status: 200,
+        statusCode: 200,
         data: nestedReplys,
       };
     } catch (e) {
-      return {
-        isDone: false,
-        status: 400,
-        error: `getNestedReplys에서 오류가 발생하였습니다. ${e}`,
-      };
+      console.error(e);
+      throw e;
     }
   }
 
@@ -150,16 +142,12 @@ export class NestedReplyService {
         },
       });
       return {
-        isDone: true,
-        status: 200,
+        statusCode: 200,
         data: NestedReply,
       };
     } catch (e) {
-      return {
-        isDone: false,
-        status: 400,
-        error: `deletedNestedReply에서 오류가 발생하였습니다. ${e}`,
-      };
+      console.error(`deletedNestedReply API Error: ${e}`);
+      throw e;
     }
   }
 }

@@ -1,4 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotAcceptableException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Repository } from 'typeorm';
 
@@ -94,8 +100,7 @@ export class UserService {
       await this.users.save(newUser);
 
       return {
-        isDone: true,
-        status: 200,
+        statusCode: 200,
         data: {
           email: (await newUser).email,
           nickname: (await newUser).nickname,
@@ -106,11 +111,8 @@ export class UserService {
         },
       };
     } catch (e) {
-      return {
-        isDone: false,
-        status: 400,
-        error: e,
-      };
+      console.error(`createUser API Error: ${e}`);
+      throw e;
     }
   }
 
@@ -159,8 +161,7 @@ export class UserService {
         },
       );
       return {
-        isDone: true,
-        status: 200,
+        statusCode: 200,
         data: {
           ...newAdminUser,
           password: encryptedPassowrd,
@@ -169,11 +170,7 @@ export class UserService {
         },
       };
     } catch (e) {
-      return {
-        isDone: false,
-        status: 400,
-        error: e,
-      };
+      console.error(`create Admin User Error: ${e}`);
     }
   }
 
@@ -191,16 +188,11 @@ export class UserService {
         },
       });
       return {
-        isDone: true,
-        status: 200,
+        statusCode: 200,
         data: User,
       };
     } catch (e) {
-      return {
-        isDone: false,
-        status: 400,
-        error: e,
-      };
+      console.error(`findOneUser Error: ${e}`);
     }
   }
 
@@ -218,16 +210,12 @@ export class UserService {
         },
       });
       return {
-        isDone: true,
-        status: 200,
+        statusCode: 200,
         data: adminUser,
       };
     } catch (e) {
-      return {
-        isDone: false,
-        status: 400,
-        error: e,
-      };
+      console.error(`findOneAdminUser API Error: ${e}`);
+      throw e;
     }
   }
 
@@ -276,8 +264,7 @@ export class UserService {
       await this.users.save(user);
 
       return {
-        isDone: true,
-        status: 200,
+        statusCode: 200,
         data: {
           ...user,
           token: access_token,
@@ -285,11 +272,8 @@ export class UserService {
         },
       };
     } catch (e) {
-      return {
-        isDone: false,
-        status: 400,
-        error: e,
-      };
+      console.error(`Login API Error: ${e}`);
+      throw e;
     }
   }
 
@@ -311,21 +295,13 @@ export class UserService {
       });
 
       if (USER.refresh_token !== refresh_token) {
-        return {
-          isDone: false,
-          status: 400,
-          error: '리프레쉬 토큰이 변조되었습니다.',
-        };
+        throw new BadRequestException('리프레쉬 토큰이 변조되었습니다.');
       }
       const verify = await this.jwtService.verify(refresh_token, {
         secret: process.env.PRIVATE_KEY,
       });
       if (!verify) {
-        return {
-          isDone: false,
-          status: 400,
-          error: '리프레쉬 토큰이 만료되었습니다.',
-        };
+        throw new NotAcceptableException(`리프레쉬 토큰이 만료되었습니다.`);
       } else {
         const access_token = await this.jwtService.sign(
           {
@@ -342,8 +318,7 @@ export class UserService {
         await this.users.save(USER);
 
         return {
-          isDone: true,
-          status: 200,
+          statusCode: 200,
           data: {
             authorization: access_token,
           },
@@ -351,11 +326,7 @@ export class UserService {
       }
     } catch (e) {
       console.error(e);
-      return {
-        isDone: false,
-        status: 400,
-        error: e,
-      };
+      throw e;
     }
   }
 
@@ -404,8 +375,7 @@ export class UserService {
         refresh_token,
       });
       return {
-        isDone: true,
-        status: 200,
+        statusCode: 200,
         data: {
           ...adminUser,
           token: access_token,
@@ -413,11 +383,8 @@ export class UserService {
         },
       };
     } catch (e) {
-      return {
-        isDone: false,
-        status: 400,
-        error: e,
-      };
+      console.error(`adminLogin API Error: ${e}`);
+      throw e;
     }
   }
 
@@ -434,11 +401,7 @@ export class UserService {
       const { name, refresh_token } = payload;
       const verify = this.jwtService.verify(refresh_token, { secret: process.env.PRIVATE_KEY });
       if (!verify) {
-        return {
-          isDone: false,
-          status: 400,
-          error: '리프레쉬 토큰이 만료되었습니다.',
-        };
+        throw new NotAcceptableException(`리프레쉬 토큰이 만료되었습니다.`);
       }
       const getAdmin = await this.adminUsers.findOne({
         where: {
@@ -464,19 +427,14 @@ export class UserService {
       });
 
       return {
-        isDone: true,
-        status: 200,
+        statusCode: 200,
         data: {
           ...getAdmin,
           token: new_access_token,
         },
       };
     } catch (e) {
-      return {
-        isDone: false,
-        status: 400,
-        error: e,
-      };
+      throw e;
     }
   }
 
@@ -487,16 +445,12 @@ export class UserService {
         secret: process.env.PRIVATE_KEY,
       });
       return {
-        isDone: true,
-        status: 200,
+        statusCode: 200,
         data: UnSignToken,
       };
     } catch (e) {
-      return {
-        isDone: false,
-        status: 400,
-        error: e,
-      };
+      console.error(`me API Error: ${e}`);
+      throw e;
     }
   }
 
@@ -520,17 +474,12 @@ export class UserService {
       User.profile = profile ? profile : User.profile;
       await this.users.save(User);
       return {
-        isDone: true,
-        status: 200,
+        statusCode: 200,
         data: User,
       };
     } catch (e) {
-      console.error(e);
-      return {
-        isDone: false,
-        status: 400,
-        error: e,
-      };
+      console.error(`updateProfile API Error: ${e}`);
+      throw e;
     }
   }
 
@@ -559,17 +508,12 @@ export class UserService {
       delete User.deletedAt;
 
       return {
-        isDone: true,
-        status: 200,
+        statusCode: 200,
         data: User,
       };
     } catch (e) {
-      console.error(e);
-      return {
-        isDone: false,
-        status: 400,
-        error: e,
-      };
+      console.error(`searchUser API Error: ${e}`);
+      throw e;
     }
   }
 }

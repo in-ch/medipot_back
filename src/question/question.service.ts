@@ -54,15 +54,10 @@ export class QuestionService {
       this.questions.save(this.questions.create(newQuestion));
 
       return {
-        isDone: true,
-        status: 200,
+        statusCode: 200,
       };
     } catch (e) {
-      return {
-        isDone: false,
-        status: 400,
-        error: '오류가 발생하였습니다.',
-      };
+      throw e;
     }
   }
 
@@ -92,17 +87,12 @@ export class QuestionService {
 
       return {
         totalCount,
-        isDone: true,
-        status: 200,
+        statusCode: 200,
         data: questions,
       };
     } catch (e) {
-      console.error(e);
-      return {
-        isDone: false,
-        status: 400,
-        error: '오류가 발생하였습니다.',
-      };
+      console.error(`getQuestions API Error: ${e}`);
+      throw e;
     }
   }
 }

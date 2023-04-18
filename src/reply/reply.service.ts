@@ -49,8 +49,7 @@ export class ReplyService {
       const totalCount = replys.length;
       return {
         totalCount,
-        isDone: true,
-        status: 200,
+        statusCode: 200,
         data: replys.map((v) => {
           delete v.user.password;
           delete v.user.grant;
@@ -60,11 +59,8 @@ export class ReplyService {
         }),
       };
     } catch (e) {
-      return {
-        isDone: false,
-        status: 400,
-        error: `오류가 발생하였습니다. ${e}`,
-      };
+      console.error(`getReplys API Error: ${e}`);
+      throw e;
     }
   }
 
@@ -104,16 +100,12 @@ export class ReplyService {
         }),
       );
       return {
-        isDone: true,
-        status: 200,
+        statusCode: 200,
         data: NewWriting,
       };
     } catch (e) {
-      return {
-        isDone: false,
-        status: 400,
-        error: `오류가 발생하였습니다. ${e}`,
-      };
+      console.error(`댓글 생성 API Error: ${e}`);
+      throw e;
     }
   }
 
@@ -153,16 +145,12 @@ export class ReplyService {
         },
       });
       return {
-        isDone: true,
-        status: 200,
+        statusCode: 200,
         data: Reply,
       };
     } catch (e) {
-      return {
-        isDone: false,
-        status: 400,
-        error: `오류가 발생하였습니다. ${e}`,
-      };
+      console.error(`댓글 삭제 API Error: ${e}`);
+      throw e;
     }
   }
 
@@ -186,16 +174,11 @@ export class ReplyService {
         },
       });
       return {
-        isDone: true,
-        status: 200,
+        statusCode: 200,
         data: replys,
       };
     } catch (e) {
-      return {
-        isDone: false,
-        status: 400,
-        error: `오류가 발생하였습니다. ${e}`,
-      };
+      console.error(`totalCound API Error: ${e}`);
     }
   }
 }

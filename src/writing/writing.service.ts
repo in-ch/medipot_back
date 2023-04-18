@@ -51,8 +51,7 @@ export class WritingService {
       });
       return {
         totalCount: writings.length,
-        isDone: true,
-        status: 200,
+        statusCode: 200,
         data: {
           page,
           list: writings.map((writing) => {
@@ -66,11 +65,8 @@ export class WritingService {
         },
       };
     } catch (e) {
-      return {
-        isDone: false,
-        status: 400,
-        error: e,
-      };
+      console.error(`getWritings API Error: ${e}`);
+      throw e;
     }
   }
 
@@ -95,16 +91,12 @@ export class WritingService {
         delete replyData.deletedAt;
       });
       return {
-        isDone: true,
-        status: 200,
+        statusCode: 200,
         data: Writing,
       };
     } catch (e) {
-      return {
-        isDone: false,
-        status: 400,
-        error: e,
-      };
+      console.error(`getWriting API Error: ${e}`);
+      throw e;
     }
   }
 
@@ -115,7 +107,7 @@ export class WritingService {
    * @return {OutputDto<WritingCreateOutputDto>} 생성된 글
    * @author in-ch, 2023-02-19
    */
-  async create(
+  async addWriting(
     header: MeInputDto,
     payload: WritingCreateDto,
   ): Promise<OutputDto<WritingCreateOutputDto>> {
@@ -135,16 +127,12 @@ export class WritingService {
       this.writings.save(Writing);
 
       return {
-        isDone: true,
-        status: 200,
+        statusCode: 200,
         data: Writing,
       };
     } catch (e) {
-      return {
-        isDone: false,
-        status: 400,
-        error: e,
-      };
+      console.error(`addWriting api Error: ${e}`);
+      throw e;
     }
   }
 }

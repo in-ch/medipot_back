@@ -1,4 +1,4 @@
-import { Body, Headers, Injectable } from '@nestjs/common';
+import { Body, ConflictException, Headers, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OutputDto } from 'src/commons/dtos';
@@ -41,12 +41,7 @@ export class LikeService {
         relations: ['user', 'writing'],
       });
       if (Like?.no) {
-        return {
-          isDone: false,
-          status: 410,
-          error: '이미 좋아요를 했습니다.',
-          data: false,
-        };
+        throw new ConflictException('이미 좋아요를 했습니다.');
       } else {
         const User = await this.users.findOne({
           where: {
@@ -66,17 +61,13 @@ export class LikeService {
           }),
         );
         return {
-          isDone: true,
-          status: 200,
+          statusCode: 200,
           data: true,
         };
       }
     } catch (e) {
-      return {
-        isDone: false,
-        status: 400,
-        error: `오류가 발생하였습니다. ${e}`,
-      };
+      console.error(`좋아요 api 오류: ${e}`);
+      throw e;
     }
   }
 
@@ -104,26 +95,17 @@ export class LikeService {
         relations: ['user', 'writing'],
       });
       if (!Like?.no) {
-        return {
-          isDone: false,
-          status: 410,
-          error: '이미 삭제된 좋아요입니다.',
-          data: false,
-        };
+        throw new ConflictException('이미 삭제한 좋아요입니다.');
       } else {
         this.likes.delete(Like.no);
         return {
-          isDone: true,
-          status: 200,
+          statusCode: 200,
           data: true,
         };
       }
     } catch (e) {
-      return {
-        isDone: false,
-        status: 400,
-        error: `오류가 발생하였습니다. ${e}`,
-      };
+      console.error(`unlike api error: ${e}`);
+      throw e;
     }
   }
 }

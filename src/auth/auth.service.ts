@@ -1,5 +1,6 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { BadRequestException, ConflictException } from '@nestjs/common';
 
 import { User } from 'src/user/entities/user.entitiy';
 import { Auth } from './entities/auth.entitiy';
@@ -40,11 +41,7 @@ export class AuthService {
         },
       });
       if (existedUsersCount > 0) {
-        return {
-          isDone: false,
-          status: 450,
-          error: `이미 존재하는 이메일입니다.`,
-        };
+        throw new ConflictException('이미 존재하는 이메일입니다.');
       }
       const verificationCode = createRandNum(111111, 999999);
 
@@ -62,18 +59,14 @@ export class AuthService {
       );
 
       return {
-        isDone: true,
-        status: 200,
+        statusCode: 200,
+        message: '이메일 전송이 완료되었습니다.',
         data: {
           message: '이메일 전송이 완료되었습니다.',
         },
       };
     } catch (e) {
-      return {
-        isDone: false,
-        status: 400,
-        error: `서버 에러가 발생하였습니다. auth email ${e}`,
-      };
+      throw e;
     }
   }
 
@@ -98,25 +91,16 @@ export class AuthService {
           code,
         });
         return {
-          isDone: true,
-          status: 200,
+          statusCode: 200,
           data: {
             message: '인증 성공',
           },
         };
       } else {
-        return {
-          isDone: false,
-          status: 400,
-          error: `인증에 실패하였습니다.`,
-        };
+        throw new BadRequestException('인증에 실패했습니다.');
       }
     } catch (e) {
-      return {
-        isDone: false,
-        status: 400,
-        error: `서버 에러가 발생하였습니다. email validation ${e}`,
-      };
+      throw e;
     }
   }
 
@@ -137,23 +121,15 @@ export class AuthService {
         },
       });
       if (existedUsersCount > 0) {
-        return {
-          isDone: false,
-          status: 450,
-          error: `이미 존재하는 닉네임입니다.`,
-        };
+        throw new ConflictException('이미 존재하는 닉네임입니다.');
       } else {
         return {
-          isDone: true,
-          status: 200,
+          message: '닉네임 중복 확인이 완료되었습니다.',
+          statusCode: 200,
         };
       }
     } catch (e) {
-      return {
-        isDone: false,
-        status: 400,
-        error: `서버 에러가 발생하였습니다. nickname validation ${e}`,
-      };
+      throw e;
     }
   }
 }

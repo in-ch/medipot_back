@@ -42,16 +42,12 @@ export class KakaoService {
           ),
       );
       return {
-        isDone: true,
-        status: 200,
+        statusCode: 200,
         data,
       };
     } catch (e) {
-      return {
-        isDone: false,
-        status: 400,
-        error: '서버 에러가 발생하였습니다. Kakao me',
-      };
+      console.error(`kakao me error:  ${e}`);
+      throw e;
     }
   }
 
@@ -76,16 +72,12 @@ export class KakaoService {
           ),
       );
       return {
-        isDone: true,
-        status: 200,
+        statusCode: 200,
         data,
       };
     } catch (e) {
-      return {
-        isDone: false,
-        status: 400,
-        error: '서버 에러가 발생하였습니다. Kakao refresh',
-      };
+      console.error(`kakao refresh error:  ${e}`);
+      throw e;
     }
   }
 
@@ -112,16 +104,12 @@ export class KakaoService {
           ),
       );
       return {
-        isDone: true,
-        status: 200,
+        statusCode: 200,
         data,
       };
     } catch (e) {
-      return {
-        isDone: false,
-        status: 400,
-        error: '서버 에러가 발생하였습니다. Kakao logout',
-      };
+      console.error(`kakao logout error:  ${e}`);
+      throw e;
     }
   }
 
@@ -184,8 +172,7 @@ export class KakaoService {
         await this.users.save(User);
 
         return {
-          isDone: true,
-          status: 200,
+          statusCode: 200,
           data: {
             ...User,
             token: access_token,
@@ -226,8 +213,7 @@ export class KakaoService {
         NewUser.refresh_token = refresh_token;
         await this.users.save(NewUser);
         return {
-          isDone: true,
-          status: 200,
+          statusCode: 200,
           data: {
             email: (await NewUser).email,
             nickname: (await NewUser).nickname,
@@ -239,11 +225,8 @@ export class KakaoService {
         };
       }
     } catch (e) {
-      return {
-        isDone: false,
-        status: 400,
-        error: '서버 에러가 발생하였습니다. Kakao login' + e,
-      };
+      console.error(`kakao login error: ${e}`);
+      throw e;
     }
   }
 }

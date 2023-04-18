@@ -27,7 +27,7 @@ export class WritingController {
     @Headers() header: MeInputDto,
     @Body() payload: WritingCreateDto,
   ): Promise<OutputDto<WritingCreateOutputDto>> {
-    return this.writingService.create(header, payload);
+    return this.writingService.addWriting(header, payload);
   }
 
   @ApiBody({ type: WritingListDto })

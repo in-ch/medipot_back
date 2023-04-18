@@ -57,26 +57,22 @@ export class ReportService {
         }),
       );
       return {
-        isDone: true,
-        status: 400,
+        statusCode: 400,
       };
     } catch (e) {
-      return {
-        isDone: false,
-        status: 400,
-        error: `오류가 발생하였습니다. ${e}`,
-      };
+      console.error(`글 신고 API Error: ${e}`);
+      throw e;
     }
   }
 
   /**
    * @param { ReportReplyCrudDto } payload replyNo: number
    * @param { ReportHeaderDto } header
-   * @description 글 신고 기능
+   * @description 댓글 신고 기능
    * @return {OutputDto<boolean>}
    * @author in-ch, 2023-03-10
    */
-  async createReply(
+  async createReplyReport(
     payload: ReportReplyCrudDto,
     header: ReportHeaderDto,
   ): Promise<OutputDto<boolean>> {
@@ -107,15 +103,11 @@ export class ReportService {
         }),
       );
       return {
-        isDone: true,
-        status: 400,
+        statusCode: 200,
       };
     } catch (e) {
-      return {
-        isDone: false,
-        status: 400,
-        error: `오류가 발생하였습니다. ${e}`,
-      };
+      console.error(`createReplyReport API Error: ${e}`);
+      throw e;
     }
   }
 }

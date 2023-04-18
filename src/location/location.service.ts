@@ -31,16 +31,12 @@ export class LocationService {
         },
       });
       return {
-        isDone: true,
-        status: 200,
+        statusCode: 200,
         data: location,
       };
     } catch (e) {
-      return {
-        isDone: false,
-        status: 400,
-        error: '오류가 발생하였습니다.',
-      };
+      console.error(`getLocation error: ${e}`);
+      throw e;
     }
   }
   /**
@@ -59,16 +55,12 @@ export class LocationService {
       const totalCount = locations.length;
       return {
         totalCount,
-        isDone: true,
-        status: 200,
+        statusCode: 200,
         data: locations,
       };
     } catch (e) {
-      return {
-        isDone: false,
-        status: 400,
-        error: '오류가 발생하였습니다.',
-      };
+      console.error(`getLocations API error: ${e}`);
+      throw e;
     }
   }
 
@@ -142,16 +134,12 @@ export class LocationService {
 
       return {
         totalCount,
-        isDone: true,
-        status: 200,
+        statusCode: 200,
         data: locations,
       };
     } catch (e) {
-      return {
-        isDone: false,
-        status: 400,
-        error: '오류가 발생하였습니다.',
-      };
+      console.error(`getGeoLocation API error: ${e}`);
+      throw e;
     }
   }
 
@@ -166,16 +154,12 @@ export class LocationService {
       const newLocation = this.locations.create(payload);
       this.locations.save(newLocation);
       return {
-        isDone: true,
-        status: 200,
+        statusCode: 200,
         data: newLocation,
       };
     } catch (e) {
-      return {
-        isDone: false,
-        status: 400,
-        error: '오류가 발생하였습니다.',
-      };
+      console.error(`create location API error: ${e}`);
+      throw e;
     }
   }
 
@@ -198,16 +182,12 @@ export class LocationService {
       location.isApproved = !location.isApproved;
       this.locations.save(location);
       return {
-        isDone: true,
-        status: 200,
+        statusCode: 200,
         data: location,
       };
     } catch (e) {
-      return {
-        isDone: false,
-        status: 400,
-        error: '오류가 발생하였습니다.',
-      };
+      console.error(`updateApproveredLocation API error: ${e}`);
+      throw e;
     }
   }
 }

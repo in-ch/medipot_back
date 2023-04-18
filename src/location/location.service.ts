@@ -183,6 +183,9 @@ export class LocationService {
           no,
         },
       });
+      if (!location?.no) {
+        throw new BadRequestException('존재하지 않는 매물입니다.');
+      }
       location.isApproved = !location.isApproved;
       this.locations.save(location);
       return {

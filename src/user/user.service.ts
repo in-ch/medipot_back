@@ -55,7 +55,7 @@ export class UserService {
   private async verifyPassword(plainTextPassword: string, hashedPassword: string) {
     const isPasswordMatching = await bcrypt.compare(plainTextPassword, hashedPassword);
     if (!isPasswordMatching) {
-      throw new HttpException('잘못된 인증 정보입니다.', HttpStatus.BAD_REQUEST);
+      throw new HttpException('비밀번호가 틀렸습니다.', HttpStatus.BAD_REQUEST);
     }
   }
 

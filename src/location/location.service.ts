@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ArrayContains, Between, Repository } from 'typeorm';
 
@@ -11,6 +11,7 @@ import {
   LocationUpdateApprovedCrudDto,
 } from './dto/location.dto';
 import { Location } from './entities/location.entitiy';
+import e from 'express';
 
 @Injectable()
 export class LocationService {
@@ -30,6 +31,9 @@ export class LocationService {
           no,
         },
       });
+      if (!location?.no) {
+        throw new BadRequestException('존재하지 않는 매물입니다.');
+      }
       return {
         statusCode: 200,
         data: location,

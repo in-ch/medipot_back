@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   HttpException,
   HttpStatus,
   Injectable,
@@ -126,14 +127,22 @@ export class UserService {
     payload: AdminUserCreateCrudDto,
   ): Promise<OutputDto<AdminUserOutputCrudDto>> {
     try {
-      const newAdminUser = this.adminUsers.create({
+      const EXIST_USER = await this.adminUsers.findOne({
+        where: {
+          id: payload.id,
+        },
+      });
+      if (EXIST_USER?.no) {
+        throw new ConflictException('이미 존재하는 아이디입니다.');
+      }
+      const newAdminUser = await this.adminUsers.create({
         ...payload,
         token: ' ',
         refresh_token: ' ',
       });
       const encryptedPassowrd = bcrypt.hashSync(newAdminUser.password, 10);
 
-      const newAdmin = this.adminUsers.save({
+      const newAdmin = await this.adminUsers.save({
         ...newAdminUser,
         password: encryptedPassowrd,
       });
@@ -149,7 +158,7 @@ export class UserService {
         },
       );
 
-      const refresh_token = this.jwtService.sign(
+      const refresh_token = await this.jwtService.sign(
         {
           ...newAdmin,
           token: '',
@@ -171,6 +180,7 @@ export class UserService {
       };
     } catch (e) {
       console.error(`create Admin User Error: ${e}`);
+      throw e;
     }
   }
 

@@ -85,8 +85,11 @@ export class User extends CommonEntity {
   @OneToMany((_) => Consult, (consult) => consult.user)
   consult: Consult[];
 
-  @OneToMany((_) => Chat, (chat) => chat.user)
-  chats: Chat[];
+  @OneToMany((_) => Chat, (chat) => chat.fromUser)
+  from_chats: Chat[];
+
+  @OneToMany((_) => Chat, (chat) => chat.toUser)
+  to_chats: Chat[];
 
   @OneToMany((_) => Like, (like) => like.user)
   like: Like[];

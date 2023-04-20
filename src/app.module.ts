@@ -16,7 +16,6 @@ import { ReplyModule } from './reply/reply.module';
 import { ReportModule } from './report/report.module';
 import { NestedReplyModule } from './nested-reply/nested-reply.module';
 import { ChatModule } from './chat/chat.module';
-import { ChatGateway } from './chat/chat.gateway';
 
 @Module({
   imports: [
@@ -38,6 +37,6 @@ import { ChatGateway } from './chat/chat.gateway';
     ChatModule,
   ],
   controllers: [],
-  providers: [ChatGateway],
+  providers: [],
 })
 export class AppModule {}

@@ -1,5 +1,6 @@
 import { Body, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Request } from 'express';
 import { OutputDto } from 'src/commons/dtos';
 import { User } from 'src/user/entities/user.entitiy';
 import { IsNull, Repository } from 'typeorm';
@@ -45,24 +46,24 @@ export class ChatService {
     }
   }
 
-  async getMessages(@Body() payload: ChatCrudDto): Promise<OutputDto<Chat[]>> {
+  async getMessages(request: Request<ChatCrudDto>): Promise<OutputDto<Chat[]>> {
     try {
       const MESSAGES = await this.chats.find({
         where: [
           {
             toUser: {
-              no: payload.toUserNo,
+              no: Number(request.query.toUserNo),
             },
             fromUser: {
-              no: payload.fromUserNo,
+              no: Number(request.query.fromUserNo),
             },
           },
           {
             toUser: {
-              no: payload.fromUserNo,
+              no: Number(request.query.fromUserNo),
             },
             fromUser: {
-              no: payload.toUserNo,
+              no: Number(request.query.toUserNo),
             },
           },
         ],

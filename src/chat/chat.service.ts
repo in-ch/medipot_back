@@ -47,26 +47,32 @@ export class ChatService {
   }
 
   async getMessages(request: Request<ChatCrudDto>): Promise<OutputDto<Chat[]>> {
+    const { page, limit, toUserNo, fromUserNo } = request.query;
     try {
       const MESSAGES = await this.chats.find({
         where: [
           {
             toUser: {
-              no: Number(request.query.toUserNo),
+              no: Number(toUserNo),
             },
             fromUser: {
-              no: Number(request.query.fromUserNo),
+              no: Number(fromUserNo),
             },
           },
           {
             toUser: {
-              no: Number(request.query.fromUserNo),
+              no: Number(fromUserNo),
             },
             fromUser: {
-              no: Number(request.query.toUserNo),
+              no: Number(toUserNo),
             },
           },
         ],
+        take: Number(limit) || 20,
+        skip: Number(page) * Number(limit) || 0,
+        order: {
+          createdAt: 'DESC',
+        },
       });
       return {
         statusCode: 200,

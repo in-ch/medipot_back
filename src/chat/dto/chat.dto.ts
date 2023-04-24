@@ -9,4 +9,12 @@ export class ChatCrudDto {
   @ApiProperty()
   @IsNumber()
   fromUserNo: number;
+
+  @ApiProperty()
+  @IsNumber()
+  page: number;
+
+  @ApiProperty()
+  @IsNumber()
+  limit: number;
 }

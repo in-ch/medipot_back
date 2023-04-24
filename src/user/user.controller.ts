@@ -22,7 +22,6 @@ import {
   UpdateProfileOutputDto,
   SearchUserCrudDto,
   RefreshParams,
-  RefreshHeader,
   RefreshOutputDto,
 } from './dto/user.dto';
 import { User } from './entities/user.entitiy';

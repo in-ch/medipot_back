@@ -9,8 +9,11 @@ export enum MESSAGE_TYPE {
 
 @Entity()
 export class Chat extends CommonEntity {
-  @Column({ type: 'varchar', length: 1050, comment: '메시지 내용' })
+  @Column({ type: 'varchar', length: 1050, comment: '메시지 내용', nullable: true })
   message: string;
+
+  @Column({ type: 'varchar', comment: '이미지 타입', nullable: true })
+  img: string;
 
   @Column({ type: 'boolean', comment: '채팅 메시지를 읽었는지 여부', default: false })
   isRead: boolean;

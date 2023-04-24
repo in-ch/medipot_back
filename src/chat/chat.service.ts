@@ -70,6 +70,8 @@ export class ChatService {
         ],
         take: Number(limit) || 20,
         skip: Number(page) * Number(limit) || 0,
+        relations: ['toUser', 'fromUser'],
+        loadRelationIds: true,
         order: {
           createdAt: 'DESC',
         },

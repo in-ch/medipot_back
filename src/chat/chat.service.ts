@@ -73,7 +73,7 @@ export class ChatService {
         relations: ['toUser', 'fromUser'],
         loadRelationIds: true,
         order: {
-          createdAt: 'DESC',
+          createdAt: 'ASC',
         },
       });
       return {

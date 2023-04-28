@@ -14,9 +14,16 @@ export class ChatService {
     @InjectRepository(Chat) private chats: Repository<Chat>,
     @InjectRepository(User) private users: Repository<User>,
   ) {}
+
+  /**
+   * @param {MessageProps} params   id, toUserNo, toUserProfile, fromUserNo, fromUserProfile, type, data
+   * @description 문의를 등록해준다.
+   * @return {OutputDto<Chat>} 등록된 채팅 반환
+   * @author in-ch, 2023-04-28
+   */
   async createMessage(message: MessageProps): Promise<OutputDto<Chat>> {
     try {
-      const { id, toUserNo, toUserProfile, fromUserNo, fromUserProfile, type, data } = message;
+      const { toUserNo, fromUserNo, type, data } = message;
       const FROM_USER = await this.users.findOne({
         where: {
           no: Number(fromUserNo),

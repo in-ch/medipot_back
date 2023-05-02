@@ -78,8 +78,8 @@ export class ChatService {
         order: {
           no: 'ASC',
         },
-        // take: Number(limit) || 20,
-        // skip: Number(page) * Number(limit) || 0,
+        take: Number(limit) || 100,
+        skip: Number(page) * Number(limit) || 0,
         relations: ['toUser', 'fromUser'],
         loadRelationIds: true,
       });

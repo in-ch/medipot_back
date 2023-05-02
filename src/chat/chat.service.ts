@@ -1,7 +1,7 @@
 import { Body, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
-import { OutputDto } from 'src/commons/dtos';
+import { OutputDto, PageOutput } from 'src/commons/dtos';
 import { User } from 'src/user/entities/user.entitiy';
 import { IsNull, Repository } from 'typeorm';
 import { MessageProps } from './chat.gateway';
@@ -53,7 +53,7 @@ export class ChatService {
     }
   }
 
-  async getMessages(request: Request<ChatCrudDto>): Promise<OutputDto<Chat[]>> {
+  async getMessages(request: Request<ChatCrudDto>): Promise<OutputDto<PageOutput<Chat[]>>> {
     const { page, limit, toUserNo, fromUserNo } = request.query;
     try {
       const MESSAGES = await this.chats.find({
@@ -75,18 +75,21 @@ export class ChatService {
             },
           },
         ],
-        take: Number(limit) || 20,
-        skip: Number(page) * Number(limit) || 0,
+        order: {
+          no: 'ASC',
+        },
+        // take: Number(limit) || 20,
+        // skip: Number(page) * Number(limit) || 0,
         relations: ['toUser', 'fromUser'],
         loadRelationIds: true,
-        order: {
-          createdAt: 'ASC',
-        },
       });
       return {
         statusCode: 200,
         totalCount: MESSAGES.length,
-        data: MESSAGES,
+        data: {
+          page: Number(page),
+          list: MESSAGES,
+        },
       };
     } catch (e) {
       console.error(e);

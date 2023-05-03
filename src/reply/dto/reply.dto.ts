@@ -22,6 +22,14 @@ export class ReplyPaginationDto extends PaginationDto {
   @ApiProperty()
   @IsNumber()
   writingNo: number;
+
+  @ApiProperty()
+  @IsNumber()
+  page: number;
+
+  @ApiProperty()
+  @IsNumber()
+  limit: number;
 }
 
 export class ReplyDeleteDto {

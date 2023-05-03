@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Headers, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
-import { OutputDto } from 'src/commons/dtos';
+import { OutputDto, PageOutput } from 'src/commons/dtos';
 import { JwtAuthGuard } from 'src/user/strategy/jwtAuthentication.guard';
 import {
   ReplyCrudDto,
@@ -22,7 +22,7 @@ export class ReplyController {
   @ApiBody({ type: ReplyPaginationDto })
   @ApiResponse({ description: '성공', type: OutputDto<Reply[]> })
   @Get('')
-  getReplys(@Req() request: Request<ReplyPaginationDto>): Promise<OutputDto<Reply[]>> {
+  getReplys(@Req() request: Request<ReplyPaginationDto>): Promise<OutputDto<PageOutput<Reply[]>>> {
     return this.replysService.getReplys(request);
   }
 

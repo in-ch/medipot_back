@@ -47,6 +47,7 @@ export class ReplyService {
         relations: ['user'],
       });
       const totalCount = replys.length;
+
       return {
         totalCount,
         statusCode: 200,
@@ -60,7 +61,6 @@ export class ReplyService {
             delete v.user.token;
             delete v.user.refresh_token;
             delete v.createdAt;
-            delete v.updatedAt;
             delete v.deletedAt;
             return v;
           }),

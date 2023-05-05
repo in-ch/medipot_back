@@ -2,7 +2,7 @@ import { Body, Headers, Injectable, Req } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
-import { OutputDto } from 'src/commons/dtos';
+import { OutputDto, PageOutput } from 'src/commons/dtos';
 import { Reply } from 'src/reply/entities/reply.entity';
 import { User } from 'src/user/entities/user.entitiy';
 import { IsNull, Repository } from 'typeorm';
@@ -79,7 +79,7 @@ export class NestedReplyService {
    */
   async getNestedReplys(
     @Req() request: Request<NestedReplyListPagination>,
-  ): Promise<OutputDto<NestedReply[]>> {
+  ): Promise<OutputDto<PageOutput<NestedReply[]>>> {
     const {
       query: { limit, page, replyNo },
     } = request;
@@ -98,7 +98,21 @@ export class NestedReplyService {
       });
       return {
         statusCode: 200,
-        data: nestedReplys,
+        data: {
+          page: Number(page),
+          list: nestedReplys.map((v) => {
+            delete v.user.password;
+            delete v.user.grant;
+            delete v.user.marketingConsent;
+            delete v.user.isSocialLogin;
+            delete v.user.token;
+            delete v.user.refresh_token;
+            delete v.createdAt;
+            delete v.updatedAt;
+            delete v.deletedAt;
+            return v;
+          }),
+        },
       };
     } catch (e) {
       console.error(e);

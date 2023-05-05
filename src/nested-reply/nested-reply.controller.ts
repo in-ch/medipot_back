@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Headers, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
-import { OutputDto } from 'src/commons/dtos';
+import { OutputDto, PageOutput } from 'src/commons/dtos';
 import { JwtAuthGuard } from 'src/user/strategy/jwtAuthentication.guard';
 import {
   CreateNestedReplyHeaderParams,
@@ -35,7 +35,7 @@ export class NestedReplyController {
   @Get('/list')
   async getNestedReplys(
     @Req() request: Request<NestedReplyListPagination>,
-  ): Promise<OutputDto<NestedReply[]>> {
+  ): Promise<OutputDto<PageOutput<NestedReply[]>>> {
     return this.nestedReplyService.getNestedReplys(request);
   }
 

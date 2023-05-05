@@ -96,10 +96,19 @@ export class NestedReplyService {
         },
         relations: ['user'],
       });
+      const totalCount = await this.nestedReplys.count({
+        where: {
+          reply: {
+            no: Number(replyNo),
+          },
+          deletedAt: IsNull(),
+        },
+      });
       return {
         statusCode: 200,
         data: {
           page: Number(page),
+          totalCount,
           list: nestedReplys.map((v) => {
             delete v.user.password;
             delete v.user.grant;

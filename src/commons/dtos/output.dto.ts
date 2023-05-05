@@ -27,5 +27,8 @@ export class PageOutput<T> {
   page: number;
 
   @ApiProperty()
+  totalCount?: number;
+
+  @ApiProperty()
   list: T;
 }

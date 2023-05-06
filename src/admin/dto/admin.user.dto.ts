@@ -36,7 +36,7 @@ export class AdminUserOutputCrudDto extends AdminUserCrudDto {
 export class AdminUserRefreshCrudDto {
   @ApiProperty()
   @IsString()
-  name: string;
+  id: string;
 
   @ApiProperty()
   @IsString()

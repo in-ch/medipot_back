@@ -193,17 +193,19 @@ export class AdminService {
     payload: AdminUserRefreshCrudDto,
   ): Promise<OutputDto<AdminUserRefreshOutputCrudDto>> {
     try {
-      const { name, refresh_token } = payload;
+      const { id, refresh_token } = payload;
+
       const verify = this.jwtService.verify(refresh_token, { secret: process.env.PRIVATE_KEY });
       if (!verify) {
         throw new NotAcceptableException(`리프레쉬 토큰이 만료되었습니다.`);
       }
       const getAdmin = await this.adminUsers.findOne({
         where: {
-          name,
+          id,
           refresh_token,
         },
       });
+
       const new_access_token = await this.jwtService.sign(
         {
           ...getAdmin,

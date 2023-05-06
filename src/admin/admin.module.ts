@@ -1,17 +1,15 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
-
-import { UserController } from './user.controller';
-import { UserService } from './user.service';
-import { User } from './entities/user.entitiy';
-import { JwtStrategy } from './strategy/jwt.strategy';
-import { Writing } from 'src/writing/entities/writing';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { AdminController } from './admin.controller';
+import { AdminService } from './admin.service';
+import { AdminUser } from './entities/admin-user.entitiy';
+import { LocalStrategy } from './strategy/local.strategy';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Writing]),
+    TypeOrmModule.forFeature([AdminUser]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -23,7 +21,7 @@ import { Writing } from 'src/writing/entities/writing';
       }),
     }),
   ],
-  providers: [UserService, JwtStrategy],
-  controllers: [UserController],
+  providers: [AdminService, LocalStrategy],
+  controllers: [AdminController],
 })
-export class UserModule {}
+export class AdminModule {}

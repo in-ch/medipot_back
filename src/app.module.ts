@@ -16,6 +16,7 @@ import { ReplyModule } from './reply/reply.module';
 import { ReportModule } from './report/report.module';
 import { NestedReplyModule } from './nested-reply/nested-reply.module';
 import { ChatModule } from './chat/chat.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { ChatModule } from './chat/chat.module';
     ReportModule,
     NestedReplyModule,
     ChatModule,
+    AdminModule,
   ],
   controllers: [],
   providers: [],

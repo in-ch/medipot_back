@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Location } from 'src/location/entities/location.entitiy';
-import { AdminUser, User } from 'src/user/entities/user.entitiy';
+import { User } from 'src/user/entities/user.entitiy';
 import { Auth } from 'src/auth/entities/auth.entitiy';
 import { Question } from 'src/question/entities/question.entitiy';
 import { Consult } from 'src/consult/entities/consult.entitiy';
@@ -12,6 +12,7 @@ import { Reply } from 'src/reply/entities/reply.entity';
 import { Report } from 'src/report/entities/report.entity';
 import { NestedReply } from 'src/nested-reply/entities/nestedReply.entitiy';
 import { Chat } from 'src/chat/entities/chat.entitiy';
+import { AdminUser } from 'src/admin/entities/admin-user.entitiy';
 
 @Module({
   imports: [

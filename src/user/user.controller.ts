@@ -4,13 +4,6 @@ import { Request } from 'express';
 
 import { OutputDto } from 'src/commons/dtos';
 import {
-  AdminUserCreateCrudDto,
-  AdminUserLoginCrudDto,
-  AdminUserOutputCrudDto,
-  AdminUserRefreshCrudDto,
-  AdminUserRefreshOutputCrudDto,
-} from './dto/admin.user.dto';
-import {
   UserCreateOutputCrudDto,
   UserCreateInputCrudDto,
   UserLoginCrudDto,
@@ -26,7 +19,6 @@ import {
 } from './dto/user.dto';
 import { User } from './entities/user.entitiy';
 import { JwtAuthGuard } from './strategy/jwtAuthentication.guard';
-import { LocalAuthenticationGuard } from './strategy/localAuthentication.guard';
 
 import { UserService } from './user.service';
 
@@ -42,38 +34,11 @@ export class UserController {
     return this.usersService.createUser(payload);
   }
 
-  @ApiBody({ type: AdminUserCreateCrudDto })
-  @ApiCreatedResponse({ description: '성공', type: OutputDto<AdminUserOutputCrudDto> })
-  @UseGuards(LocalAuthenticationGuard)
-  // @UseGuards(JwtAuthGuard)
-  @Post('/admin/create')
-  createAdminUser(
-    @Body() payload: AdminUserCreateCrudDto,
-  ): Promise<OutputDto<AdminUserOutputCrudDto>> {
-    return this.usersService.createAdminUser(payload);
-  }
-
   @ApiBody({ type: UserLoginCrudDto })
   @ApiResponse({ description: '성공', type: OutputDto<UserLoginOutputCrudDto> })
   @Post('/login')
   login(@Body() payload: UserLoginCrudDto): Promise<OutputDto<UserLoginOutputCrudDto>> {
     return this.usersService.login(payload);
-  }
-
-  @ApiBody({ type: AdminUserLoginCrudDto })
-  @ApiResponse({ description: '성공', type: OutputDto<AdminUserOutputCrudDto> })
-  @Post('/admin/login')
-  loginAdmin(@Body() payload: AdminUserLoginCrudDto): Promise<OutputDto<AdminUserOutputCrudDto>> {
-    return this.usersService.adminLogin(payload);
-  }
-
-  @ApiBody({ type: AdminUserRefreshCrudDto })
-  @ApiResponse({ description: '성공', type: OutputDto<AdminUserRefreshOutputCrudDto> })
-  @Post('/admin/refresh')
-  refreshAdmin(
-    @Body() payload: AdminUserRefreshCrudDto,
-  ): Promise<OutputDto<AdminUserRefreshOutputCrudDto>> {
-    return this.usersService.adminRefresh(payload);
   }
 
   @ApiBody({})

@@ -131,6 +131,7 @@ export class LocationService {
           ),
           departments: ArrayContains(departmentsValueArray.length > 1 ? departmentsValueArray : []),
           keywords: ArrayContains(keywordsArray.length > 1 ? keywordsArray : []),
+          isApproved: true,
         },
       });
 

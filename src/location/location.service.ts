@@ -11,11 +11,14 @@ import {
   LocationUpdateApprovedCrudDto,
 } from './dto/location.dto';
 import { Location } from './entities/location.entitiy';
-import e from 'express';
+import { NotionService } from 'src/utills/notion/notion.service';
 
 @Injectable()
 export class LocationService {
-  constructor(@InjectRepository(Location) private readonly locations: Repository<Location>) {}
+  constructor(
+    @InjectRepository(Location) private readonly locations: Repository<Location>,
+    private readonly notionService: NotionService,
+  ) {}
 
   /**
    * @param {NoDto} query 쿼리값
@@ -156,8 +159,17 @@ export class LocationService {
    */
   async createLocation(payload: LocationCrudDto): Promise<OutputDto<LocationOutputCrudDto>> {
     try {
-      const newLocation = this.locations.create(payload);
+      const newLocation = await this.locations.create(payload);
       this.locations.save(newLocation);
+
+      await this.notionService.notionInsertLocation({
+        name: newLocation.name,
+        address: newLocation.address,
+        keywords: newLocation.keywords,
+        departments: newLocation.departments,
+        userName: '이거 기능 추가해야함.',
+      });
+
       return {
         statusCode: 200,
         data: newLocation,

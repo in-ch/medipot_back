@@ -44,3 +44,25 @@ export class NotionInsertConsultParams {
   @IsString()
   phone: string;
 }
+
+export class NotionInsertReportParams {
+  @ApiProperty()
+  @IsString()
+  contentId: string;
+
+  @ApiProperty()
+  @IsString()
+  tag: string;
+
+  @ApiProperty()
+  @IsString()
+  reportUserName: string;
+
+  @ApiProperty()
+  @IsString()
+  reportedUserName: string;
+
+  @ApiProperty()
+  @IsString()
+  detail: string;
+}

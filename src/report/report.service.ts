@@ -10,6 +10,7 @@ import { ReportCrudDto, ReportHeaderDto, ReportReplyCrudDto } from './dto/report
 import { OutputDto } from 'src/commons/dtos';
 import { Report } from './entities/report.entity';
 import { Reply } from 'src/reply/entities/reply.entity';
+import { NotionService } from 'src/utills/notion/notion.service';
 
 @Injectable()
 export class ReportService {
@@ -19,6 +20,7 @@ export class ReportService {
     @InjectRepository(Reply) private readonly replys: Repository<Reply>,
     @InjectRepository(Report) private readonly reports: Repository<Report>,
     private readonly jwtService: JwtService,
+    private readonly notionService: NotionService,
   ) {}
 
   /**
@@ -56,8 +58,16 @@ export class ReportService {
           writing: Writing,
         }),
       );
+
+      this.notionService.notionInsertReport({
+        contentId: Writing.no.toString(),
+        tag: '글 신고',
+        reportUserName: User_report.nickname,
+        reportedUserName: Writing.user.nickname,
+        detail: Writing.text,
+      });
       return {
-        statusCode: 400,
+        statusCode: 200,
       };
     } catch (e) {
       console.error(`글 신고 API Error: ${e}`);
@@ -102,6 +112,15 @@ export class ReportService {
           reply: Reply,
         }),
       );
+
+      this.notionService.notionInsertReport({
+        contentId: Reply.no.toString(),
+        tag: '댓글 신고',
+        reportUserName: User_report.nickname,
+        reportedUserName: Reply.user.nickname,
+        detail: Reply.comment,
+      });
+
       return {
         statusCode: 200,
       };

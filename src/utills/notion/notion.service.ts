@@ -1,5 +1,9 @@
 import { Client } from '@notionhq/client';
-import { NotionInsertConsultParams, NotionInsertLocationParams } from './dto/notion.dto';
+import {
+  NotionInsertConsultParams,
+  NotionInsertLocationParams,
+  NotionInsertReportParams,
+} from './dto/notion.dto';
 
 export class NotionService {
   constructor() {}
@@ -114,6 +118,69 @@ export class NotionService {
               {
                 text: {
                   content: userName,
+                },
+              },
+            ],
+          },
+        },
+      });
+      return true;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async notionInsertReport({
+    contentId,
+    tag,
+    reportUserName,
+    reportedUserName,
+    detail,
+  }: NotionInsertReportParams): Promise<boolean> {
+    try {
+      const notion = new Client({ auth: process.env.NOTION_API_KEY });
+      await notion.pages.create({
+        parent: {
+          database_id: process.env.NOTION_REPORT_REGISTRATION,
+        },
+        properties: {
+          detail: {
+            title: [
+              {
+                text: {
+                  content: detail,
+                },
+              },
+            ],
+          },
+          contentId: {
+            rich_text: [
+              {
+                text: {
+                  content: contentId,
+                },
+              },
+            ],
+          },
+          tag: {
+            select: {
+              name: tag,
+            },
+          },
+          reportUserName: {
+            rich_text: [
+              {
+                text: {
+                  content: reportUserName,
+                },
+              },
+            ],
+          },
+          reportedUserName: {
+            rich_text: [
+              {
+                text: {
+                  content: reportedUserName,
                 },
               },
             ],

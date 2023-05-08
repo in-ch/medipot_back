@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Reply } from 'src/reply/entities/reply.entity';
 
 import { User } from 'src/user/entities/user.entitiy';
+import { NotionService } from 'src/utills/notion/notion.service';
 import { Writing } from 'src/writing/entities/writing';
 import { Report } from './entities/report.entity';
 import { ReportController } from './report.controller';
@@ -25,6 +26,6 @@ import { ReportService } from './report.service';
     }),
   ],
   controllers: [ReportController],
-  providers: [ReportService],
+  providers: [ReportService, NotionService],
 })
 export class ReportModule {}

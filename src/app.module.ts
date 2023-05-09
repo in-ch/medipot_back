@@ -19,6 +19,7 @@ import { ChatModule } from './chat/chat.module';
 import { AdminModule } from './admin/admin.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ScheduleService } from './utills/schedule/schedule.service';
+import { AlarmModule } from './alarm/alarm.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { ScheduleService } from './utills/schedule/schedule.service';
     ChatModule,
     AdminModule,
     ScheduleModule.forRoot(),
+    AlarmModule,
   ],
   controllers: [],
   providers: [ScheduleService],

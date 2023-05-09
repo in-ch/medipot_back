@@ -1,10 +1,10 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { OutputDto } from 'src/commons/dtos';
 import { User } from 'src/user/entities/user.entitiy';
 import { NotionService } from 'src/utills/notion/notion.service';
-import { Repository } from 'typeorm';
 import {
   ConsultListHeaders,
   ConsultListPagination,

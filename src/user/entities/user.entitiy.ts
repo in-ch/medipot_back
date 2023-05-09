@@ -1,3 +1,4 @@
+import { Alarm } from 'src/alarm/entities/alarm.entitiy';
 import { Chat } from 'src/chat/entities/chat.entitiy';
 import { CommonEntity } from 'src/commons/entities/common.entity';
 import { Consult } from 'src/consult/entities/consult.entitiy';
@@ -96,6 +97,9 @@ export class User extends CommonEntity {
 
   @OneToMany((_) => Report, (report) => report.user_reported)
   reported: Reply[];
+
+  @OneToMany((_) => Alarm, (alarm) => alarm.user)
+  alarm: Alarm[];
 
   @Column({ comment: '소셜 로그인 여부', default: false })
   isSocialLogin: boolean;

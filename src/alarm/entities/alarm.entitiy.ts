@@ -7,7 +7,7 @@ import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 /// commentToComment: 내가 쓴 댓글에 대댓글이 달림.
 /// like: 내가 쓴 글에 댓글이 달림.
 /// chat: 나한테 채팅이 옴.
-export enum TYPE {
+export enum ALARM_TYPE {
   comment = 'COMMENT',
   commentToComment = 'COMMENT_TO_COMMENT',
   like = 'LIKE',
@@ -23,5 +23,5 @@ export class Alarm extends CommonEntity {
 
   @ApiProperty()
   @Column({ comment: '알림 유형' })
-  type: TYPE;
+  type: ALARM_TYPE;
 }

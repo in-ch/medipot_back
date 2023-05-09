@@ -13,6 +13,7 @@ import { Report } from 'src/report/entities/report.entity';
 import { NestedReply } from 'src/nested-reply/entities/nestedReply.entitiy';
 import { Chat } from 'src/chat/entities/chat.entitiy';
 import { AdminUser } from 'src/admin/entities/admin-user.entitiy';
+import { Alarm } from 'src/alarm/entities/alarm.entitiy';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { AdminUser } from 'src/admin/entities/admin-user.entitiy';
         Report,
         NestedReply,
         Chat,
+        Alarm,
       ], // db 들어가는 곳
     }),
   ],

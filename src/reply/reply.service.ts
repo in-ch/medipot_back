@@ -2,6 +2,8 @@ import { Body, Headers, Injectable, Req } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
+import { AlarmService } from 'src/alarm/alarm.service';
+import { ALARM_TYPE } from 'src/alarm/entities/alarm.entitiy';
 import { OutputDto, PageOutput } from 'src/commons/dtos';
 import { User } from 'src/user/entities/user.entitiy';
 import { Writing } from 'src/writing/entities/writing';
@@ -22,6 +24,7 @@ export class ReplyService {
     @InjectRepository(Writing) private readonly writings: Repository<Writing>,
     @InjectRepository(Reply) private readonly replys: Repository<Reply>,
     private readonly jwtService: JwtService,
+    private readonly alarmService: AlarmService,
   ) {}
 
   /**
@@ -99,6 +102,8 @@ export class ReplyService {
         where: {
           no: writingNo,
         },
+        relations: ['user'],
+        select: ['no'],
       });
       const NewWriting = await this.replys.save(
         this.replys.create({
@@ -107,6 +112,13 @@ export class ReplyService {
           comment,
         }),
       );
+
+      // 알림 추가
+      if (no !== Writing.user.no)
+        this.alarmService.addAlarm({
+          userNo: Writing.user.no,
+          type: ALARM_TYPE.comment,
+        });
       return {
         statusCode: 200,
         data: NewWriting,

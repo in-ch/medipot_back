@@ -7,6 +7,7 @@ import { User } from 'src/user/entities/user.entitiy';
 import { ConsultController } from './consult.controller';
 import { ConsultService } from './consult.service';
 import { Consult } from './entities/consult.entitiy';
+import { NotionService } from 'src/utills/notion/notion.service';
 
 @Module({
   imports: [
@@ -24,6 +25,6 @@ import { Consult } from './entities/consult.entitiy';
     }),
   ],
   controllers: [ConsultController],
-  providers: [ConsultService],
+  providers: [ConsultService, NotionService],
 })
 export class ConsultModule {}

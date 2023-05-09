@@ -2,7 +2,13 @@ import { Body, Controller, Headers, Post, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { OutputDto } from 'src/commons/dtos';
 import { JwtAuthGuard } from 'src/user/strategy/jwtAuthentication.guard';
-import { ReportCrudDto, ReportHeaderDto, ReportReplyCrudDto } from './dto/report.dto';
+import {
+  NestedReportHeaderDto,
+  NestedReportReplyCrudDto,
+  ReportCrudDto,
+  ReportHeaderDto,
+  ReportReplyCrudDto,
+} from './dto/report.dto';
 import { ReportService } from './report.service';
 
 @ApiTags('신고')
@@ -30,5 +36,16 @@ export class ReportController {
     @Headers() header: ReportHeaderDto,
   ): Promise<OutputDto<boolean>> {
     return this.reportService.createReplyReport(payload, header);
+  }
+
+  @ApiBody({ type: NestedReportReplyCrudDto })
+  @ApiResponse({ description: '성공', type: OutputDto<boolean> })
+  @UseGuards(JwtAuthGuard)
+  @Post('/nestedReply')
+  createNestedReply(
+    @Body() payload: NestedReportReplyCrudDto,
+    @Headers() header: NestedReportHeaderDto,
+  ): Promise<OutputDto<boolean>> {
+    return this.reportService.createNestedReplyReport(payload, header);
   }
 }

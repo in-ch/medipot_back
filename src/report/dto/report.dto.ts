@@ -21,3 +21,10 @@ export class ReportReplyCrudDto {
   @IsNumber()
   replyNo: number;
 }
+
+export class NestedReportReplyCrudDto {
+  @ApiProperty()
+  @IsNumber()
+  nestedReplyNo: number;
+}
+export class NestedReportHeaderDto extends ReportHeaderDto {}

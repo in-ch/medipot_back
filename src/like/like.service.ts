@@ -1,6 +1,8 @@
 import { Body, ConflictException, Headers, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AlarmService } from 'src/alarm/alarm.service';
+import { ALARM_TYPE } from 'src/alarm/entities/alarm.entitiy';
 import { OutputDto } from 'src/commons/dtos';
 import { User } from 'src/user/entities/user.entitiy';
 import { Writing } from 'src/writing/entities/writing';
@@ -15,6 +17,7 @@ export class LikeService {
     @InjectRepository(User) private readonly users: Repository<User>,
     @InjectRepository(Writing) private readonly writings: Repository<Writing>,
     private readonly jwtService: JwtService,
+    private readonly alarmService: AlarmService,
   ) {}
 
   async like(
@@ -52,14 +55,24 @@ export class LikeService {
           where: {
             no: writingNo,
           },
+          relations: ['user'],
+          select: ['no'],
         });
 
-        this.likes.save(
+        await this.likes.save(
           this.likes.create({
             user: User,
             writing: Writing,
           }),
         );
+
+        // 알림 추가
+        if (no !== Writing.user.no)
+          await this.alarmService.addAlarm({
+            userNo: Writing.user.no,
+            type: ALARM_TYPE.like,
+          });
+
         return {
           statusCode: 200,
           data: true,

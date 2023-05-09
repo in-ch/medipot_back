@@ -1,6 +1,8 @@
 import { Body, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
+import { AlarmService } from 'src/alarm/alarm.service';
+import { ALARM_TYPE } from 'src/alarm/entities/alarm.entitiy';
 import { OutputDto, PageOutput } from 'src/commons/dtos';
 import { User } from 'src/user/entities/user.entitiy';
 import { IsNull, Repository } from 'typeorm';
@@ -13,6 +15,7 @@ export class ChatService {
   constructor(
     @InjectRepository(Chat) private chats: Repository<Chat>,
     @InjectRepository(User) private users: Repository<User>,
+    private readonly alarmService: AlarmService,
   ) {}
 
   /**
@@ -36,6 +39,13 @@ export class ChatService {
           deletedAt: IsNull(),
         },
       });
+
+      // 알림 추가
+      await this.alarmService.addAlarm({
+        userNo: Number(toUserNo),
+        type: ALARM_TYPE.chat,
+      });
+
       return {
         statusCode: 200,
         data: await this.chats.save(

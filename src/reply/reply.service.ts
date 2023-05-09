@@ -114,10 +114,11 @@ export class ReplyService {
       );
 
       // 알림 추가
-      this.alarmService.addAlarm({
-        userNo: Writing.user.no,
-        type: ALARM_TYPE.comment,
-      });
+      if (no !== Writing.user.no)
+        this.alarmService.addAlarm({
+          userNo: Writing.user.no,
+          type: ALARM_TYPE.comment,
+        });
       return {
         statusCode: 200,
         data: NewWriting,

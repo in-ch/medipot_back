@@ -42,6 +42,7 @@ export class LikeService {
           },
         },
         relations: ['user', 'writing'],
+        loadRelationIds: true,
       });
       if (Like?.no) {
         throw new ConflictException('이미 좋아요를 했습니다.');
@@ -57,6 +58,7 @@ export class LikeService {
           },
           relations: ['user'],
           select: ['no'],
+          loadRelationIds: true,
         });
 
         await this.likes.save(
@@ -106,6 +108,7 @@ export class LikeService {
           },
         },
         relations: ['user', 'writing'],
+        loadRelationIds: true,
       });
       if (!Like?.no) {
         throw new ConflictException('이미 삭제한 좋아요입니다.');

@@ -16,6 +16,6 @@ export abstract class CommonEntity extends BaseEntity {
   @UpdateDateColumn({ name: 'update_at', comment: '수정일' })
   updatedAt: Date;
 
-  @DeleteDateColumn({ name: 'delete_at', comment: '삭제일' })
+  @DeleteDateColumn({ name: 'delete_at', comment: '삭제일', select: false })
   deletedAt?: Date | null;
 }

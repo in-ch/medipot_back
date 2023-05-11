@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { Alarm } from 'src/alarm/entities/alarm.entitiy';
 import { Chat } from 'src/chat/entities/chat.entitiy';
 import { CommonEntity } from 'src/commons/entities/common.entity';
@@ -55,10 +56,10 @@ export class User extends CommonEntity {
   @Column({ comment: '닉네임' })
   nickname: string;
 
-  @Column({ comment: '패스워드' })
+  @Column({ comment: '패스워드', select: false })
   password: string;
 
-  @Column({ comment: '패스워드', default: UserGrant.NONE })
+  @Column({ comment: '권한', default: UserGrant.NONE, select: false })
   grant: UserGrant;
 
   @Column({
@@ -68,7 +69,7 @@ export class User extends CommonEntity {
   })
   profile: string;
 
-  @Column({ comment: '마케팅 동의 여부', default: false })
+  @Column({ comment: '마케팅 동의 여부', default: false, select: false })
   marketingConsent: boolean;
 
   @OneToMany((_) => Question, (question) => question.user)
@@ -101,7 +102,7 @@ export class User extends CommonEntity {
   @OneToMany((_) => Alarm, (alarm) => alarm.user)
   alarm: Alarm[];
 
-  @Column({ comment: '소셜 로그인 여부', default: false })
+  @Column({ comment: '소셜 로그인 여부', default: false, select: false })
   isSocialLogin: boolean;
 
   @OneToMany((_) => NestedReply, (nestedReply) => nestedReply.user)
@@ -110,9 +111,9 @@ export class User extends CommonEntity {
   @Column({ type: 'enum', comment: '과', nullable: true, enum: DEPARTMENT })
   department: DEPARTMENT;
 
-  @Column({ comment: '엑세스 토큰', default: '' })
+  @Column({ comment: '엑세스 토큰', default: '', select: false })
   token?: string;
 
-  @Column({ comment: '리프레쉬 토큰', default: '' })
+  @Column({ comment: '리프레쉬 토큰', default: '', select: false })
   refresh_token?: string;
 }

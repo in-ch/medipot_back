@@ -54,14 +54,7 @@ export class WritingService {
         statusCode: 200,
         data: {
           page,
-          list: writings.map((writing) => {
-            delete writing.user.password;
-            writing.reply.map((replyData, index) => {
-              replyData.deletedAt && delete writing.reply[index];
-              delete replyData.deletedAt;
-            });
-            return writing;
-          }),
+          list: writings,
         },
       };
     } catch (e) {
@@ -85,10 +78,9 @@ export class WritingService {
         },
         relations: ['user', 'like', 'like.user', 'reply'],
       });
-      delete Writing.user.password;
+
       Writing.reply.map((replyData, index) => {
         replyData.deletedAt && delete Writing.reply[index];
-        delete replyData.deletedAt;
       });
       return {
         statusCode: 200,

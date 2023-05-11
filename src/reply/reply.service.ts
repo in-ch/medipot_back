@@ -56,17 +56,7 @@ export class ReplyService {
         statusCode: 200,
         data: {
           page: Number(page),
-          list: replys.map((v) => {
-            delete v.user.password;
-            delete v.user.grant;
-            delete v.user.marketingConsent;
-            delete v.user.isSocialLogin;
-            delete v.user.token;
-            delete v.user.refresh_token;
-            delete v.createdAt;
-            delete v.deletedAt;
-            return v;
-          }),
+          list: replys,
         },
       };
     } catch (e) {
@@ -144,6 +134,7 @@ export class ReplyService {
         },
         relations: ['user'],
         select: ['no'],
+        loadRelationIds: true,
       });
       const NewWriting = await this.replys.save(
         this.replys.create({

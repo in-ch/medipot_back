@@ -103,7 +103,7 @@ export class ReplyService {
           no: writingNo,
         },
         relations: ['user'],
-        select: ['no'],
+        loadRelationIds: true,
       });
       const NewWriting = await this.replys.save(
         this.replys.create({

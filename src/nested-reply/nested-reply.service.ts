@@ -57,7 +57,7 @@ export class NestedReplyService {
           no: replyNo,
         },
         relations: ['user'],
-        select: ['no'],
+        loadRelationIds: true,
       });
       const NestedReply = await this.nestedReplys.save(
         this.nestedReplys.create({

@@ -56,7 +56,7 @@ export class LikeService {
             no: writingNo,
           },
           relations: ['user'],
-          select: ['no'],
+          loadRelationIds: true,
         });
 
         await this.likes.save(

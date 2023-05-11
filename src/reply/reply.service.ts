@@ -76,6 +76,44 @@ export class ReplyService {
   }
 
   /**
+   * @param {Request<ReplyPaginationDto>} query 쿼리값
+   * @param {ReplyHeaderDto} header header값
+   * @description user가 댓글을 쓴 글 목록을 가져온다.
+   * @return {OutputDto<Writing[]>}
+   * @author in-ch, 2023-05-11
+   */
+  async getReplysWritings(@Headers() header: ReplyHeaderDto): Promise<OutputDto<Writing[]>> {
+    try {
+      const { authorization } = header;
+      const UnSignToken = await this.jwtService.verify(authorization.replace('Bearer ', ''), {
+        secret: process.env.PRIVATE_KEY,
+      });
+      const { no } = UnSignToken;
+      const REPLYS = await this.replys
+        .createQueryBuilder('reply')
+        .select('DISTINCT reply.writing_id', 'writing_id')
+        .leftJoin('reply.user', 'user')
+        .where('user.no = :userNo', { userNo: no })
+        .getRawMany();
+
+      const writingIds = REPLYS.map((item) => item.writing_id);
+
+      const writings = await this.writings
+        .createQueryBuilder('writing')
+        .where('writing.no IN (:...writingIds)', { writingIds })
+        .getMany();
+
+      return {
+        statusCode: 200,
+        data: writings,
+        totalCount: writings.length,
+      };
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  /**
    * @param {Request<ReplyCrudDto>} payload writingNo, comment
    * @description 댓글을 등록한다.
    * @return {OutputDto<Reply[]>} 댓글 정보들을 가져온다.

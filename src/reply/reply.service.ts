@@ -100,6 +100,8 @@ export class ReplyService {
 
       const writings = await this.writings
         .createQueryBuilder('writing')
+        .leftJoinAndSelect('writing.reply', 'reply')
+        .leftJoinAndSelect('writing.like', 'like')
         .where('writing.no IN (:...writingIds)', { writingIds })
         .getMany();
 

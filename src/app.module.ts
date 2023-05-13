@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, OnApplicationBootstrap } from '@nestjs/common';
 
 import { TypeormModule } from './typeorm/typeorm.module';
 import { ConfigAppModule } from './config/config.module';
@@ -17,6 +17,13 @@ import { ReportModule } from './report/report.module';
 import { NestedReplyModule } from './nested-reply/nested-reply.module';
 import { ChatModule } from './chat/chat.module';
 import { AdminModule } from './admin/admin.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { ScheduleService } from './utills/schedule/schedule.service';
+import { AlarmModule } from './alarm/alarm.module';
+import { NaverModule } from './naver/naver.module';
+import { Alarm } from './alarm/entities/alarm.entitiy';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from './user/entities/user.entitiy';
 
 @Module({
   imports: [
@@ -26,6 +33,7 @@ import { AdminModule } from './admin/admin.module';
     UserModule,
     UploadsModule,
     KakaoModule,
+    NaverModule,
     EmailModule,
     AuthModule,
     QuestionModule,
@@ -37,8 +45,11 @@ import { AdminModule } from './admin/admin.module';
     NestedReplyModule,
     ChatModule,
     AdminModule,
+    AlarmModule,
+    ScheduleModule.forRoot(),
+    TypeOrmModule.forFeature([Alarm, User]),
   ],
   controllers: [],
-  providers: [],
+  providers: [ScheduleService],
 })
 export class AppModule {}

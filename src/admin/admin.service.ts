@@ -49,6 +49,7 @@ export class AdminService {
         where: {
           id: payload.id,
         },
+        select: ['password', 'id', 'token', 'refresh_token', 'name', 'no'],
       });
       if (EXIST_USER?.no) {
         throw new ConflictException('이미 존재하는 아이디입니다.');
@@ -139,6 +140,7 @@ export class AdminService {
         where: {
           id,
         },
+        select: ['password', 'id', 'token', 'refresh_token', 'name'],
       });
       await this.verifyPassword(password, adminUser.password);
       const access_token = await this.jwtService.sign(
@@ -204,6 +206,7 @@ export class AdminService {
           id,
           refresh_token,
         },
+        select: ['password', 'id', 'token', 'refresh_token', 'name'],
       });
 
       const new_access_token = await this.jwtService.sign(

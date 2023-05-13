@@ -1,9 +1,10 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { OutputDto } from 'src/commons/dtos';
 import { User } from 'src/user/entities/user.entitiy';
-import { Repository } from 'typeorm';
+import { NotionService } from 'src/utills/notion/notion.service';
 import {
   ConsultListHeaders,
   ConsultListPagination,
@@ -21,6 +22,7 @@ export class ConsultService {
     @InjectRepository(Consult) private readonly consults: Repository<Consult>,
     @InjectRepository(User) private readonly users: Repository<User>,
     private readonly jwtService: JwtService,
+    private readonly notionService: NotionService,
   ) {}
 
   async list(
@@ -44,6 +46,7 @@ export class ConsultService {
           },
         },
         relations: ['user'],
+        loadRelationIds: true,
       });
       const totalCount = consults.length;
       return {
@@ -97,6 +100,15 @@ export class ConsultService {
         user: User,
       });
       await this.consults.save(NEW_CONSULT);
+
+      await this.notionService.notionInsertConsult({
+        name: NEW_CONSULT.name,
+        type: NEW_CONSULT.type.toString(),
+        userName: NEW_CONSULT.user.nickname,
+        detail: NEW_CONSULT.detail,
+        phone: NEW_CONSULT.phone,
+      });
+
       return {
         statusCode: 200,
       };

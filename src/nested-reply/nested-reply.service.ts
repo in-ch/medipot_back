@@ -2,11 +2,12 @@ import { Body, Headers, Injectable, Req } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
+import { IsNull, Repository } from 'typeorm';
+
+import { AlarmService } from 'src/alarm/alarm.service';
 import { OutputDto, PageOutput } from 'src/commons/dtos';
 import { Reply } from 'src/reply/entities/reply.entity';
 import { User } from 'src/user/entities/user.entitiy';
-import { IsNull, Repository } from 'typeorm';
-
 import {
   CreateNestedReplyHeaderParams,
   CreateNestedReplyParams,
@@ -15,6 +16,7 @@ import {
   NestedReplyListPagination,
 } from './dto/nestedReply.dto';
 import { NestedReply } from './entities/nestedReply.entitiy';
+import { ALARM_TYPE } from 'src/alarm/entities/alarm.entitiy';
 
 @Injectable()
 export class NestedReplyService {
@@ -23,6 +25,7 @@ export class NestedReplyService {
     @InjectRepository(User) private readonly users: Repository<User>,
     @InjectRepository(Reply) private readonly replys: Repository<Reply>,
     private readonly jwtService: JwtService,
+    private readonly alarmService: AlarmService,
   ) {}
 
   /**
@@ -53,6 +56,8 @@ export class NestedReplyService {
         where: {
           no: replyNo,
         },
+        relations: ['user'],
+        loadRelationIds: true,
       });
       const NestedReply = await this.nestedReplys.save(
         this.nestedReplys.create({
@@ -61,6 +66,13 @@ export class NestedReplyService {
           comment,
         }),
       );
+
+      // 알림 추가
+      if (no !== Reply.user.no)
+        await this.alarmService.addAlarm({
+          userNo: Reply.user.no,
+          type: ALARM_TYPE.commentToComment,
+        });
       return {
         statusCode: 200,
         data: NestedReply,
@@ -109,18 +121,7 @@ export class NestedReplyService {
         data: {
           page: Number(page),
           totalCount,
-          list: nestedReplys.map((v) => {
-            delete v.user.password;
-            delete v.user.grant;
-            delete v.user.marketingConsent;
-            delete v.user.isSocialLogin;
-            delete v.user.token;
-            delete v.user.refresh_token;
-            delete v.createdAt;
-            delete v.updatedAt;
-            delete v.deletedAt;
-            return v;
-          }),
+          list: nestedReplys,
         },
       };
     } catch (e) {

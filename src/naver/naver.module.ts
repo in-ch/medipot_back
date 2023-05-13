@@ -1,20 +1,17 @@
+import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
-
-import { NestedReply } from 'src/nested-reply/entities/nestedReply.entitiy';
-import { Reply } from 'src/reply/entities/reply.entity';
 import { User } from 'src/user/entities/user.entitiy';
-import { NotionService } from 'src/utills/notion/notion.service';
-import { Writing } from 'src/writing/entities/writing';
-import { Report } from './entities/report.entity';
-import { ReportController } from './report.controller';
-import { ReportService } from './report.service';
+
+import { NaverController } from './naver.controller';
+import { NaverService } from './naver.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Writing, User, Report, Reply, NestedReply]),
+    HttpModule,
+    TypeOrmModule.forFeature([User]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -26,7 +23,7 @@ import { ReportService } from './report.service';
       }),
     }),
   ],
-  controllers: [ReportController],
-  providers: [ReportService, NotionService],
+  controllers: [NaverController],
+  providers: [NaverService],
 })
-export class ReportModule {}
+export class NaverModule {}

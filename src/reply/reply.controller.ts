@@ -3,6 +3,7 @@ import { ApiBody, ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagg
 import { Request } from 'express';
 import { OutputDto, PageOutput } from 'src/commons/dtos';
 import { JwtAuthGuard } from 'src/user/strategy/jwtAuthentication.guard';
+import { Writing } from 'src/writing/entities/writing';
 import {
   ReplyCrudDto,
   ReplyDeleteDto,
@@ -24,6 +25,13 @@ export class ReplyController {
   @Get('')
   getReplys(@Req() request: Request<ReplyPaginationDto>): Promise<OutputDto<PageOutput<Reply[]>>> {
     return this.replysService.getReplys(request);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiResponse({ description: '성공', type: OutputDto<Writing[]> })
+  @Get('/writings')
+  getReplysWritings(@Headers() header: ReplyHeaderDto): Promise<OutputDto<Writing[]>> {
+    return this.replysService.getReplysWritings(header);
   }
 
   @ApiBody({ type: ReplyCrudDto })

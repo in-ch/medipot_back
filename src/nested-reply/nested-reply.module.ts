@@ -8,10 +8,12 @@ import { NestedReplyController } from './nested-reply.controller';
 import { NestedReplyService } from './nested-reply.service';
 import { User } from 'src/user/entities/user.entitiy';
 import { Reply } from 'src/reply/entities/reply.entity';
+import { Alarm } from 'src/alarm/entities/alarm.entitiy';
+import { AlarmService } from 'src/alarm/alarm.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([NestedReply, User, Reply]),
+    TypeOrmModule.forFeature([NestedReply, User, Reply, Alarm]),
 
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -25,6 +27,6 @@ import { Reply } from 'src/reply/entities/reply.entity';
     }),
   ],
   controllers: [NestedReplyController],
-  providers: [NestedReplyService],
+  providers: [NestedReplyService, AlarmService],
 })
 export class NestedReplyModule {}

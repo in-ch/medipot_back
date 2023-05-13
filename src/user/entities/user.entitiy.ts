@@ -59,6 +59,9 @@ export class User extends CommonEntity {
   @Column({ comment: '패스워드', select: false })
   password: string;
 
+  @Column({ comment: '핸드폰', select: false, nullable: true })
+  phone: string;
+
   @Column({ comment: '권한', default: UserGrant.NONE, select: false })
   grant: UserGrant;
 

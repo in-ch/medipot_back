@@ -90,9 +90,12 @@ export class ReplyService {
 
       const writings = await this.writings
         .createQueryBuilder('writing')
+        .leftJoinAndSelect('writing.user', 'user')
         .leftJoinAndSelect('writing.reply', 'reply')
         .leftJoinAndSelect('writing.like', 'like')
+        .leftJoinAndSelect('like.user', 'likeUser') // 추가: like 테이블과 user 테이블 조인
         .where('writing.no IN (:...writingIds)', { writingIds })
+        .select(['writing', 'user', 'reply', 'like', 'likeUser.no']) // likeUser.no 추가: user 테이블의 no 값 선택
         .getMany();
 
       return {

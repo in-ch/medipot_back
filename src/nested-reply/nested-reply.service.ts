@@ -58,6 +58,7 @@ export class NestedReplyService {
         },
         relations: ['user'],
         select: ['no'],
+        loadRelationIds: true,
       });
       const NestedReply = await this.nestedReplys.save(
         this.nestedReplys.create({
@@ -121,18 +122,7 @@ export class NestedReplyService {
         data: {
           page: Number(page),
           totalCount,
-          list: nestedReplys.map((v) => {
-            delete v.user.password;
-            delete v.user.grant;
-            delete v.user.marketingConsent;
-            delete v.user.isSocialLogin;
-            delete v.user.token;
-            delete v.user.refresh_token;
-            delete v.createdAt;
-            delete v.updatedAt;
-            delete v.deletedAt;
-            return v;
-          }),
+          list: nestedReplys,
         },
       };
     } catch (e) {

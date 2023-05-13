@@ -1,4 +1,4 @@
-import { Injectable, UseFilters } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import {
   KakaoLoginInputDto,
@@ -9,7 +9,7 @@ import {
   RefreshInputDto,
   RefreshOkOutputDto,
 } from './dto/kakao.dto';
-import { OutputDto } from 'src/commons/dtos';
+import { LOGIN_REGISTER_TYPE, OutputDto } from 'src/commons/dtos';
 import { catchError, firstValueFrom } from 'rxjs';
 import { User } from 'src/user/entities/user.entitiy';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -173,6 +173,7 @@ export class KakaoService {
 
         return {
           statusCode: 200,
+          type: LOGIN_REGISTER_TYPE.login,
           data: {
             ...User,
             token: access_token,
@@ -214,6 +215,7 @@ export class KakaoService {
         await this.users.save(NewUser);
         return {
           statusCode: 200,
+          type: LOGIN_REGISTER_TYPE.register,
           data: {
             email: (await NewUser).email,
             nickname: (await NewUser).nickname,

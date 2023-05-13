@@ -46,6 +46,7 @@ export class ConsultService {
           },
         },
         relations: ['user'],
+        loadRelationIds: true,
       });
       const totalCount = consults.length;
       return {

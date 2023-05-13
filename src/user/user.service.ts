@@ -146,7 +146,12 @@ export class UserService {
           email,
           isSocialLogin: false,
         },
+        select: ['password', 'email', 'token', 'refresh_token', 'nickname', 'profile', 'no'],
       });
+      console.log('---------------------');
+      console.log(user);
+      console.log('---------------------');
+
       await this.verifyPassword(password, user.password);
       const access_token = await this.jwtService.sign(
         {
@@ -204,6 +209,7 @@ export class UserService {
         where: {
           no,
         },
+        select: ['password', 'email', 'token', 'refresh_token', 'nickname', 'profile', 'no'],
       });
 
       if (USER.refresh_token !== refresh_token) {
@@ -304,13 +310,6 @@ export class UserService {
           deletedAt: IsNull(),
         },
       });
-      delete User.password;
-      delete User.marketingConsent;
-      delete User.isSocialLogin;
-      delete User.createdAt;
-      delete User.updatedAt;
-      delete User.deletedAt;
-
       return {
         statusCode: 200,
         data: User,

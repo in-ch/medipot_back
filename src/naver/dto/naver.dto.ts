@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString } from 'class-validator';
+import { IsString } from 'class-validator';
+import { KakaoLoginOutputDto } from 'src/kakao/dto/kakao.dto';
 
 export class MePayloadDto {
   @ApiProperty()
@@ -7,24 +8,4 @@ export class MePayloadDto {
   accessToken: string;
 }
 
-export class MeOkOutputDto {
-  @ApiProperty()
-  @IsNumber()
-  userNo: number;
-
-  @ApiProperty()
-  @IsString()
-  nickname: string;
-
-  @ApiProperty()
-  @IsString()
-  profile: string;
-
-  @ApiProperty()
-  @IsString()
-  access_token: string;
-
-  @ApiProperty()
-  @IsString()
-  refresh_token: string;
-}
+export class NaverLoginOutputDto extends KakaoLoginOutputDto {}

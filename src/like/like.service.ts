@@ -57,7 +57,6 @@ export class LikeService {
             no: writingNo,
           },
           relations: ['user'],
-          select: ['no'],
           loadRelationIds: true,
         });
 

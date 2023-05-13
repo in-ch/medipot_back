@@ -21,6 +21,9 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { ScheduleService } from './utills/schedule/schedule.service';
 import { AlarmModule } from './alarm/alarm.module';
 import { NaverModule } from './naver/naver.module';
+import { Alarm } from './alarm/entities/alarm.entitiy';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from './user/entities/user.entitiy';
 
 @Module({
   imports: [
@@ -42,8 +45,9 @@ import { NaverModule } from './naver/naver.module';
     NestedReplyModule,
     ChatModule,
     AdminModule,
-    ScheduleModule.forRoot(),
     AlarmModule,
+    ScheduleModule.forRoot(),
+    TypeOrmModule.forFeature([Alarm, User]),
   ],
   controllers: [],
   providers: [ScheduleService],

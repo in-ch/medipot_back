@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { catchError, firstValueFrom } from 'rxjs';
-import { OutputDto } from 'src/commons/dtos';
+import { LOGIN_REGISTER_TYPE, OutputDto } from 'src/commons/dtos';
 import { User } from 'src/user/entities/user.entitiy';
 import { Repository } from 'typeorm';
 import { MePayloadDto, NaverLoginOutputDto } from './dto/naver.dto';
@@ -75,6 +75,7 @@ export class NaverService {
 
         return {
           statusCode: 200,
+          type: LOGIN_REGISTER_TYPE.login,
           data: {
             ...User,
             token: access_token,
@@ -121,6 +122,7 @@ export class NaverService {
         await this.users.save(NewUser);
         return {
           statusCode: 200,
+          type: LOGIN_REGISTER_TYPE.register,
           data: {
             email: NewUser.email,
             nickname: NewUser.nickname,

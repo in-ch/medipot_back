@@ -1,5 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString } from 'class-validator';
+import { IsEnum, IsNumber, IsString } from 'class-validator';
+
+export enum LOGIN_REGISTER_TYPE {
+  register = 'REGISTER',
+  login = 'LOGIN',
+}
 
 export class OutputDto<T> {
   @ApiProperty()
@@ -20,6 +25,10 @@ export class OutputDto<T> {
   @ApiProperty()
   @IsNumber()
   totalCount?: number;
+
+  @ApiProperty()
+  @IsEnum({ enum: LOGIN_REGISTER_TYPE })
+  type?: string;
 }
 
 export class PageOutput<T> {

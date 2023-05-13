@@ -20,6 +20,7 @@ import { AdminModule } from './admin/admin.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ScheduleService } from './utills/schedule/schedule.service';
 import { AlarmModule } from './alarm/alarm.module';
+import { NaverModule } from './naver/naver.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { AlarmModule } from './alarm/alarm.module';
     UserModule,
     UploadsModule,
     KakaoModule,
+    NaverModule,
     EmailModule,
     AuthModule,
     QuestionModule,

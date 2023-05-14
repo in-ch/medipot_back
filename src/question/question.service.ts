@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -40,11 +40,17 @@ export class QuestionService {
           no,
         },
       });
+      if (!user.no) {
+        throw new NotFoundException('유저 인증에 실패했습니다.');
+      }
       const location = await this.locations.findOne({
         where: {
           no: locationNo,
         },
       });
+      if (!location.no) {
+        throw new NotFoundException('삭제된 매물입니다.');
+      }
       const newQuestion = {
         user,
         location,

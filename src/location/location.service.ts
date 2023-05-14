@@ -6,17 +6,22 @@ import { OutputDto, PaginationDto } from 'src/commons/dtos';
 import { NoDto } from 'src/commons/dtos/no.dto';
 import {
   GetGeoLocationsPaginationDto,
+  LocationCreateHeaderDto,
   LocationCrudDto,
   LocationOutputCrudDto,
   LocationUpdateApprovedCrudDto,
 } from './dto/location.dto';
 import { Location } from './entities/location.entitiy';
 import { NotionService } from 'src/utills/notion/notion.service';
+import { JwtService } from '@nestjs/jwt';
+import { User } from 'src/user/entities/user.entitiy';
 
 @Injectable()
 export class LocationService {
   constructor(
     @InjectRepository(Location) private readonly locations: Repository<Location>,
+    @InjectRepository(User) private readonly users: Repository<User>,
+    private readonly jwtService: JwtService,
     private readonly notionService: NotionService,
   ) {}
 
@@ -153,13 +158,33 @@ export class LocationService {
 
   /**
    * @param {LocationCrudDto} payload 생성할 입지 정보들
+   * @param {LocationCreateHeaderDto} header access_token
    * @description 입지 정보들을 가져온다.
    * @return {OutputDto<LocationOutputCrudDto>} 입지 생성 후 결과를 알려준다.
    * @author in-ch, 2022-12-07
    */
-  async createLocation(payload: LocationCrudDto): Promise<OutputDto<LocationOutputCrudDto>> {
+  async createLocation(
+    payload: LocationCrudDto,
+    header: LocationCreateHeaderDto,
+  ): Promise<OutputDto<LocationOutputCrudDto>> {
     try {
-      const newLocation = await this.locations.create(payload);
+      const { authorization } = header;
+      const UnSignToken = await this.jwtService.verify(authorization.replace('Bearer ', ''), {
+        secret: process.env.PRIVATE_KEY,
+      });
+      const { no } = UnSignToken;
+
+      const User = await this.users.findOne({
+        where: {
+          no,
+        },
+      });
+
+      const newLocation = await this.locations.create({
+        ...payload,
+        user: User,
+      });
+
       this.locations.save(newLocation);
 
       await this.notionService.notionInsertLocation({
@@ -167,7 +192,7 @@ export class LocationService {
         address: newLocation.address,
         keywords: newLocation.keywords,
         departments: newLocation.departments,
-        userName: '이거 기능 추가해야함.',
+        userName: User.nickname,
       });
 
       return {

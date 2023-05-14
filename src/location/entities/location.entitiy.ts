@@ -1,6 +1,8 @@
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+
 import { CommonEntity } from 'src/commons/entities/common.entity';
 import { Question } from 'src/question/entities/question.entitiy';
-import { Column, Entity, OneToMany } from 'typeorm';
+import { User } from 'src/user/entities/user.entitiy';
 
 @Entity()
 export class Location extends CommonEntity {
@@ -57,4 +59,8 @@ export class Location extends CommonEntity {
 
   @OneToMany((_) => Question, (question) => question.location)
   question: Question[];
+
+  @ManyToOne((_) => User, (user) => user.location, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 }

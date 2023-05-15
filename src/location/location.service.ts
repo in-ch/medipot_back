@@ -34,21 +34,24 @@ export class LocationService {
   async getLocation(query: NoDto): Promise<OutputDto<LocationOutputCrudDto>> {
     try {
       const { no } = query;
-      const location = await this.locations.findOne({
-        where: {
-          no,
-        },
-      });
-      if (!location?.no) {
-        throw new BadRequestException('존재하지 않는 매물입니다.');
+      const numberNo = Number(no);
+      if (!isNaN(numberNo)) {
+        const location = await this.locations.findOne({
+          where: {
+            no: Number(no),
+          },
+        });
+        if (!location?.no) {
+          throw new BadRequestException('존재하지 않는 매물입니다.');
+        }
+        return {
+          statusCode: 200,
+          data: location,
+        };
       }
-      return {
-        statusCode: 200,
-        data: location,
-      };
     } catch (e) {
       console.error(`getLocation error: ${e}`);
-      throw e;
+      throw new BadRequestException('존재하지 않거나 잘못된 매물 정보를 요청하였습니다.');
     }
   }
   /**

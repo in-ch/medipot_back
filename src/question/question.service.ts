@@ -13,6 +13,7 @@ import {
 import { User } from 'src/user/entities/user.entitiy';
 import { Location } from 'src/location/entities/location.entitiy';
 import { JwtService } from '@nestjs/jwt';
+import { NotionService } from 'src/utills/notion/notion.service';
 
 @Injectable()
 export class QuestionService {
@@ -21,6 +22,7 @@ export class QuestionService {
     @InjectRepository(User) private readonly users: Repository<User>,
     @InjectRepository(Location) private readonly locations: Repository<Location>,
     private readonly jwtService: JwtService,
+    private readonly notionService: NotionService,
   ) {}
 
   async addDetail(
@@ -39,18 +41,28 @@ export class QuestionService {
         where: {
           no,
         },
+        select: ['no', 'nickname', 'phone'],
       });
       if (!user.no) {
         throw new NotFoundException('유저 인증에 실패했습니다.');
       }
+
       const location = await this.locations.findOne({
         where: {
           no: locationNo,
         },
+        relations: ['user'],
       });
       if (!location.no) {
         throw new NotFoundException('삭제된 매물입니다.');
       }
+      const locationUser = await this.users.findOne({
+        where: {
+          no: location.user.no,
+        },
+        select: ['phone', 'nickname'],
+      });
+
       const newQuestion = {
         user,
         location,
@@ -59,10 +71,19 @@ export class QuestionService {
       };
       this.questions.save(this.questions.create(newQuestion));
 
+      await this.notionService.notionInsertQuestion({
+        name: user.nickname,
+        phone: user.phone,
+        location: location.address,
+        locationUser: locationUser.nickname,
+        locationPhone: locationUser.phone,
+      });
+
       return {
         statusCode: 200,
       };
     } catch (e) {
+      console.error(`Add Question API Error: ${e}`);
       throw e;
     }
   }

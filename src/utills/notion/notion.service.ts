@@ -2,6 +2,7 @@ import { Client } from '@notionhq/client';
 import {
   NotionInsertConsultParams,
   NotionInsertLocationParams,
+  NotionInsertQuestionParams,
   NotionInsertReportParams,
 } from './dto/notion.dto';
 
@@ -181,6 +182,73 @@ export class NotionService {
               {
                 text: {
                   content: reportedUserName,
+                },
+              },
+            ],
+          },
+        },
+      });
+      return true;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async notionInsertQuestion({
+    name,
+    phone,
+    location,
+    locationUser,
+    locationPhone,
+  }: NotionInsertQuestionParams): Promise<boolean> {
+    try {
+      const notion = new Client({ auth: process.env.NOTION_API_KEY });
+      await notion.pages.create({
+        parent: {
+          database_id: process.env.NOTION_LOCATION_INQUIRY_REGISTRATION,
+        },
+        properties: {
+          title: {
+            title: [
+              {
+                text: {
+                  content: name,
+                },
+              },
+            ],
+          },
+          phone: {
+            rich_text: [
+              {
+                text: {
+                  content: phone,
+                },
+              },
+            ],
+          },
+          location: {
+            rich_text: [
+              {
+                text: {
+                  content: location,
+                },
+              },
+            ],
+          },
+          locationUser: {
+            rich_text: [
+              {
+                text: {
+                  content: locationUser,
+                },
+              },
+            ],
+          },
+          locationPhone: {
+            rich_text: [
+              {
+                text: {
+                  content: locationPhone,
                 },
               },
             ],

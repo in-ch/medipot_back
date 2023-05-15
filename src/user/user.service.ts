@@ -148,9 +148,6 @@ export class UserService {
         },
         select: ['password', 'email', 'token', 'refresh_token', 'nickname', 'profile', 'no'],
       });
-      console.log('---------------------');
-      console.log(user);
-      console.log('---------------------');
 
       await this.verifyPassword(password, user.password);
       const access_token = await this.jwtService.sign(

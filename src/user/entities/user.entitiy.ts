@@ -18,9 +18,9 @@ export enum grant {
 }
 
 export enum UserGrant {
-  'NONE',
-  'CLIENT',
-  'DOCTOR',
+  NONE = 'NONE',
+  CLIENT = 'CLIENT',
+  DOCTOR = 'DOCTOR',
 }
 export enum DEPARTMENT {
   FM = 'FM',

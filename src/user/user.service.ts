@@ -10,9 +10,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Repository } from 'typeorm';
 
 import { OutputDto } from 'src/commons/dtos';
-import { User } from './entities/user.entitiy';
+import { User, UserGrant } from './entities/user.entitiy';
 import { JwtService } from '@nestjs/jwt';
 import {
+  GetUserGrantHeader,
   MeInputDto,
   MeOutputCrudDto,
   RefreshOutputDto,
@@ -313,7 +314,35 @@ export class UserService {
       };
     } catch (e) {
       console.error(`searchUser API Error: ${e}`);
-      throw e;
+      throw new BadRequestException('유저가 존재하지 않습니다.');
+    }
+  }
+
+  /**
+   * @param {GetUserGrantHeader} header
+   * @description 유저의 grant를 리턴한다.
+   * @return {OutputDto<User>}
+   * @author in-ch, 2023-05-16
+   */
+  async getUserGrant(header: GetUserGrantHeader): Promise<OutputDto<UserGrant>> {
+    try {
+      const { authorization } = header;
+      const UnSignToken = await this.jwtService.verify(authorization.replace('Bearer ', ''), {
+        secret: process.env.PRIVATE_KEY,
+      });
+      const User = await this.users.findOne({
+        where: {
+          no: UnSignToken.no,
+        },
+        select: ['grant'],
+      });
+      return {
+        statusCode: 200,
+        data: User.grant,
+      };
+    } catch (e) {
+      console.error(`getUserGrant API Error: ${e}`);
+      throw new BadRequestException('유저 grant 정보를 가져오는데 실패했습니다..');
     }
   }
 }

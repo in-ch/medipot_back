@@ -16,8 +16,9 @@ import {
   SearchUserCrudDto,
   RefreshParams,
   RefreshOutputDto,
+  GetUserGrantHeader,
 } from './dto/user.dto';
-import { User } from './entities/user.entitiy';
+import { User, UserGrant } from './entities/user.entitiy';
 import { JwtAuthGuard } from './strategy/jwtAuthentication.guard';
 
 import { UserService } from './user.service';
@@ -73,5 +74,13 @@ export class UserController {
   @Get('/search')
   searchUser(@Req() request: Request<SearchUserCrudDto>): Promise<OutputDto<User>> {
     return this.usersService.searchUser(request);
+  }
+
+  @ApiBody({ type: SearchUserCrudDto })
+  @ApiResponse({ description: '성공', type: OutputDto<User> })
+  @UseGuards(JwtAuthGuard)
+  @Get('/grant')
+  getUserGrant(@Headers() header: GetUserGrantHeader): Promise<OutputDto<UserGrant>> {
+    return this.usersService.getUserGrant(header);
   }
 }

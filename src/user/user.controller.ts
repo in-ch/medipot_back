@@ -19,8 +19,8 @@ import {
   GetUserGrantHeader,
 } from './dto/user.dto';
 import { User, UserGrant } from './entities/user.entitiy';
+import { GrantGuard } from './strategy/grant.strategy';
 import { JwtAuthGuard } from './strategy/jwtAuthentication.guard';
-
 import { UserService } from './user.service';
 
 @ApiTags('유저')
@@ -78,7 +78,7 @@ export class UserController {
 
   @ApiBody({ type: SearchUserCrudDto })
   @ApiResponse({ description: '성공', type: OutputDto<User> })
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, GrantGuard)
   @Get('/grant')
   getUserGrant(@Headers() header: GetUserGrantHeader): Promise<OutputDto<UserGrant>> {
     return this.usersService.getUserGrant(header);

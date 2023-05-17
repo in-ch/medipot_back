@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Headers, Post, Req, UseGuards } from '@n
 import { ApiBody, ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { OutputDto, PageOutput } from 'src/commons/dtos';
+import { GrantGuard } from 'src/user/strategy/grant.strategy';
 import { JwtAuthGuard } from 'src/user/strategy/jwtAuthentication.guard';
 import { Writing } from 'src/writing/entities/writing';
 import {
@@ -16,6 +17,7 @@ import { ReplyService } from './reply.service';
 
 @ApiTags('댓글')
 @Controller('reply')
+@UseGuards(GrantGuard)
 export class ReplyController {
   constructor(private readonly replysService: ReplyService) {}
 

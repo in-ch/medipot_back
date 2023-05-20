@@ -9,6 +9,7 @@ import { User } from './entities/user.entitiy';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { Writing } from 'src/writing/entities/writing';
 import { UserGrantRequest } from './entities/doctorGrant.entitiy';
+import { NotionService } from 'src/utills/notion/notion.service';
 
 @Module({
   imports: [
@@ -24,7 +25,7 @@ import { UserGrantRequest } from './entities/doctorGrant.entitiy';
       }),
     }),
   ],
-  providers: [UserService, JwtStrategy],
+  providers: [UserService, JwtStrategy, NotionService],
   controllers: [UserController],
 })
 export class UserModule {}

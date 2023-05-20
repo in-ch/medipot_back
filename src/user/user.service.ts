@@ -31,6 +31,7 @@ import {
 } from './dto/user.dto';
 import { Request } from 'express';
 import { UserGrantRequest } from './entities/doctorGrant.entitiy';
+import { NotionService } from 'src/utills/notion/notion.service';
 
 const bcrypt = require('bcrypt'); // 패스워드 암호화
 
@@ -42,6 +43,7 @@ export class UserService {
     private readonly userGrantRequests: Repository<UserGrantRequest>,
 
     private readonly jwtService: JwtService,
+    private readonly notionService: NotionService,
   ) {}
 
   /**
@@ -371,25 +373,32 @@ export class UserService {
         where: {
           no: UnSignToken.no,
         },
-        select: ['grant'],
+        select: ['grant', 'no', 'nickname'],
       });
       if (User.grant === UserGrant.DOCTOR)
         throw new BadRequestException('이미 의사 권한을 가지고 있습니다.');
       const existedUserGrant = await this.userGrantRequests.findOne({
         where: {
           user: {
-            no: User.no,
+            no: User?.no,
           },
-          license: payload.license,
         },
       });
-      if (!!existedUserGrant.no) throw new ConflictException('이미 신청을 하였습니다.');
+      if (!!existedUserGrant?.no)
+        return {
+          statusCode: 409,
+          data: false,
+        };
       await this.userGrantRequests.create(
         await this.userGrantRequests.save({
           user: User,
           license: payload.license,
         }),
       );
+      this.notionService.notionRequestGrant({
+        name: User.nickname,
+        license: payload.license,
+      });
       return {
         statusCode: 200,
         data: true,

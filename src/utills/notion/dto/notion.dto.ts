@@ -88,3 +88,13 @@ export class NotionInsertQuestionParams {
   @IsString()
   locationPhone: string;
 }
+
+export class NotionRequestGrantParams {
+  @ApiProperty()
+  @IsString()
+  name: string;
+
+  @ApiProperty()
+  @IsString()
+  license: string;
+}

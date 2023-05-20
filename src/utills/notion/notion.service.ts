@@ -4,6 +4,7 @@ import {
   NotionInsertLocationParams,
   NotionInsertQuestionParams,
   NotionInsertReportParams,
+  NotionRequestGrantParams,
 } from './dto/notion.dto';
 
 export class NotionService {
@@ -252,6 +253,40 @@ export class NotionService {
                 },
               },
             ],
+          },
+        },
+      });
+      return true;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async notionRequestGrant({ name, license }: NotionRequestGrantParams): Promise<boolean> {
+    try {
+      const notion = new Client({ auth: process.env.NOTION_API_KEY });
+      console.log(name);
+      await notion.pages.create({
+        parent: {
+          database_id: process.env.NOTION_REQUEST_LICENSE,
+        },
+        properties: {
+          title: {
+            title: [
+              {
+                text: {
+                  content: name,
+                },
+              },
+            ],
+          },
+          license: {
+            url: license,
+          },
+          isDone: {
+            select: {
+              name: 'isProcessing',
+            },
           },
         },
       });

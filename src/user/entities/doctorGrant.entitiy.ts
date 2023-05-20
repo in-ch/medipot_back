@@ -10,4 +10,7 @@ export class UserGrantRequest extends CommonEntity {
   @ManyToOne((_) => User, (user) => user.userGrantRequest, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user: User;
+
+  @Column({ type: 'boolean', comment: '처리 완료 여부', default: false })
+  isDone: boolean;
 }

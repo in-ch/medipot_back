@@ -19,6 +19,7 @@ import {
   GetUserGrantHeader,
   RequestGrantCrudDto,
   RequestGrantHeaderDto,
+  UpdateUserGrantBodyDto,
 } from './dto/user.dto';
 import { User, UserGrant } from './entities/user.entitiy';
 import { JwtAuthGuard } from './strategy/jwtAuthentication.guard';
@@ -52,7 +53,7 @@ export class UserController {
   }
 
   @ApiBody({ type: UpdateProfileCrudDto })
-  @ApiResponse({ description: '성공', type: OutputDto<UpdateProfileOutputDto> })
+  @ApiResponse({ description: '성공', type: OutputDto<boolean> })
   @UseGuards(JwtAuthGuard)
   @Post('/profile/update')
   updateProfile(
@@ -62,12 +63,23 @@ export class UserController {
     return this.usersService.updateProfile(payload, header);
   }
 
+  @ApiBody({ type: RequestGrantCrudDto })
+  @ApiResponse({ description: '성공', type: OutputDto<boolean> })
+  @UseGuards(JwtAuthGuard)
   @Put('/profile/grant')
   requestGrant(
     @Body() payload: RequestGrantCrudDto,
     @Headers() header: RequestGrantHeaderDto,
   ): Promise<OutputDto<boolean>> {
     return this.usersService.requestGrant(payload, header);
+  }
+
+  @ApiBody({ type: Boolean })
+  @ApiResponse({ description: '성공', type: OutputDto<UpdateProfileOutputDto> })
+  @UseGuards(JwtAuthGuard)
+  @Put('/profile/grant/update')
+  updateUserGrant(@Body() payload: UpdateUserGrantBodyDto): Promise<OutputDto<boolean>> {
+    return this.usersService.updateUserGrant(payload);
   }
 
   @ApiBody({ type: RefreshParams })

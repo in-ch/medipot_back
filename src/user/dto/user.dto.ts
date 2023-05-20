@@ -1,6 +1,7 @@
 import { PickType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsNumber, IsString } from 'class-validator';
+import { UserGrant } from '../entities/user.entitiy';
 
 export class UserCreateInputCrudDto {
   @IsString()
@@ -72,3 +73,13 @@ export class RequestGrantCrudDto {
   license: string;
 }
 export class RequestGrantHeaderDto extends MeInputDto {}
+
+export class UpdateUserGrantBodyDto {
+  @ApiProperty()
+  @IsNumber()
+  userNo: number;
+
+  @ApiProperty()
+  @IsString()
+  grant: UserGrant;
+}

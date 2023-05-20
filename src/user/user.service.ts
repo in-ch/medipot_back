@@ -24,6 +24,7 @@ import {
   UpdateProfileCrudDto,
   UpdateProfileHeaderDto,
   UpdateProfileOutputDto,
+  UpdateUserGrantBodyDto,
   UserCreateInputCrudDto,
   UserCreateOutputCrudDto,
   UserLoginCrudDto,
@@ -406,6 +407,33 @@ export class UserService {
     } catch (e) {
       console.error(`requestGrant API Error: ${e}`);
       throw new BadRequestException(`requestGrant API Error: ${e}`);
+    }
+  }
+
+  /**
+   * @param {GetGrantCrudDto} payload -> UpdateUserGrantBodyDto, userNo, grant
+   * @description 유저가 의사 권한을 요청한다.
+   * @return {OutputDto<boolean>}
+   * @author in-ch, 2023-05-20
+   */
+  async updateUserGrant(payload: UpdateUserGrantBodyDto): Promise<OutputDto<boolean>> {
+    try {
+      const { userNo, grant } = payload;
+      const User = await this.users.findOne({
+        where: {
+          no: userNo,
+        },
+        select: ['grant', 'no'],
+      });
+      User.grant = grant;
+      this.users.save(User);
+      return {
+        statusCode: 200,
+        data: true,
+      };
+    } catch (e) {
+      console.error(`updateUserGrant API Error: ${e}`);
+      throw new BadRequestException(`updateUserGrant API Error: ${e}`);
     }
   }
 }

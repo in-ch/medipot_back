@@ -65,3 +65,10 @@ export class RefreshHeader extends MeInputDto {}
 export class RefreshOutputDto extends MeInputDto {}
 
 export class GetUserGrantHeader extends MeInputDto {}
+
+export class RequestGrantCrudDto {
+  @ApiProperty()
+  @IsString()
+  license: string;
+}
+export class RequestGrantHeaderDto extends MeInputDto {}

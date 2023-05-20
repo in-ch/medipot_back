@@ -11,6 +11,7 @@ import { Question } from 'src/question/entities/question.entitiy';
 import { Reply } from 'src/reply/entities/reply.entity';
 import { Report } from 'src/report/entities/report.entity';
 import { Writing } from 'src/writing/entities/writing';
+import { UserGrantRequest } from './doctorGrant.entitiy';
 
 export enum grant {
   'ADMIN',
@@ -123,4 +124,7 @@ export class User extends CommonEntity {
 
   @OneToMany((_) => Location, (location) => location.user)
   location: Location[];
+
+  @OneToMany((_) => UserGrantRequest, (userGrantRequest) => userGrantRequest.user)
+  userGrantRequest: UserGrantRequest[];
 }

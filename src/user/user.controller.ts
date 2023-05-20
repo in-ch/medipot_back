@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Headers, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 
@@ -17,9 +17,10 @@ import {
   RefreshParams,
   RefreshOutputDto,
   GetUserGrantHeader,
+  RequestGrantCrudDto,
+  RequestGrantHeaderDto,
 } from './dto/user.dto';
 import { User, UserGrant } from './entities/user.entitiy';
-import { GrantGuard } from './strategy/grant.strategy';
 import { JwtAuthGuard } from './strategy/jwtAuthentication.guard';
 import { UserService } from './user.service';
 
@@ -61,6 +62,14 @@ export class UserController {
     return this.usersService.updateProfile(payload, header);
   }
 
+  @Put('/profile/grant')
+  requestGrant(
+    @Body() payload: RequestGrantCrudDto,
+    @Headers() header: RequestGrantHeaderDto,
+  ): Promise<OutputDto<boolean>> {
+    return this.usersService.requestGrant(payload, header);
+  }
+
   @ApiBody({ type: RefreshParams })
   @ApiResponse({ description: '성공', type: OutputDto<RefreshOutputDto> })
   @Post('/refresh')
@@ -78,7 +87,7 @@ export class UserController {
 
   @ApiBody({ type: SearchUserCrudDto })
   @ApiResponse({ description: '성공', type: OutputDto<User> })
-  @UseGuards(JwtAuthGuard, GrantGuard)
+  @UseGuards(JwtAuthGuard)
   @Get('/grant')
   getUserGrant(@Headers() header: GetUserGrantHeader): Promise<OutputDto<UserGrant>> {
     return this.usersService.getUserGrant(header);

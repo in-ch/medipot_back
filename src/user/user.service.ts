@@ -1,6 +1,5 @@
 import {
   BadRequestException,
-  ConflictException,
   HttpException,
   HttpStatus,
   Injectable,
@@ -18,6 +17,8 @@ import {
   MeOutputCrudDto,
   RefreshOutputDto,
   RefreshParams,
+  RequestGrantCrudDto,
+  RequestGrantHeaderDto,
   SearchUserCrudDto,
   UpdateProfileCrudDto,
   UpdateProfileHeaderDto,
@@ -28,6 +29,7 @@ import {
   UserLoginOutputCrudDto,
 } from './dto/user.dto';
 import { Request } from 'express';
+import { UserGrantRequest } from './entities/doctorGrant.entitiy';
 
 const bcrypt = require('bcrypt'); // 패스워드 암호화
 
@@ -35,6 +37,8 @@ const bcrypt = require('bcrypt'); // 패스워드 암호화
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly users: Repository<User>,
+    @InjectRepository(UserGrantRequest)
+    private readonly userGrantRequests: Repository<UserGrantRequest>,
 
     private readonly jwtService: JwtService,
   ) {}
@@ -343,6 +347,46 @@ export class UserService {
     } catch (e) {
       console.error(`getUserGrant API Error: ${e}`);
       throw new BadRequestException('유저 grant 정보를 가져오는데 실패했습니다..');
+    }
+  }
+
+  /**
+   * @param {GetGrantCrudDto} payload -> license: license img url 주소
+   * @param {GetGrantHeaderDto} header ->
+   * @description 유저가 의사 권한을 요청한다.
+   * @return {OutputDto<boolean>}
+   * @author in-ch, 2023-05-20
+   */
+  async requestGrant(
+    payload: RequestGrantCrudDto,
+    header: RequestGrantHeaderDto,
+  ): Promise<OutputDto<boolean>> {
+    try {
+      const { authorization } = header;
+      const UnSignToken = await this.jwtService.verify(authorization.replace('Bearer ', ''), {
+        secret: process.env.PRIVATE_KEY,
+      });
+      const User = await this.users.findOne({
+        where: {
+          no: UnSignToken.no,
+        },
+        select: ['grant'],
+      });
+      if (User.grant === UserGrant.DOCTOR)
+        throw new BadRequestException('이미 의사 권한을 가지고 있습니다.');
+      await this.userGrantRequests.create(
+        await this.userGrantRequests.save({
+          user: User,
+          license: payload.license,
+        }),
+      );
+      return {
+        statusCode: 200,
+        data: true,
+      };
+    } catch (e) {
+      console.error(`requestGrant API Error: ${e}`);
+      throw new BadRequestException(`requestGrant API Error: ${e}`);
     }
   }
 }

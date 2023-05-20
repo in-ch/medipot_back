@@ -4,7 +4,7 @@ import { User } from './user.entitiy';
 
 @Entity()
 export class UserGrantRequest extends CommonEntity {
-  @Column({ type: 'varchar', length: 30, comment: '의사면허증 링크' })
+  @Column({ type: 'varchar', length: 999, comment: '의사면허증 링크' })
   license: string;
 
   @ManyToOne((_) => User, (user) => user.userGrantRequest, { onDelete: 'CASCADE' })

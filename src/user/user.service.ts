@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   HttpException,
   HttpStatus,
   Injectable,
@@ -374,6 +375,15 @@ export class UserService {
       });
       if (User.grant === UserGrant.DOCTOR)
         throw new BadRequestException('이미 의사 권한을 가지고 있습니다.');
+      const existedUserGrant = await this.userGrantRequests.findOne({
+        where: {
+          user: {
+            no: User.no,
+          },
+          license: payload.license,
+        },
+      });
+      if (!!existedUserGrant.no) throw new ConflictException('이미 신청을 하였습니다.');
       await this.userGrantRequests.create(
         await this.userGrantRequests.save({
           user: User,

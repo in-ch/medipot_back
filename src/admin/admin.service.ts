@@ -140,7 +140,7 @@ export class AdminService {
         where: {
           id,
         },
-        select: ['password', 'id', 'token', 'refresh_token', 'name', 'grant'],
+        select: ['no', 'password', 'id', 'token', 'refresh_token', 'name', 'grant'],
       });
       await this.verifyPassword(password, adminUser.password);
       const access_token = await this.jwtService.sign(
@@ -166,17 +166,15 @@ export class AdminService {
           expiresIn: 60 * 60 * 24,
         },
       );
-      await this.adminUsers.save({
-        ...adminUser,
-        token: access_token,
-        refresh_token,
-      });
+      adminUser.token = access_token;
+      adminUser.refresh_token = refresh_token;
+
+      await this.adminUsers.save(adminUser);
+
       return {
         statusCode: 200,
         data: {
           ...adminUser,
-          token: access_token,
-          refresh_token,
         },
       };
     } catch (e) {

@@ -140,7 +140,7 @@ export class AdminService {
         where: {
           id,
         },
-        select: ['password', 'id', 'token', 'refresh_token', 'name'],
+        select: ['password', 'id', 'token', 'refresh_token', 'name', 'grant'],
       });
       await this.verifyPassword(password, adminUser.password);
       const access_token = await this.jwtService.sign(

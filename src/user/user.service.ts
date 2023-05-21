@@ -1,10 +1,10 @@
 import {
   BadRequestException,
-  ConflictException,
   HttpException,
   HttpStatus,
   Injectable,
   NotAcceptableException,
+  Req,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Repository } from 'typeorm';
@@ -27,6 +27,7 @@ import {
   UpdateUserGrantBodyDto,
   UserCreateInputCrudDto,
   UserCreateOutputCrudDto,
+  UserGrantRequestListPagination,
   UserLoginCrudDto,
   UserLoginOutputCrudDto,
 } from './dto/user.dto';
@@ -427,6 +428,11 @@ export class UserService {
       });
       User.grant = grant;
       this.users.save(User);
+      this.userGrantRequests.delete({
+        user: {
+          no: User.no,
+        },
+      });
       return {
         statusCode: 200,
         data: true,
@@ -434,6 +440,42 @@ export class UserService {
     } catch (e) {
       console.error(`updateUserGrant API Error: ${e}`);
       throw new BadRequestException(`updateUserGrant API Error: ${e}`);
+    }
+  }
+
+  /**
+   * @param {UserGrantRequestListPagination} request limit, page
+   */
+  async getGrants(
+    @Req() request: Request<UserGrantRequestListPagination>,
+  ): Promise<OutputDto<UserGrantRequest[]>> {
+    try {
+      const {
+        query: { limit, page },
+      } = request;
+
+      const userGrantRequests: UserGrantRequest[] = await this.userGrantRequests.find({
+        take: Number(limit) || 10,
+        skip: Number(page) * Number(limit) || 0,
+        where: {
+          deletedAt: IsNull(),
+        },
+        relations: ['user'],
+      });
+
+      const totalCount = await this.userGrantRequests.count({
+        where: {
+          deletedAt: IsNull(),
+        },
+      });
+      return {
+        statusCode: 200,
+        totalCount,
+        data: userGrantRequests,
+      };
+    } catch (e) {
+      console.error(e);
+      throw new BadRequestException('유저의 의사 권한 요청 리스트를 가져오는데 실패하였습니다.');
     }
   }
 }

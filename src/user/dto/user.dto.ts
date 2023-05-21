@@ -1,6 +1,7 @@
 import { PickType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsNumber, IsString } from 'class-validator';
+import { PaginationDto } from 'src/commons/dtos';
 import { UserGrant } from '../entities/user.entitiy';
 
 export class UserCreateInputCrudDto {
@@ -83,3 +84,5 @@ export class UpdateUserGrantBodyDto {
   @IsString()
   grant: UserGrant;
 }
+
+export class UserGrantRequestListPagination extends PaginationDto {}

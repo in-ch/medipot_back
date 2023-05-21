@@ -10,10 +10,11 @@ import { JwtStrategy } from './strategy/jwt.strategy';
 import { Writing } from 'src/writing/entities/writing';
 import { UserGrantRequest } from './entities/doctorGrant.entitiy';
 import { NotionService } from 'src/utills/notion/notion.service';
+import { AdminUser } from 'src/admin/entities/admin-user.entitiy';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Writing, UserGrantRequest]),
+    TypeOrmModule.forFeature([User, Writing, UserGrantRequest, AdminUser]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

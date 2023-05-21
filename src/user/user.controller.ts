@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Headers, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
+import { AdminGuard } from 'src/admin/strategy/grant.strategy';
 
 import { OutputDto } from 'src/commons/dtos';
 import {
@@ -20,7 +21,9 @@ import {
   RequestGrantCrudDto,
   RequestGrantHeaderDto,
   UpdateUserGrantBodyDto,
+  UserGrantRequestListPagination,
 } from './dto/user.dto';
+import { UserGrantRequest } from './entities/doctorGrant.entitiy';
 import { User, UserGrant } from './entities/user.entitiy';
 import { JwtAuthGuard } from './strategy/jwtAuthentication.guard';
 import { UserService } from './user.service';
@@ -74,9 +77,19 @@ export class UserController {
     return this.usersService.requestGrant(payload, header);
   }
 
+  @ApiBody({ type: RequestGrantCrudDto })
+  @ApiResponse({ description: '성공', type: OutputDto<UserGrantRequest[]> })
+  @UseGuards(AdminGuard)
+  @Get('/grant/list')
+  getGrants(
+    @Req() request: Request<UserGrantRequestListPagination>,
+  ): Promise<OutputDto<UserGrantRequest[]>> {
+    return this.usersService.getGrants(request);
+  }
+
   @ApiBody({ type: Boolean })
   @ApiResponse({ description: '성공', type: OutputDto<UpdateProfileOutputDto> })
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AdminGuard)
   @Put('/profile/grant/update')
   updateUserGrant(@Body() payload: UpdateUserGrantBodyDto): Promise<OutputDto<boolean>> {
     return this.usersService.updateUserGrant(payload);

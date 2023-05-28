@@ -1,4 +1,4 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ArrayContains, Between, Repository } from 'typeorm';
 
@@ -122,23 +122,31 @@ export class LocationService {
           lng: Between(Number(lng) - Number(parseZoom), Number(lng) + Number(parseZoom)),
           deposit: Between(
             Number(depositArray[0]) * Number(1000),
-            Number(depositArray[1]) * Number(1000),
+            Number(depositArray[1]) !== 100 ? Number(depositArray[1]) * Number(1000) : 2147483640,
           ),
           depositMonly: Between(
             Number(depositMonlyArray[0]) * Number(100),
-            Number(depositMonlyArray[1]) * Number(100),
+            Number(depositMonlyArray[1]) !== 100
+              ? Number(depositMonlyArray[1]) * Number(100)
+              : 2147483640,
           ),
           manageCost: Between(
             Number(manageCostArray[0]) * Number(20),
-            Number(manageCostArray[1]) * Number(20),
+            Number(manageCostArray[1]) !== 100
+              ? Number(manageCostArray[1]) * Number(20)
+              : 2147483640,
           ),
           dedicatedArea: Between(
             Number(dedicatedAreaArray[0]) * Number(20),
-            Number(dedicatedAreaArray[1]) * Number(20),
+            Number(dedicatedAreaArray[1]) !== 100
+              ? Number(dedicatedAreaArray[1]) * Number(20)
+              : 2147483640,
           ),
           supplyArea: Between(
             Number(supplyAreaArray[0]) * Number(20),
-            Number(supplyAreaArray[1]) * Number(20),
+            Number(supplyAreaArray[1]) !== 100
+              ? Number(supplyAreaArray[1]) * Number(20)
+              : 2147483640,
           ),
           departments: ArrayContains(departmentsValueArray.length > 1 ? departmentsValueArray : []),
           keywords: ArrayContains(keywordsArray.length > 1 ? keywordsArray : []),

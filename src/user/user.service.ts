@@ -267,9 +267,17 @@ export class UserService {
       const UnSignToken = await this.jwtService.verify(authorization.replace('Bearer ', ''), {
         secret: process.env.PRIVATE_KEY,
       });
+
+      const User = await this.users.findOne({
+        where: {
+          no: UnSignToken.no,
+        },
+        select: ['no', 'profile', 'nickname'],
+      });
+
       return {
         statusCode: 200,
-        data: UnSignToken,
+        data: User,
       };
     } catch (e) {
       console.error(`me API Error: ${e}`);

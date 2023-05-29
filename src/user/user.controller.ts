@@ -22,9 +22,10 @@ import {
   RequestGrantHeaderDto,
   UpdateUserGrantBodyDto,
   UserGrantRequestListPagination,
+  RequestDepartmentHeaderDto,
 } from './dto/user.dto';
 import { UserGrantRequest } from './entities/doctorGrant.entitiy';
-import { User, UserGrant } from './entities/user.entitiy';
+import { DEPARTMENT, User, UserGrant } from './entities/user.entitiy';
 import { JwtAuthGuard } from './strategy/jwtAuthentication.guard';
 import { UserService } from './user.service';
 
@@ -85,6 +86,14 @@ export class UserController {
     @Req() request: Request<UserGrantRequestListPagination>,
   ): Promise<OutputDto<UserGrantRequest[]>> {
     return this.usersService.getGrants(request);
+  }
+
+  @ApiBody({ type: RequestDepartmentHeaderDto })
+  @ApiResponse({ description: '성공', type: OutputDto<DEPARTMENT> })
+  @UseGuards(JwtAuthGuard)
+  @Get('/department')
+  getDepartment(@Headers() header: RequestDepartmentHeaderDto): Promise<OutputDto<DEPARTMENT>> {
+    return this.usersService.getDepartment(header);
   }
 
   @ApiBody({ type: Boolean })

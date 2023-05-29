@@ -10,7 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Repository } from 'typeorm';
 
 import { OutputDto } from 'src/commons/dtos';
-import { User, UserGrant } from './entities/user.entitiy';
+import { DEPARTMENT, User, UserGrant } from './entities/user.entitiy';
 import { JwtService } from '@nestjs/jwt';
 import {
   GetUserGrantHeader,
@@ -18,6 +18,7 @@ import {
   MeOutputCrudDto,
   RefreshOutputDto,
   RefreshParams,
+  RequestDepartmentHeaderDto,
   RequestGrantCrudDto,
   RequestGrantHeaderDto,
   SearchUserCrudDto,
@@ -277,7 +278,7 @@ export class UserService {
   ): Promise<OutputDto<UpdateProfileOutputDto>> {
     try {
       const { authorization } = header;
-      const { profile, nickname } = payload;
+      const { profile, nickname, department } = payload;
 
       const UnSignToken = await this.jwtService.verify(authorization.replace('Bearer ', ''), {
         secret: process.env.PRIVATE_KEY,
@@ -289,6 +290,7 @@ export class UserService {
       });
       User.nickname = nickname ? nickname : User.nickname;
       User.profile = profile ? profile : User.profile;
+      User.department = department ? (department as DEPARTMENT) : User.department;
       await this.users.save(User);
       return {
         statusCode: 200,
@@ -352,6 +354,34 @@ export class UserService {
     } catch (e) {
       console.error(`getUserGrant API Error: ${e}`);
       throw new BadRequestException('유저 grant 정보를 가져오는데 실패했습니다..');
+    }
+  }
+
+  /**
+   * @param {RequestDepartmentHeaderDto} header
+   * @description 유저의 department를 리턴한다.
+   * @return {OutputDto<DEPARTMENT>}
+   * @author in-ch, 2023-05-29
+   */
+  async getDepartment(header: RequestDepartmentHeaderDto): Promise<OutputDto<DEPARTMENT>> {
+    try {
+      const { authorization } = header;
+      const UnSignToken = await this.jwtService.verify(authorization.replace('Bearer ', ''), {
+        secret: process.env.PRIVATE_KEY,
+      });
+      const User = await this.users.findOne({
+        where: {
+          no: UnSignToken.no,
+        },
+        select: ['department'],
+      });
+      return {
+        statusCode: 200,
+        data: User.department,
+      };
+    } catch (e) {
+      console.error(`getDepartment API Error: ${e}`);
+      throw new BadRequestException('유저 department 정보를 가져오는데 실패했습니다..');
     }
   }
 

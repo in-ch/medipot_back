@@ -48,6 +48,7 @@ export enum DEPARTMENT {
   OEM = 'OEM',
   LM = 'LM',
   NM = 'NM',
+  NONE = '진료과 없음',
 }
 
 @Entity()
@@ -80,7 +81,7 @@ export class User extends CommonEntity {
   @Column({ comment: '소셜 로그인 여부', default: false, select: false })
   isSocialLogin: boolean;
 
-  @Column({ type: 'enum', comment: '과', nullable: true, enum: DEPARTMENT })
+  @Column({ type: 'enum', comment: '과', enum: DEPARTMENT, default: DEPARTMENT.NONE })
   department: DEPARTMENT;
 
   @Column({ comment: '엑세스 토큰', default: '', select: false })

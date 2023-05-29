@@ -3,10 +3,16 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { catchError, firstValueFrom } from 'rxjs';
+import { Faker, ko } from '@faker-js/faker';
+import { Repository } from 'typeorm';
+
 import { LOGIN_REGISTER_TYPE, OutputDto } from 'src/commons/dtos';
 import { User } from 'src/user/entities/user.entitiy';
-import { Repository } from 'typeorm';
 import { MePayloadDto, NaverLoginOutputDto } from './dto/naver.dto';
+
+const faker = new Faker({
+  locale: [ko],
+});
 
 @Injectable()
 export class NaverService {
@@ -89,7 +95,7 @@ export class NaverService {
 
         const NewUser = await this.users.create({
           email,
-          nickname: name,
+          nickname: faker.internet.userName({ firstName: 'unknown' }),
           profile: profile_image,
           isSocialLogin: true,
           phone: mobile.replaceAll('-', ''),

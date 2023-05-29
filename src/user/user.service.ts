@@ -8,10 +8,11 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Repository } from 'typeorm';
+import { Faker, ko } from '@faker-js/faker';
+import { JwtService } from '@nestjs/jwt';
 
 import { OutputDto } from 'src/commons/dtos';
 import { DEPARTMENT, User, UserGrant } from './entities/user.entitiy';
-import { JwtService } from '@nestjs/jwt';
 import {
   GetUserGrantHeader,
   MeInputDto,
@@ -36,6 +37,9 @@ import { Request } from 'express';
 import { UserGrantRequest } from './entities/doctorGrant.entitiy';
 import { NotionService } from 'src/utills/notion/notion.service';
 
+const faker = new Faker({
+  locale: [ko],
+});
 const bcrypt = require('bcrypt'); // 패스워드 암호화
 
 @Injectable()
@@ -73,6 +77,7 @@ export class UserService {
     try {
       const newUserData = this.users.create({
         ...payload,
+        nickname: faker.internet.userName({ firstName: 'unknown' }),
       });
       const encryptedPassowrd = bcrypt.hashSync(newUserData.password, 10);
       const newUser = await this.users.save({

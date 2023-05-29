@@ -1,41 +1,56 @@
 import {
   BadRequestException,
-  ConflictException,
   HttpException,
   HttpStatus,
   Injectable,
   NotAcceptableException,
+  Req,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Repository } from 'typeorm';
+import { Faker, ko } from '@faker-js/faker';
+import { JwtService } from '@nestjs/jwt';
 
 import { OutputDto } from 'src/commons/dtos';
-import { User } from './entities/user.entitiy';
-import { JwtService } from '@nestjs/jwt';
+import { DEPARTMENT, User, UserGrant } from './entities/user.entitiy';
 import {
+  GetUserGrantHeader,
   MeInputDto,
   MeOutputCrudDto,
   RefreshOutputDto,
   RefreshParams,
+  RequestDepartmentHeaderDto,
+  RequestGrantCrudDto,
+  RequestGrantHeaderDto,
   SearchUserCrudDto,
   UpdateProfileCrudDto,
   UpdateProfileHeaderDto,
   UpdateProfileOutputDto,
+  UpdateUserGrantBodyDto,
   UserCreateInputCrudDto,
   UserCreateOutputCrudDto,
+  UserGrantRequestListPagination,
   UserLoginCrudDto,
   UserLoginOutputCrudDto,
 } from './dto/user.dto';
 import { Request } from 'express';
+import { UserGrantRequest } from './entities/doctorGrant.entitiy';
+import { NotionService } from 'src/utills/notion/notion.service';
 
+const faker = new Faker({
+  locale: [ko],
+});
 const bcrypt = require('bcrypt'); // 패스워드 암호화
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly users: Repository<User>,
+    @InjectRepository(UserGrantRequest)
+    private readonly userGrantRequests: Repository<UserGrantRequest>,
 
     private readonly jwtService: JwtService,
+    private readonly notionService: NotionService,
   ) {}
 
   /**
@@ -62,6 +77,7 @@ export class UserService {
     try {
       const newUserData = this.users.create({
         ...payload,
+        nickname: faker.internet.userName({ firstName: 'unknown' }),
       });
       const encryptedPassowrd = bcrypt.hashSync(newUserData.password, 10);
       const newUser = await this.users.save({
@@ -148,9 +164,6 @@ export class UserService {
         },
         select: ['password', 'email', 'token', 'refresh_token', 'nickname', 'profile', 'no'],
       });
-      console.log('---------------------');
-      console.log(user);
-      console.log('---------------------');
 
       await this.verifyPassword(password, user.password);
       const access_token = await this.jwtService.sign(
@@ -254,9 +267,17 @@ export class UserService {
       const UnSignToken = await this.jwtService.verify(authorization.replace('Bearer ', ''), {
         secret: process.env.PRIVATE_KEY,
       });
+
+      const User = await this.users.findOne({
+        where: {
+          no: UnSignToken.no,
+        },
+        select: ['no', 'profile', 'nickname'],
+      });
+
       return {
         statusCode: 200,
-        data: UnSignToken,
+        data: User,
       };
     } catch (e) {
       console.error(`me API Error: ${e}`);
@@ -270,7 +291,7 @@ export class UserService {
   ): Promise<OutputDto<UpdateProfileOutputDto>> {
     try {
       const { authorization } = header;
-      const { profile, nickname } = payload;
+      const { profile, nickname, department } = payload;
 
       const UnSignToken = await this.jwtService.verify(authorization.replace('Bearer ', ''), {
         secret: process.env.PRIVATE_KEY,
@@ -282,6 +303,7 @@ export class UserService {
       });
       User.nickname = nickname ? nickname : User.nickname;
       User.profile = profile ? profile : User.profile;
+      User.department = department ? (department as DEPARTMENT) : User.department;
       await this.users.save(User);
       return {
         statusCode: 200,
@@ -316,7 +338,187 @@ export class UserService {
       };
     } catch (e) {
       console.error(`searchUser API Error: ${e}`);
-      throw e;
+      throw new BadRequestException('유저가 존재하지 않습니다.');
+    }
+  }
+
+  /**
+   * @param {GetUserGrantHeader} header
+   * @description 유저의 grant를 리턴한다.
+   * @return {OutputDto<User>}
+   * @author in-ch, 2023-05-16
+   */
+  async getUserGrant(header: GetUserGrantHeader): Promise<OutputDto<UserGrant>> {
+    try {
+      const { authorization } = header;
+      const UnSignToken = await this.jwtService.verify(authorization.replace('Bearer ', ''), {
+        secret: process.env.PRIVATE_KEY,
+      });
+      const User = await this.users.findOne({
+        where: {
+          no: UnSignToken.no,
+        },
+        select: ['grant'],
+      });
+      return {
+        statusCode: 200,
+        data: User.grant,
+      };
+    } catch (e) {
+      console.error(`getUserGrant API Error: ${e}`);
+      throw new BadRequestException('유저 grant 정보를 가져오는데 실패했습니다..');
+    }
+  }
+
+  /**
+   * @param {RequestDepartmentHeaderDto} header
+   * @description 유저의 department를 리턴한다.
+   * @return {OutputDto<DEPARTMENT>}
+   * @author in-ch, 2023-05-29
+   */
+  async getDepartment(header: RequestDepartmentHeaderDto): Promise<OutputDto<DEPARTMENT>> {
+    try {
+      const { authorization } = header;
+      const UnSignToken = await this.jwtService.verify(authorization.replace('Bearer ', ''), {
+        secret: process.env.PRIVATE_KEY,
+      });
+      const User = await this.users.findOne({
+        where: {
+          no: UnSignToken.no,
+        },
+        select: ['department'],
+      });
+      return {
+        statusCode: 200,
+        data: User.department,
+      };
+    } catch (e) {
+      console.error(`getDepartment API Error: ${e}`);
+      throw new BadRequestException('유저 department 정보를 가져오는데 실패했습니다..');
+    }
+  }
+
+  /**
+   * @param {GetGrantCrudDto} payload -> license: license img url 주소
+   * @param {GetGrantHeaderDto} header ->
+   * @description 유저가 의사 권한을 요청한다.
+   * @return {OutputDto<boolean>}
+   * @author in-ch, 2023-05-20
+   */
+  async requestGrant(
+    payload: RequestGrantCrudDto,
+    header: RequestGrantHeaderDto,
+  ): Promise<OutputDto<boolean>> {
+    try {
+      const { authorization } = header;
+      const UnSignToken = await this.jwtService.verify(authorization.replace('Bearer ', ''), {
+        secret: process.env.PRIVATE_KEY,
+      });
+      const User = await this.users.findOne({
+        where: {
+          no: UnSignToken.no,
+        },
+        select: ['grant', 'no', 'nickname'],
+      });
+      if (User.grant === UserGrant.DOCTOR)
+        throw new BadRequestException('이미 의사 권한을 가지고 있습니다.');
+      const existedUserGrant = await this.userGrantRequests.findOne({
+        where: {
+          user: {
+            no: User?.no,
+          },
+        },
+      });
+      if (!!existedUserGrant?.no)
+        return {
+          statusCode: 409,
+          data: false,
+        };
+      await this.userGrantRequests.create(
+        await this.userGrantRequests.save({
+          user: User,
+          license: payload.license,
+        }),
+      );
+      this.notionService.notionRequestGrant({
+        name: User.nickname,
+        license: payload.license,
+      });
+      return {
+        statusCode: 200,
+        data: true,
+      };
+    } catch (e) {
+      console.error(`requestGrant API Error: ${e}`);
+      throw new BadRequestException(`requestGrant API Error: ${e}`);
+    }
+  }
+
+  /**
+   * @param {GetGrantCrudDto} payload -> UpdateUserGrantBodyDto, userNo, grant
+   * @description 유저가 의사 권한을 요청한다.
+   * @return {OutputDto<boolean>}
+   * @author in-ch, 2023-05-20
+   */
+  async updateUserGrant(payload: UpdateUserGrantBodyDto): Promise<OutputDto<boolean>> {
+    try {
+      const { userNo, grant } = payload;
+      const User = await this.users.findOne({
+        where: {
+          no: userNo,
+        },
+        select: ['grant', 'no'],
+      });
+      User.grant = grant;
+      this.users.save(User);
+      this.userGrantRequests.delete({
+        user: {
+          no: User.no,
+        },
+      });
+      return {
+        statusCode: 200,
+        data: true,
+      };
+    } catch (e) {
+      console.error(`updateUserGrant API Error: ${e}`);
+      throw new BadRequestException(`updateUserGrant API Error: ${e}`);
+    }
+  }
+
+  /**
+   * @param {UserGrantRequestListPagination} request limit, page
+   */
+  async getGrants(
+    @Req() request: Request<UserGrantRequestListPagination>,
+  ): Promise<OutputDto<UserGrantRequest[]>> {
+    try {
+      const {
+        query: { limit, page },
+      } = request;
+
+      const userGrantRequests: UserGrantRequest[] = await this.userGrantRequests.find({
+        take: Number(limit) || 10,
+        skip: Number(page) * Number(limit) || 0,
+        where: {
+          deletedAt: IsNull(),
+        },
+        relations: ['user'],
+      });
+
+      const totalCount = await this.userGrantRequests.count({
+        where: {
+          deletedAt: IsNull(),
+        },
+      });
+      return {
+        statusCode: 200,
+        totalCount,
+        data: userGrantRequests,
+      };
+    } catch (e) {
+      console.error(e);
+      throw new BadRequestException('유저의 의사 권한 요청 리스트를 가져오는데 실패하였습니다.');
     }
   }
 }

@@ -1,11 +1,13 @@
-import { Body, Controller, Get, Post, Put, Req } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 
 import { OutputDto, PaginationDto } from 'src/commons/dtos';
 import { NoDto } from 'src/commons/dtos/no.dto';
+import { JwtAuthGuard } from 'src/user/strategy/jwtAuthentication.guard';
 import {
   GetGeoLocationsPaginationDto,
+  LocationCreateHeaderDto,
   LocationCrudDto,
   LocationOutputCrudDto,
   LocationUpdateApprovedCrudDto,
@@ -44,9 +46,13 @@ export class LocationController {
 
   @ApiBody({ type: LocationCrudDto })
   @ApiCreatedResponse({ description: '성공', type: OutputDto<LocationOutputCrudDto> })
+  @UseGuards(JwtAuthGuard)
   @Post()
-  createLocation(@Body() payload: LocationCrudDto): Promise<OutputDto<LocationOutputCrudDto>> {
-    return this.locationsService.createLocation(payload);
+  createLocation(
+    @Body() payload: LocationCrudDto,
+    @Headers() header: LocationCreateHeaderDto,
+  ): Promise<OutputDto<LocationOutputCrudDto>> {
+    return this.locationsService.createLocation(payload, header);
   }
 
   @ApiBody({ type: LocationUpdateApprovedCrudDto })

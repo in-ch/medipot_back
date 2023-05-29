@@ -1,4 +1,4 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ArrayContains, Between, Repository } from 'typeorm';
 
@@ -6,17 +6,22 @@ import { OutputDto, PaginationDto } from 'src/commons/dtos';
 import { NoDto } from 'src/commons/dtos/no.dto';
 import {
   GetGeoLocationsPaginationDto,
+  LocationCreateHeaderDto,
   LocationCrudDto,
   LocationOutputCrudDto,
   LocationUpdateApprovedCrudDto,
 } from './dto/location.dto';
 import { Location } from './entities/location.entitiy';
 import { NotionService } from 'src/utills/notion/notion.service';
+import { JwtService } from '@nestjs/jwt';
+import { User } from 'src/user/entities/user.entitiy';
 
 @Injectable()
 export class LocationService {
   constructor(
     @InjectRepository(Location) private readonly locations: Repository<Location>,
+    @InjectRepository(User) private readonly users: Repository<User>,
+    private readonly jwtService: JwtService,
     private readonly notionService: NotionService,
   ) {}
 
@@ -29,21 +34,24 @@ export class LocationService {
   async getLocation(query: NoDto): Promise<OutputDto<LocationOutputCrudDto>> {
     try {
       const { no } = query;
-      const location = await this.locations.findOne({
-        where: {
-          no,
-        },
-      });
-      if (!location?.no) {
-        throw new BadRequestException('존재하지 않는 매물입니다.');
+      const numberNo = Number(no);
+      if (!isNaN(numberNo)) {
+        const location = await this.locations.findOne({
+          where: {
+            no: Number(no),
+          },
+        });
+        if (!location?.no) {
+          throw new BadRequestException('존재하지 않는 매물입니다.');
+        }
+        return {
+          statusCode: 200,
+          data: location,
+        };
       }
-      return {
-        statusCode: 200,
-        data: location,
-      };
     } catch (e) {
       console.error(`getLocation error: ${e}`);
-      throw e;
+      throw new BadRequestException('존재하지 않거나 잘못된 매물 정보를 요청하였습니다.');
     }
   }
   /**
@@ -114,23 +122,31 @@ export class LocationService {
           lng: Between(Number(lng) - Number(parseZoom), Number(lng) + Number(parseZoom)),
           deposit: Between(
             Number(depositArray[0]) * Number(1000),
-            Number(depositArray[1]) * Number(1000),
+            Number(depositArray[1]) !== 100 ? Number(depositArray[1]) * Number(1000) : 2147483640,
           ),
           depositMonly: Between(
             Number(depositMonlyArray[0]) * Number(100),
-            Number(depositMonlyArray[1]) * Number(100),
+            Number(depositMonlyArray[1]) !== 100
+              ? Number(depositMonlyArray[1]) * Number(100)
+              : 2147483640,
           ),
           manageCost: Between(
             Number(manageCostArray[0]) * Number(20),
-            Number(manageCostArray[1]) * Number(20),
+            Number(manageCostArray[1]) !== 100
+              ? Number(manageCostArray[1]) * Number(20)
+              : 2147483640,
           ),
           dedicatedArea: Between(
             Number(dedicatedAreaArray[0]) * Number(20),
-            Number(dedicatedAreaArray[1]) * Number(20),
+            Number(dedicatedAreaArray[1]) !== 100
+              ? Number(dedicatedAreaArray[1]) * Number(20)
+              : 2147483640,
           ),
           supplyArea: Between(
             Number(supplyAreaArray[0]) * Number(20),
-            Number(supplyAreaArray[1]) * Number(20),
+            Number(supplyAreaArray[1]) !== 100
+              ? Number(supplyAreaArray[1]) * Number(20)
+              : 2147483640,
           ),
           departments: ArrayContains(departmentsValueArray.length > 1 ? departmentsValueArray : []),
           keywords: ArrayContains(keywordsArray.length > 1 ? keywordsArray : []),
@@ -153,13 +169,33 @@ export class LocationService {
 
   /**
    * @param {LocationCrudDto} payload 생성할 입지 정보들
+   * @param {LocationCreateHeaderDto} header access_token
    * @description 입지 정보들을 가져온다.
    * @return {OutputDto<LocationOutputCrudDto>} 입지 생성 후 결과를 알려준다.
    * @author in-ch, 2022-12-07
    */
-  async createLocation(payload: LocationCrudDto): Promise<OutputDto<LocationOutputCrudDto>> {
+  async createLocation(
+    payload: LocationCrudDto,
+    header: LocationCreateHeaderDto,
+  ): Promise<OutputDto<LocationOutputCrudDto>> {
     try {
-      const newLocation = await this.locations.create(payload);
+      const { authorization } = header;
+      const UnSignToken = await this.jwtService.verify(authorization.replace('Bearer ', ''), {
+        secret: process.env.PRIVATE_KEY,
+      });
+      const { no } = UnSignToken;
+
+      const User = await this.users.findOne({
+        where: {
+          no,
+        },
+      });
+
+      const newLocation = await this.locations.create({
+        ...payload,
+        user: User,
+      });
+
       this.locations.save(newLocation);
 
       await this.notionService.notionInsertLocation({
@@ -167,7 +203,7 @@ export class LocationService {
         address: newLocation.address,
         keywords: newLocation.keywords,
         departments: newLocation.departments,
-        userName: '이거 기능 추가해야함.',
+        userName: User.nickname,
       });
 
       return {

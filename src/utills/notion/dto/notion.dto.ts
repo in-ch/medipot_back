@@ -66,3 +66,35 @@ export class NotionInsertReportParams {
   @IsString()
   detail: string;
 }
+
+export class NotionInsertQuestionParams {
+  @ApiProperty()
+  @IsString()
+  name: string;
+
+  @ApiProperty()
+  @IsString()
+  phone: string;
+
+  @ApiProperty()
+  @IsString()
+  location: string;
+
+  @ApiProperty()
+  @IsString()
+  locationUser: string;
+
+  @ApiProperty()
+  @IsString()
+  locationPhone: string;
+}
+
+export class NotionRequestGrantParams {
+  @ApiProperty()
+  @IsString()
+  name: string;
+
+  @ApiProperty()
+  @IsString()
+  license: string;
+}

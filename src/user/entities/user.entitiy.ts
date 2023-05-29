@@ -1,15 +1,17 @@
-import { Exclude } from 'class-transformer';
+import { Column, Entity, OneToMany } from 'typeorm';
+
 import { Alarm } from 'src/alarm/entities/alarm.entitiy';
 import { Chat } from 'src/chat/entities/chat.entitiy';
 import { CommonEntity } from 'src/commons/entities/common.entity';
 import { Consult } from 'src/consult/entities/consult.entitiy';
 import { Like } from 'src/like/entities/like.entitiy';
+import { Location } from 'src/location/entities/location.entitiy';
 import { NestedReply } from 'src/nested-reply/entities/nestedReply.entitiy';
 import { Question } from 'src/question/entities/question.entitiy';
 import { Reply } from 'src/reply/entities/reply.entity';
 import { Report } from 'src/report/entities/report.entity';
 import { Writing } from 'src/writing/entities/writing';
-import { Column, Entity, OneToMany } from 'typeorm';
+import { UserGrantRequest } from './doctorGrant.entitiy';
 
 export enum grant {
   'ADMIN',
@@ -17,9 +19,9 @@ export enum grant {
 }
 
 export enum UserGrant {
-  'NONE',
-  'CLIENT',
-  'DOCTOR',
+  NONE = 'NONE',
+  CLIENT = 'CLIENT',
+  DOCTOR = 'DOCTOR',
 }
 export enum DEPARTMENT {
   FM = 'FM',
@@ -46,6 +48,7 @@ export enum DEPARTMENT {
   OEM = 'OEM',
   LM = 'LM',
   NM = 'NM',
+  NONE = '진료과 없음',
 }
 
 @Entity()
@@ -74,6 +77,18 @@ export class User extends CommonEntity {
 
   @Column({ comment: '마케팅 동의 여부', default: false, select: false })
   marketingConsent: boolean;
+
+  @Column({ comment: '소셜 로그인 여부', default: false, select: false })
+  isSocialLogin: boolean;
+
+  @Column({ type: 'enum', comment: '과', enum: DEPARTMENT, default: DEPARTMENT.NONE })
+  department: DEPARTMENT;
+
+  @Column({ comment: '엑세스 토큰', default: '', select: false })
+  token?: string;
+
+  @Column({ comment: '리프레쉬 토큰', default: '', select: false })
+  refresh_token?: string;
 
   @OneToMany((_) => Question, (question) => question.user)
   question: Question[];
@@ -105,18 +120,12 @@ export class User extends CommonEntity {
   @OneToMany((_) => Alarm, (alarm) => alarm.user)
   alarm: Alarm[];
 
-  @Column({ comment: '소셜 로그인 여부', default: false, select: false })
-  isSocialLogin: boolean;
-
   @OneToMany((_) => NestedReply, (nestedReply) => nestedReply.user)
   nestedReply: NestedReply[];
 
-  @Column({ type: 'enum', comment: '과', nullable: true, enum: DEPARTMENT })
-  department: DEPARTMENT;
+  @OneToMany((_) => Location, (location) => location.user)
+  location: Location[];
 
-  @Column({ comment: '엑세스 토큰', default: '', select: false })
-  token?: string;
-
-  @Column({ comment: '리프레쉬 토큰', default: '', select: false })
-  refresh_token?: string;
+  @OneToMany((_) => UserGrantRequest, (userGrantRequest) => userGrantRequest.user)
+  userGrantRequest: UserGrantRequest[];
 }

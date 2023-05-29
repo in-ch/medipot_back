@@ -1,5 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { JwtService } from '@nestjs/jwt';
+import { catchError, firstValueFrom } from 'rxjs';
+import { Faker, ko } from '@faker-js/faker';
+
 import {
   KakaoLoginInputDto,
   KakaoLoginOutputDto,
@@ -10,11 +16,11 @@ import {
   RefreshOkOutputDto,
 } from './dto/kakao.dto';
 import { LOGIN_REGISTER_TYPE, OutputDto } from 'src/commons/dtos';
-import { catchError, firstValueFrom } from 'rxjs';
 import { User } from 'src/user/entities/user.entitiy';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { JwtService } from '@nestjs/jwt';
+
+const faker = new Faker({
+  locale: [ko],
+});
 
 @Injectable()
 export class KakaoService {
@@ -185,7 +191,7 @@ export class KakaoService {
         const NewUser = await this.users.create({
           email,
           password: '#!@$!ASAFAZXCVASDG!@$!@$!@%!@%!@$!@#SFSERQDAFASDGAS!@%!YGBXCV',
-          nickname,
+          nickname: faker.internet.userName({ firstName: 'unknown' }),
           profile: thumbnail_image_url,
           isSocialLogin: true,
         });

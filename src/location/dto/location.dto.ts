@@ -68,6 +68,12 @@ export class LocationCrudDto {
 }
 export class LocationOutputCrudDto extends LocationCrudDto {}
 
+export class LocationCreateHeaderDto {
+  @ApiProperty()
+  @IsString()
+  authorization: string;
+}
+
 export class LocationUpdateApprovedCrudDto {
   @ApiProperty()
   @IsNumber()

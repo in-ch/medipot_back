@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Headers, Post, Req, UseGuards } from '@n
 import { ApiBody, ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { OutputDto, PageOutput } from 'src/commons/dtos';
+import { GrantGuard } from 'src/user/strategy/grant.strategy';
 import { JwtAuthGuard } from 'src/user/strategy/jwtAuthentication.guard';
 import {
   CreateNestedReplyHeaderParams,
@@ -15,6 +16,7 @@ import { NestedReplyService } from './nested-reply.service';
 
 @ApiTags('대댓글')
 @Controller('nestedReply')
+@UseGuards(GrantGuard)
 export class NestedReplyController {
   constructor(private readonly nestedReplyService: NestedReplyService) {}
 

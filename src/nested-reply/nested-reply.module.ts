@@ -14,7 +14,6 @@ import { AlarmService } from 'src/alarm/alarm.service';
 @Module({
   imports: [
     TypeOrmModule.forFeature([NestedReply, User, Reply, Alarm]),
-
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

@@ -8,10 +8,13 @@ import { UserService } from './user.service';
 import { User } from './entities/user.entitiy';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { Writing } from 'src/writing/entities/writing';
+import { UserGrantRequest } from './entities/doctorGrant.entitiy';
+import { NotionService } from 'src/utills/notion/notion.service';
+import { AdminUser } from 'src/admin/entities/admin-user.entitiy';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Writing]),
+    TypeOrmModule.forFeature([User, Writing, UserGrantRequest, AdminUser]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -23,7 +26,7 @@ import { Writing } from 'src/writing/entities/writing';
       }),
     }),
   ],
-  providers: [UserService, JwtStrategy],
+  providers: [UserService, JwtStrategy, NotionService],
   controllers: [UserController],
 })
 export class UserModule {}

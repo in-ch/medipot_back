@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Location } from 'src/location/entities/location.entitiy';
 import { User } from 'src/user/entities/user.entitiy';
+import { NotionService } from 'src/utills/notion/notion.service';
 import { Question } from './entities/question.entitiy';
 import { QuestionController } from './question.controller';
 import { QuestionService } from './question.service';
@@ -24,6 +25,6 @@ import { QuestionService } from './question.service';
     }),
   ],
   controllers: [QuestionController],
-  providers: [QuestionService],
+  providers: [QuestionService, NotionService],
 })
 export class QuestionModule {}

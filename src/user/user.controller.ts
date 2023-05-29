@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Headers, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
+import { AdminGuard } from 'src/admin/strategy/grant.strategy';
 
 import { OutputDto } from 'src/commons/dtos';
 import {
@@ -16,10 +17,16 @@ import {
   SearchUserCrudDto,
   RefreshParams,
   RefreshOutputDto,
+  GetUserGrantHeader,
+  RequestGrantCrudDto,
+  RequestGrantHeaderDto,
+  UpdateUserGrantBodyDto,
+  UserGrantRequestListPagination,
+  RequestDepartmentHeaderDto,
 } from './dto/user.dto';
-import { User } from './entities/user.entitiy';
+import { UserGrantRequest } from './entities/doctorGrant.entitiy';
+import { DEPARTMENT, User, UserGrant } from './entities/user.entitiy';
 import { JwtAuthGuard } from './strategy/jwtAuthentication.guard';
-
 import { UserService } from './user.service';
 
 @ApiTags('유저')
@@ -50,7 +57,7 @@ export class UserController {
   }
 
   @ApiBody({ type: UpdateProfileCrudDto })
-  @ApiResponse({ description: '성공', type: OutputDto<UpdateProfileOutputDto> })
+  @ApiResponse({ description: '성공', type: OutputDto<boolean> })
   @UseGuards(JwtAuthGuard)
   @Post('/profile/update')
   updateProfile(
@@ -58,6 +65,43 @@ export class UserController {
     @Headers() header: UpdateProfileHeaderDto,
   ): Promise<OutputDto<UpdateProfileOutputDto>> {
     return this.usersService.updateProfile(payload, header);
+  }
+
+  @ApiBody({ type: RequestGrantCrudDto })
+  @ApiResponse({ description: '성공', type: OutputDto<boolean> })
+  @UseGuards(JwtAuthGuard)
+  @Put('/profile/grant')
+  requestGrant(
+    @Body() payload: RequestGrantCrudDto,
+    @Headers() header: RequestGrantHeaderDto,
+  ): Promise<OutputDto<boolean>> {
+    return this.usersService.requestGrant(payload, header);
+  }
+
+  @ApiBody({ type: RequestGrantCrudDto })
+  @ApiResponse({ description: '성공', type: OutputDto<UserGrantRequest[]> })
+  @UseGuards(AdminGuard)
+  @Get('/grant/list')
+  getGrants(
+    @Req() request: Request<UserGrantRequestListPagination>,
+  ): Promise<OutputDto<UserGrantRequest[]>> {
+    return this.usersService.getGrants(request);
+  }
+
+  @ApiBody({ type: RequestDepartmentHeaderDto })
+  @ApiResponse({ description: '성공', type: OutputDto<DEPARTMENT> })
+  @UseGuards(JwtAuthGuard)
+  @Get('/department')
+  getDepartment(@Headers() header: RequestDepartmentHeaderDto): Promise<OutputDto<DEPARTMENT>> {
+    return this.usersService.getDepartment(header);
+  }
+
+  @ApiBody({ type: Boolean })
+  @ApiResponse({ description: '성공', type: OutputDto<UpdateProfileOutputDto> })
+  @UseGuards(AdminGuard)
+  @Put('/profile/grant/update')
+  updateUserGrant(@Body() payload: UpdateUserGrantBodyDto): Promise<OutputDto<boolean>> {
+    return this.usersService.updateUserGrant(payload);
   }
 
   @ApiBody({ type: RefreshParams })
@@ -73,5 +117,13 @@ export class UserController {
   @Get('/search')
   searchUser(@Req() request: Request<SearchUserCrudDto>): Promise<OutputDto<User>> {
     return this.usersService.searchUser(request);
+  }
+
+  @ApiBody({ type: SearchUserCrudDto })
+  @ApiResponse({ description: '성공', type: OutputDto<User> })
+  @UseGuards(JwtAuthGuard)
+  @Get('/grant')
+  getUserGrant(@Headers() header: GetUserGrantHeader): Promise<OutputDto<UserGrant>> {
+    return this.usersService.getUserGrant(header);
   }
 }

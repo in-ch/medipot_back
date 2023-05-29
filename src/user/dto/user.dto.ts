@@ -1,6 +1,8 @@
 import { PickType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsNumber, IsString } from 'class-validator';
+import { IsBoolean, IsEnum, IsNumber, IsString } from 'class-validator';
+import { PaginationDto } from 'src/commons/dtos';
+import { DEPARTMENT, UserGrant } from '../entities/user.entitiy';
 
 export class UserCreateInputCrudDto {
   @IsString()
@@ -42,6 +44,10 @@ export class UpdateProfileCrudDto {
   @ApiProperty()
   @IsString()
   nickname?: string;
+
+  @ApiProperty()
+  @IsString()
+  department?: string;
 }
 export class UpdateProfileHeaderDto extends MeInputDto {}
 export class UpdateProfileOutputDto {}
@@ -63,3 +69,26 @@ export class RefreshParams {
 }
 export class RefreshHeader extends MeInputDto {}
 export class RefreshOutputDto extends MeInputDto {}
+
+export class GetUserGrantHeader extends MeInputDto {}
+
+export class RequestGrantCrudDto {
+  @ApiProperty()
+  @IsString()
+  license: string;
+}
+export class RequestGrantHeaderDto extends MeInputDto {}
+
+export class UpdateUserGrantBodyDto {
+  @ApiProperty()
+  @IsNumber()
+  userNo: number;
+
+  @ApiProperty()
+  @IsString()
+  grant: UserGrant;
+}
+
+export class RequestDepartmentHeaderDto extends MeInputDto {}
+
+export class UserGrantRequestListPagination extends PaginationDto {}

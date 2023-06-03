@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotAcceptableException } from '@nestjs/common';
 
 import { InjectRepository } from '@nestjs/typeorm';
 import { ArrayContains, ILike, In, Repository } from 'typeorm';
@@ -7,6 +7,7 @@ import { MeInputDto } from 'src/user/dto/user.dto';
 import {
   WritingCreateDto,
   WritingCreateOutputDto,
+  WritingDeleteDto,
   WritingDetailDto,
   WritingListDto,
 } from './dto/writing.dto';
@@ -125,6 +126,46 @@ export class WritingService {
     } catch (e) {
       console.error(`addWriting api Error: ${e}`);
       throw e;
+    }
+  }
+
+  /**
+   * @param {MeInputDto} header 헤더값
+   * @param {WritingDeleteDto} payload no: 삭제할 글의 no값
+   * @description 커뮤니티 글을 삭제한다.
+   * @return {OutputDto<Writing>} 삭제한 글 리턴
+   * @author in-ch, 2023-06-04
+   */
+  async deleteWriting(header: MeInputDto, payload: WritingDeleteDto): Promise<OutputDto<Writing>> {
+    const { authorization } = header;
+    const UnSignToken = await this.jwtService.verify(authorization.replace('Bearer ', ''), {
+      secret: process.env.PRIVATE_KEY,
+    });
+    const { no } = UnSignToken;
+    try {
+      const { writingNo } = payload;
+      const USER = await this.users.findOne({
+        where: {
+          no,
+        },
+      });
+      const WRITING = await this.writings.findOne({
+        where: {
+          no: writingNo,
+        },
+        relations: ['user'],
+      });
+      if (USER.no !== WRITING.user.no) throw new NotAcceptableException('권한이 없습니다.');
+      await this.writings.softDelete({
+        no: writingNo,
+      });
+      return {
+        statusCode: 200,
+        data: WRITING,
+      };
+    } catch (e) {
+      console.error(`delete writing api Error: ${e}`);
+      throw new BadRequestException('글 삭제에 실패했습니다.');
     }
   }
 }

@@ -1,4 +1,4 @@
-import { Controller, Post, Headers, UseGuards, Body, Get, Req } from '@nestjs/common';
+import { Controller, Post, Headers, UseGuards, Body, Get, Req, Delete } from '@nestjs/common';
 import { ApiBody, ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 
@@ -9,6 +9,7 @@ import { JwtAuthGuard } from 'src/user/strategy/jwtAuthentication.guard';
 import {
   WritingCreateDto,
   WritingCreateOutputDto,
+  WritingDeleteDto,
   WritingDetailDto,
   WritingListDto,
 } from './dto/writing.dto';
@@ -43,5 +44,15 @@ export class WritingController {
   @Get('/detail')
   getWriting(@Req() request: Request<WritingDetailDto>): Promise<OutputDto<Writing>> {
     return this.writingService.getWriting(request.query);
+  }
+
+  @ApiBody({ type: WritingDeleteDto })
+  @ApiResponse({ description: '성공', type: OutputDto<WritingDeleteDto> })
+  @Delete('/delete')
+  deleteWriting(
+    @Headers() header: MeInputDto,
+    @Body() payload: WritingDeleteDto,
+  ): Promise<OutputDto<Writing>> {
+    return this.writingService.deleteWriting(header, payload);
   }
 }

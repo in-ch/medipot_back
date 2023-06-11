@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, NotAcceptableException } from '@nestjs/common';
 
 import { InjectRepository } from '@nestjs/typeorm';
-import { ArrayContains, ILike, In, Repository } from 'typeorm';
+import { ArrayContains, ILike, IsNull, Repository } from 'typeorm';
 import { Writing } from './entities/writing';
 import { MeInputDto } from 'src/user/dto/user.dto';
 import {
@@ -42,6 +42,7 @@ export class WritingService {
           tags: tag !== '인기게시판' && tag ? ArrayContains([tag]) : ArrayContains([]),
           title: text ? ILike(`%${text}%`) : ILike(`%%`),
           text: text ? ILike(`%${text}%`) : ILike(`%%`),
+          deletedAt: IsNull(),
         },
         relations: ['user', 'like', 'like.user', 'reply'],
         order: tag === '인기게시판' && {

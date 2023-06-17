@@ -10,10 +10,11 @@ import { ReplyService } from './reply.service';
 import { Reply } from './entities/reply.entity';
 import { AlarmService } from 'src/alarm/alarm.service';
 import { Alarm } from 'src/alarm/entities/alarm.entitiy';
+import { NestedReply } from 'src/nested-reply/entities/nestedReply.entitiy';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Writing, User, Reply, Alarm]),
+    TypeOrmModule.forFeature([Writing, User, Reply, Alarm, NestedReply]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

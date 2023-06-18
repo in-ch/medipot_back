@@ -41,3 +41,9 @@ export class WritingDetailDto {
   @IsNumber()
   no?: number;
 }
+
+export class WritingDeleteDto {
+  @ApiProperty()
+  @IsNumber()
+  writingNo?: number;
+}

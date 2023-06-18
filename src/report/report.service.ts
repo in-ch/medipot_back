@@ -56,7 +56,6 @@ export class ReportService {
           no: writingNo,
         },
         relations: ['user'],
-        loadRelationIds: true,
       });
 
       this.reports.save(
@@ -66,7 +65,6 @@ export class ReportService {
           writing: Writing,
         }),
       );
-
       this.notionService.notionInsertReport({
         contentId: Writing.no.toString(),
         tag: '글 신고',
@@ -111,7 +109,6 @@ export class ReportService {
           no: replyNo,
         },
         relations: ['user'],
-        loadRelationIds: true,
       });
 
       this.reports.save(

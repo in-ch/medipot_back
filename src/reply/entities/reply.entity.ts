@@ -23,4 +23,6 @@ export class Reply extends CommonEntity {
 
   @OneToMany((_) => NestedReply, (nestedReply) => nestedReply.reply)
   nestedReply: NestedReply[];
+
+  totalCount?: number;
 }

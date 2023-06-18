@@ -5,6 +5,7 @@ import { Request } from 'express';
 import { AlarmService } from 'src/alarm/alarm.service';
 import { ALARM_TYPE } from 'src/alarm/entities/alarm.entitiy';
 import { OutputDto, PageOutput } from 'src/commons/dtos';
+import { NestedReply } from 'src/nested-reply/entities/nestedReply.entitiy';
 import { User } from 'src/user/entities/user.entitiy';
 import { Writing } from 'src/writing/entities/writing';
 import { IsNull, Repository } from 'typeorm';
@@ -23,6 +24,8 @@ export class ReplyService {
     @InjectRepository(User) private readonly users: Repository<User>,
     @InjectRepository(Writing) private readonly writings: Repository<Writing>,
     @InjectRepository(Reply) private readonly replys: Repository<Reply>,
+    @InjectRepository(NestedReply) private readonly nestedReplys: Repository<NestedReply>,
+
     private readonly jwtService: JwtService,
     private readonly alarmService: AlarmService,
   ) {}
@@ -50,6 +53,17 @@ export class ReplyService {
         relations: ['user'],
       });
       const totalCount = replys.length;
+
+      for (let reply of replys) {
+        const nested_reply_count = await this.nestedReplys.count({
+          where: {
+            reply: {
+              no: reply.no,
+            },
+          },
+        });
+        reply.totalCount = nested_reply_count;
+      }
 
       return {
         totalCount,

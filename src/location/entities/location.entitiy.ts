@@ -3,6 +3,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { CommonEntity } from 'src/commons/entities/common.entity';
 import { Question } from 'src/question/entities/question.entitiy';
 import { User } from 'src/user/entities/user.entitiy';
+import { LikeLocation } from 'src/like-location/entities/like-location.entitiy';
 
 @Entity()
 export class Location extends CommonEntity {
@@ -62,6 +63,9 @@ export class Location extends CommonEntity {
 
   @Column({ comment: '승인 여부', default: false })
   isApproved: boolean;
+
+  @OneToMany((_) => LikeLocation, (like) => like.location)
+  like: LikeLocation[];
 
   @OneToMany((_) => Question, (question) => question.location)
   question: Question[];

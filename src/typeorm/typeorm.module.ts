@@ -15,6 +15,7 @@ import { Chat } from 'src/chat/entities/chat.entitiy';
 import { AdminUser } from 'src/admin/entities/admin-user.entitiy';
 import { Alarm } from 'src/alarm/entities/alarm.entitiy';
 import { UserGrantRequest } from 'src/user/entities/doctorGrant.entitiy';
+import { LikeLocation } from 'src/like-location/entities/like-location.entitiy';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { UserGrantRequest } from 'src/user/entities/doctorGrant.entitiy';
         Chat,
         Alarm,
         UserGrantRequest,
+        LikeLocation,
       ], // db 들어가는 곳
     }),
   ],

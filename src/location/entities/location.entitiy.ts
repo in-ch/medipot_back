@@ -42,6 +42,12 @@ export class Location extends CommonEntity {
   @Column({ type: 'varchar', length: 150, comment: '입지 주소' })
   address: string;
 
+  @Column({ type: 'varchar', length: 2, comment: '주차 댓수', default: '미정' })
+  parkingCapacity: number;
+
+  @Column({ type: 'varchar', length: 20, comment: '사용 승인일', default: '' })
+  approval_date: string;
+
   @Column({ type: 'varchar', comment: '상세 설명' })
   detail: string;
 

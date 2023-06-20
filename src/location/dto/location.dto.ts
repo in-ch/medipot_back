@@ -23,10 +23,6 @@ export class LocationCrudDto {
   manageCost: number;
 
   @ApiProperty()
-  @IsNumber()
-  brokerage: number;
-
-  @ApiProperty()
   @IsArray()
   departments: string[];
 

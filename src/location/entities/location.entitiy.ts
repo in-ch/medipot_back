@@ -21,7 +21,7 @@ export class Location extends CommonEntity {
   @Column({ comment: '관리비' })
   manageCost: number;
 
-  @Column({ comment: '중개수수료' })
+  @Column({ comment: '중개수수료', default: 0 })
   brokerage: number;
 
   @Column('text', { array: true, comment: '진료과들' })
@@ -36,7 +36,7 @@ export class Location extends CommonEntity {
   @Column({ comment: '공급 면적' })
   supplyArea: number;
 
-  @Column({ type: 'varchar', length: 300, comment: '추가 정보' })
+  @Column({ type: 'varchar', length: 300, comment: '추가 정보', default: '' })
   etc: string;
 
   @Column({ type: 'varchar', length: 150, comment: '입지 주소' })

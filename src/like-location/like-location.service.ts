@@ -139,6 +139,7 @@ export class LikeLocationService {
             no,
           },
         },
+        relations: ['location'],
       });
       return {
         totalCount: likeLocations.length,

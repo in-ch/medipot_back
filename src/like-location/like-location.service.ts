@@ -5,7 +5,12 @@ import { OutputDto } from 'src/commons/dtos';
 import { Location } from 'src/location/entities/location.entitiy';
 import { User } from 'src/user/entities/user.entitiy';
 import { Repository } from 'typeorm';
-import { LikeLocationCrudDto, LikeLocationHeaderDto } from './dto/like-location';
+import {
+  LikeLocationCrudDto,
+  LikeLocationHeaderDto,
+  UnlikeLocationCrudDto,
+  UnlikeLocationHeaderDto,
+} from './dto/like-location';
 import { LikeLocation } from './entities/like-location.entitiy';
 
 @Injectable()
@@ -61,6 +66,46 @@ export class LikeLocationService {
             location: Location,
           }),
         );
+        return {
+          statusCode: 200,
+          data: true,
+        };
+      }
+    } catch (e) {
+      console.error(`좋아요 api 오류: ${e}`);
+      throw e;
+    }
+  }
+
+  async unlikeLocation(
+    @Body() payload: UnlikeLocationCrudDto,
+    @Headers() header: UnlikeLocationHeaderDto,
+  ): Promise<OutputDto<boolean>> {
+    const { locationNo } = payload;
+    const { authorization } = header;
+    const UnSignToken = await this.jwtService.verify(authorization.replace('Bearer ', ''), {
+      secret: process.env.PRIVATE_KEY,
+    });
+    const { no } = UnSignToken;
+
+    try {
+      const LikeLocation = await this.likeLocations.findOne({
+        where: {
+          user: {
+            no,
+          },
+          location: {
+            no: locationNo,
+          },
+        },
+        relations: ['user', 'location'],
+        loadRelationIds: true,
+      });
+
+      if (!LikeLocation?.no) {
+        throw new ConflictException('이미 삭제한 좋아요입니다.');
+      } else {
+        this.likeLocations.delete(LikeLocation.no);
         return {
           statusCode: 200,
           data: true,

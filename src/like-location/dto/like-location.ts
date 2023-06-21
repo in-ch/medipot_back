@@ -14,3 +14,4 @@ export class LikeLocationHeaderDto {
 export class UnlikeLocationCrudDto extends LikeLocationCrudDto {}
 
 export class UnlikeLocationHeaderDto extends LikeLocationHeaderDto {}
+export class GetLikeLocationsHeaderDto extends LikeLocationHeaderDto {}

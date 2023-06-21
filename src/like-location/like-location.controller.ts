@@ -1,14 +1,16 @@
-import { Body, Controller, Delete, Headers, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Headers, Post, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { OutputDto } from 'src/commons/dtos';
 import { GrantGuard } from 'src/user/strategy/grant.strategy';
 import { JwtAuthGuard } from 'src/user/strategy/jwtAuthentication.guard';
 import {
+  GetLikeLocationsHeaderDto,
   LikeLocationCrudDto,
   LikeLocationHeaderDto,
   UnlikeLocationCrudDto,
   UnlikeLocationHeaderDto,
 } from './dto/like-location';
+import { LikeLocation } from './entities/like-location.entitiy';
 import { LikeLocationService } from './like-location.service';
 
 @ApiTags('입지 좋아용')
@@ -35,5 +37,14 @@ export class LikeLocationController {
     @Headers() header: UnlikeLocationHeaderDto,
   ): Promise<OutputDto<boolean>> {
     return this.likeLocationsService.unlikeLocation(payload, header);
+  }
+
+  @ApiBody({ type: OutputDto<LikeLocation[]> })
+  @ApiResponse({ description: '입지 좋아요 리스트', type: OutputDto<LikeLocation[]> })
+  @Get('')
+  getLikeLocations(
+    @Headers() header: GetLikeLocationsHeaderDto,
+  ): Promise<OutputDto<LikeLocation[]>> {
+    return this.likeLocationsService.getLikeLocations(header);
   }
 }

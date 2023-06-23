@@ -40,6 +40,7 @@ export class LocationService {
           where: {
             no: Number(no),
           },
+          relations: ['user'],
         });
         if (!location?.no) {
           throw new BadRequestException('존재하지 않는 매물입니다.');

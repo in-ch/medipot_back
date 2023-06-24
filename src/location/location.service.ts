@@ -149,8 +149,14 @@ export class LocationService {
               ? Number(supplyAreaArray[1]) * Number(20)
               : 2147483640,
           ),
-          departments: ArrayContains(departmentsValueArray.length > 1 ? departmentsValueArray : []),
-          keywords: ArrayContains(keywordsArray.length > 1 ? keywordsArray : []),
+          departments: ArrayContains(
+            departmentsValueArray.length > 0 && departmentsValueArray[0] !== ''
+              ? departmentsValueArray
+              : [],
+          ),
+          keywords: ArrayContains(
+            keywordsArray.length > 0 && keywordsArray[0] !== '' ? keywordsArray : [],
+          ),
           isApproved: true,
         },
       });

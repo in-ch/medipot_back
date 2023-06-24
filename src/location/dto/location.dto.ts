@@ -116,4 +116,8 @@ export class GetGeoLocationsPaginationDto extends PaginationDto {
   @ApiProperty()
   @IsArray()
   departmentsValue?: string[];
+
+  @ApiProperty()
+  @IsString()
+  text?: string;
 }

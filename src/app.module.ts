@@ -24,6 +24,7 @@ import { NaverModule } from './naver/naver.module';
 import { Alarm } from './alarm/entities/alarm.entitiy';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user/entities/user.entitiy';
+import { LikeLocationModule } from './like-location/like-location.module';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { User } from './user/entities/user.entitiy';
     AlarmModule,
     ScheduleModule.forRoot(),
     TypeOrmModule.forFeature([Alarm, User]),
+    LikeLocationModule,
   ],
   controllers: [],
   providers: [ScheduleService],

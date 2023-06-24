@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ArrayContains, Between, Repository } from 'typeorm';
+import { ArrayContains, Between, Like, Repository } from 'typeorm';
 
 import { OutputDto, PaginationDto } from 'src/commons/dtos';
 import { NoDto } from 'src/commons/dtos/no.dto';
@@ -40,6 +40,7 @@ export class LocationService {
           where: {
             no: Number(no),
           },
+          relations: ['user'],
         });
         if (!location?.no) {
           throw new BadRequestException('존재하지 않는 매물입니다.');
@@ -102,6 +103,7 @@ export class LocationService {
       supplyArea,
       keywords,
       departmentsValue,
+      text,
     } = query;
 
     const parseZoom = (zoom * 0.31) / 2;
@@ -117,41 +119,86 @@ export class LocationService {
       const locations = await this.locations.find({
         take: limit || 10,
         skip: page * limit || 0,
-        where: {
-          lat: Between(Number(lat) - Number(parseZoom), Number(lat) + Number(parseZoom)),
-          lng: Between(Number(lng) - Number(parseZoom), Number(lng) + Number(parseZoom)),
-          deposit: Between(
-            Number(depositArray[0]) * Number(1000),
-            Number(depositArray[1]) !== 100 ? Number(depositArray[1]) * Number(1000) : 2147483640,
-          ),
-          depositMonly: Between(
-            Number(depositMonlyArray[0]) * Number(100),
-            Number(depositMonlyArray[1]) !== 100
-              ? Number(depositMonlyArray[1]) * Number(100)
-              : 2147483640,
-          ),
-          manageCost: Between(
-            Number(manageCostArray[0]) * Number(20),
-            Number(manageCostArray[1]) !== 100
-              ? Number(manageCostArray[1]) * Number(20)
-              : 2147483640,
-          ),
-          dedicatedArea: Between(
-            Number(dedicatedAreaArray[0]) * Number(20),
-            Number(dedicatedAreaArray[1]) !== 100
-              ? Number(dedicatedAreaArray[1]) * Number(20)
-              : 2147483640,
-          ),
-          supplyArea: Between(
-            Number(supplyAreaArray[0]) * Number(20),
-            Number(supplyAreaArray[1]) !== 100
-              ? Number(supplyAreaArray[1]) * Number(20)
-              : 2147483640,
-          ),
-          departments: ArrayContains(departmentsValueArray.length > 1 ? departmentsValueArray : []),
-          keywords: ArrayContains(keywordsArray.length > 1 ? keywordsArray : []),
-          isApproved: true,
-        },
+        where: [
+          {
+            lat: Between(Number(lat) - Number(parseZoom), Number(lat) + Number(parseZoom)),
+            lng: Between(Number(lng) - Number(parseZoom), Number(lng) + Number(parseZoom)),
+            deposit: Between(
+              Number(depositArray[0]) * Number(1000),
+              Number(depositArray[1]) !== 100 ? Number(depositArray[1]) * Number(1000) : 2147483640,
+            ),
+            depositMonly: Between(
+              Number(depositMonlyArray[0]) * Number(100),
+              Number(depositMonlyArray[1]) !== 100
+                ? Number(depositMonlyArray[1]) * Number(100)
+                : 2147483640,
+            ),
+            manageCost: Between(
+              Number(manageCostArray[0]) * Number(20),
+              Number(manageCostArray[1]) !== 100
+                ? Number(manageCostArray[1]) * Number(20)
+                : 2147483640,
+            ),
+            dedicatedArea: Between(
+              Number(dedicatedAreaArray[0]) * Number(20),
+              Number(dedicatedAreaArray[1]) !== 100
+                ? Number(dedicatedAreaArray[1]) * Number(20)
+                : 2147483640,
+            ),
+            supplyArea: Between(
+              Number(supplyAreaArray[0]) * Number(20),
+              Number(supplyAreaArray[1]) !== 100
+                ? Number(supplyAreaArray[1]) * Number(20)
+                : 2147483640,
+            ),
+            departments: ArrayContains(
+              departmentsValueArray.length > 0 && departmentsValueArray[0] !== ''
+                ? departmentsValueArray
+                : [],
+            ),
+            isApproved: true,
+            address: Like(`%${text}%`),
+          },
+          {
+            lat: Between(Number(lat) - Number(parseZoom), Number(lat) + Number(parseZoom)),
+            lng: Between(Number(lng) - Number(parseZoom), Number(lng) + Number(parseZoom)),
+            deposit: Between(
+              Number(depositArray[0]) * Number(1000),
+              Number(depositArray[1]) !== 100 ? Number(depositArray[1]) * Number(1000) : 2147483640,
+            ),
+            depositMonly: Between(
+              Number(depositMonlyArray[0]) * Number(100),
+              Number(depositMonlyArray[1]) !== 100
+                ? Number(depositMonlyArray[1]) * Number(100)
+                : 2147483640,
+            ),
+            manageCost: Between(
+              Number(manageCostArray[0]) * Number(20),
+              Number(manageCostArray[1]) !== 100
+                ? Number(manageCostArray[1]) * Number(20)
+                : 2147483640,
+            ),
+            dedicatedArea: Between(
+              Number(dedicatedAreaArray[0]) * Number(20),
+              Number(dedicatedAreaArray[1]) !== 100
+                ? Number(dedicatedAreaArray[1]) * Number(20)
+                : 2147483640,
+            ),
+            supplyArea: Between(
+              Number(supplyAreaArray[0]) * Number(20),
+              Number(supplyAreaArray[1]) !== 100
+                ? Number(supplyAreaArray[1]) * Number(20)
+                : 2147483640,
+            ),
+            departments: ArrayContains(
+              departmentsValueArray.length > 0 && departmentsValueArray[0] !== ''
+                ? departmentsValueArray
+                : [],
+            ),
+            isApproved: true,
+            name: Like(`%${text}%`),
+          },
+        ],
       });
 
       const totalCount = locations.length;

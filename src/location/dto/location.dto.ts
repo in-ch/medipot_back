@@ -23,10 +23,6 @@ export class LocationCrudDto {
   manageCost: number;
 
   @ApiProperty()
-  @IsNumber()
-  brokerage: number;
-
-  @ApiProperty()
   @IsArray()
   departments: string[];
 
@@ -120,4 +116,8 @@ export class GetGeoLocationsPaginationDto extends PaginationDto {
   @ApiProperty()
   @IsArray()
   departmentsValue?: string[];
+
+  @ApiProperty()
+  @IsString()
+  text?: string;
 }

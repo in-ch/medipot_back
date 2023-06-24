@@ -156,6 +156,9 @@ export class LocationService {
                 ? departmentsValueArray
                 : [],
             ),
+            keywords: ArrayContains(
+              keywordsArray.length > 0 && keywordsArray[0] !== '' ? keywordsArray : [],
+            ),
             isApproved: true,
             address: Like(`%${text}%`),
           },
@@ -194,6 +197,9 @@ export class LocationService {
               departmentsValueArray.length > 0 && departmentsValueArray[0] !== ''
                 ? departmentsValueArray
                 : [],
+            ),
+            keywords: ArrayContains(
+              keywordsArray.length > 0 && keywordsArray[0] !== '' ? keywordsArray : [],
             ),
             isApproved: true,
             name: Like(`%${text}%`),

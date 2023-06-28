@@ -44,6 +44,7 @@
     "class-validator": "^0.13.2",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
+    "crypto": "^1.0.1",
     "dotenv": "^16.0.3",
     "joi": "^17.6.2",
     "jsonwebtoken": "^8.5.1",

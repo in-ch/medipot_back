@@ -12,6 +12,7 @@ import { Reply } from 'src/reply/entities/reply.entity';
 import { Report } from 'src/report/entities/report.entity';
 import { Writing } from 'src/writing/entities/writing';
 import { UserGrantRequest } from './doctorGrant.entitiy';
+import { AuthPhone } from 'src/auth/entities/auth-phone.entitiy';
 
 export enum grant {
   'ADMIN',
@@ -119,6 +120,9 @@ export class User extends CommonEntity {
 
   @OneToMany((_) => Alarm, (alarm) => alarm.user)
   alarm: Alarm[];
+
+  @OneToMany((_) => AuthPhone, (authPhone) => authPhone.user)
+  authPhone: AuthPhone;
 
   @OneToMany((_) => NestedReply, (nestedReply) => nestedReply.user)
   nestedReply: NestedReply[];

@@ -26,6 +26,25 @@ export class NicknameValidationParams {
   nickname: string;
 }
 
+export class ValidationPhoneParams {
+  @ApiProperty()
+  @IsString()
+  code: string;
+}
+
+export class ValidationPhoneHeader {
+  @ApiProperty()
+  @IsString()
+  authorization: string;
+}
+
+export class SendPhoneValidationParams {
+  @ApiProperty()
+  @IsString()
+  phone: string;
+}
+export class sendPhoneValidationHeader extends ValidationPhoneHeader {}
+
 export class NicknameValidationResponse {}
 
 export class EmailValidationOutput extends AuthEmailOutput {}

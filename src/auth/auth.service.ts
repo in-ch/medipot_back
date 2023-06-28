@@ -21,6 +21,7 @@ import { EmailService } from 'src/email/email.service';
 import { OutputDto } from 'src/commons/dtos';
 import { JwtService } from '@nestjs/jwt';
 import { AuthPhone } from './entities/auth-phone.entitiy';
+import { checkElapsedTime } from 'src/utills/checkElapsedTime';
 
 const createRandNum = (min, max) => {
   var ntemp = Math.floor(Math.random() * (max - min + 1)) + min;
@@ -258,7 +259,7 @@ export class AuthService {
       };
     } catch (e) {
       console.error(e);
-      throw new BadRequestException('잘못된 휴대번호이거나 잘못된 요청입니다.');
+      throw new BadRequestException(e);
     }
   }
 
@@ -278,7 +279,26 @@ export class AuthService {
         secret: process.env.PRIVATE_KEY,
       });
       const { no } = UnSignToken;
+      const { code } = payload;
 
+      const AUTH = await this.authsPhone.findOne({
+        where: {
+          code,
+          user: {
+            no,
+          },
+        },
+      });
+
+      if (AUTH.code !== code) {
+        throw new BadRequestException('인증번호가 틀렸습니다.');
+      }
+      const timeCheck: boolean = await checkElapsedTime(AUTH.createdAt.toString());
+      if (timeCheck) {
+        throw new BadRequestException('인증시간이 5분이상 초과하였습니다.');
+      }
+
+      await this.authsPhone.delete(AUTH.no);
       return {
         statusCode: 200,
         data: {
@@ -286,7 +306,8 @@ export class AuthService {
         },
       };
     } catch (e) {
-      throw new BadRequestException('인증번호가 틀렸거나 잘못된 요청입니다.');
+      console.error(e);
+      throw new BadRequestException(e);
     }
   }
 }

@@ -1,5 +1,5 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { MoreThanOrEqual, Repository } from 'typeorm';
 import { BadRequestException, ConflictException } from '@nestjs/common';
 import * as crypto from 'crypto';
 import axios from 'axios';
@@ -115,10 +115,13 @@ export class AuthService {
   async emailValidation(params: EmailValidationParams): Promise<OutputDto<EmailValidationOutput>> {
     try {
       const { email, code } = params;
+      const fiveMinutesAgo = new Date();
+      fiveMinutesAgo.setMinutes(fiveMinutesAgo.getMinutes() - 5);
       const existedUsersCount = await this.auths.count({
         where: {
           email,
           code,
+          createdAt: MoreThanOrEqual(fiveMinutesAgo),
         },
       });
       if (existedUsersCount > 0) {
@@ -133,10 +136,10 @@ export class AuthService {
           },
         };
       } else {
-        throw new BadRequestException('인증에 실패했습니다.');
+        throw new Error('인증에 실패했습니다.');
       }
     } catch (e) {
-      throw e;
+      throw new BadRequestException(e);
     }
   }
 
@@ -272,14 +275,14 @@ export class AuthService {
   async phoneValidation(
     payload: ValidationPhoneParams,
     header: ValidationPhoneHeader,
-  ): Promise<OutputDto<{ ok: boolean }>> {
+  ): Promise<OutputDto<{ ok: boolean; phone?: string }>> {
     try {
       const { authorization } = header;
       const UnSignToken = await this.jwtService.verify(authorization.replace('Bearer ', ''), {
         secret: process.env.PRIVATE_KEY,
       });
       const { no } = UnSignToken;
-      const { code } = payload;
+      const { code, phone } = payload;
 
       const AUTH = await this.authsPhone.findOne({
         where: {
@@ -298,11 +301,20 @@ export class AuthService {
         throw new BadRequestException('인증시간이 5분이상 초과하였습니다.');
       }
 
+      const USER = await this.users.findOne({
+        where: {
+          no,
+        },
+      });
+      USER.phone = phone;
+      await this.users.save(USER);
+
       await this.authsPhone.delete(AUTH.no);
       return {
         statusCode: 200,
         data: {
           ok: true,
+          phone,
         },
       };
     } catch (e) {

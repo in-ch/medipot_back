@@ -30,6 +30,10 @@ export class ValidationPhoneParams {
   @ApiProperty()
   @IsString()
   code: string;
+
+  @ApiProperty()
+  @IsString()
+  phone: string;
 }
 
 export class ValidationPhoneHeader {

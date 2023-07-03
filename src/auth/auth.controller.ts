@@ -1,7 +1,8 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Headers, Post, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { OutputDto } from 'src/commons/dtos';
+import { JwtAuthGuard } from 'src/user/strategy/jwtAuthentication.guard';
 import { AuthService } from './auth.service';
 import {
   AuthEmailOutput,
@@ -10,6 +11,10 @@ import {
   EmailValidationParams,
   NicknameValidationParams,
   NicknameValidationResponse,
+  sendPhoneValidationHeader,
+  SendPhoneValidationParams,
+  ValidationPhoneHeader,
+  ValidationPhoneParams,
 } from './dto/auth.dto';
 
 @ApiTags('Auth')
@@ -40,5 +45,26 @@ export class AuthController {
     @Body() payload: NicknameValidationParams,
   ): Promise<OutputDto<NicknameValidationResponse>> {
     return this.authsService.nicknameValidation(payload);
+  }
+
+  @ApiBody({ type: SendPhoneValidationParams })
+  @ApiResponse({ description: '성공', type: OutputDto<{ ok: boolean }> })
+  @Post('/phone/validation/send')
+  async sendPhoneValidation(
+    @Body() payload: SendPhoneValidationParams,
+    @Headers() header: sendPhoneValidationHeader,
+  ): Promise<OutputDto<{ ok: boolean }>> {
+    return this.authsService.sendPhoneValidation(payload, header);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiBody({ type: ValidationPhoneParams })
+  @ApiResponse({ description: '성공', type: OutputDto<{ ok: boolean }> })
+  @Post('/phone/validation')
+  async phoneValidation(
+    @Body() payload: ValidationPhoneParams,
+    @Headers() header: ValidationPhoneHeader,
+  ): Promise<OutputDto<{ ok: boolean }>> {
+    return this.authsService.phoneValidation(payload, header);
   }
 }

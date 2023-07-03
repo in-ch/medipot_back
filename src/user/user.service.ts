@@ -272,7 +272,7 @@ export class UserService {
         where: {
           no: UnSignToken.no,
         },
-        select: ['no', 'profile', 'nickname'],
+        select: ['no', 'profile', 'nickname', 'phone'],
       });
 
       return {

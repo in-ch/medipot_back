@@ -16,6 +16,7 @@ import { AdminUser } from 'src/admin/entities/admin-user.entitiy';
 import { Alarm } from 'src/alarm/entities/alarm.entitiy';
 import { UserGrantRequest } from 'src/user/entities/doctorGrant.entitiy';
 import { LikeLocation } from 'src/like-location/entities/like-location.entitiy';
+import { AuthPhone } from 'src/auth/entities/auth-phone.entitiy';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { LikeLocation } from 'src/like-location/entities/like-location.entitiy';
         Alarm,
         UserGrantRequest,
         LikeLocation,
+        AuthPhone,
       ], // db 들어가는 곳
     }),
   ],

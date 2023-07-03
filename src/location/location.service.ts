@@ -156,6 +156,9 @@ export class LocationService {
                 ? departmentsValueArray
                 : [],
             ),
+            keywords: ArrayContains(
+              keywordsArray.length > 0 && keywordsArray[0] !== '' ? keywordsArray : [],
+            ),
             isApproved: true,
             address: Like(`%${text}%`),
           },
@@ -195,8 +198,53 @@ export class LocationService {
                 ? departmentsValueArray
                 : [],
             ),
+            keywords: ArrayContains(
+              keywordsArray.length > 0 && keywordsArray[0] !== '' ? keywordsArray : [],
+            ),
             isApproved: true,
             name: Like(`%${text}%`),
+          },
+          {
+            lat: Between(Number(lat) - Number(parseZoom), Number(lat) + Number(parseZoom)),
+            lng: Between(Number(lng) - Number(parseZoom), Number(lng) + Number(parseZoom)),
+            deposit: Between(
+              Number(depositArray[0]) * Number(1000),
+              Number(depositArray[1]) !== 100 ? Number(depositArray[1]) * Number(1000) : 2147483640,
+            ),
+            depositMonly: Between(
+              Number(depositMonlyArray[0]) * Number(100),
+              Number(depositMonlyArray[1]) !== 100
+                ? Number(depositMonlyArray[1]) * Number(100)
+                : 2147483640,
+            ),
+            manageCost: Between(
+              Number(manageCostArray[0]) * Number(20),
+              Number(manageCostArray[1]) !== 100
+                ? Number(manageCostArray[1]) * Number(20)
+                : 2147483640,
+            ),
+            dedicatedArea: Between(
+              Number(dedicatedAreaArray[0]) * Number(20),
+              Number(dedicatedAreaArray[1]) !== 100
+                ? Number(dedicatedAreaArray[1]) * Number(20)
+                : 2147483640,
+            ),
+            supplyArea: Between(
+              Number(supplyAreaArray[0]) * Number(20),
+              Number(supplyAreaArray[1]) !== 100
+                ? Number(supplyAreaArray[1]) * Number(20)
+                : 2147483640,
+            ),
+            departments: ArrayContains(
+              departmentsValueArray.length > 0 && departmentsValueArray[0] !== ''
+                ? departmentsValueArray
+                : [],
+            ),
+            keywords: ArrayContains(
+              keywordsArray.length > 0 && keywordsArray[0] !== '' ? keywordsArray : [],
+            ),
+            isApproved: true,
+            detailAddress: Like(`%${text}%`),
           },
         ],
       });

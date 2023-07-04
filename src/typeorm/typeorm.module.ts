@@ -17,36 +17,40 @@ import { Alarm } from 'src/alarm/entities/alarm.entitiy';
 import { UserGrantRequest } from 'src/user/entities/doctorGrant.entitiy';
 import { LikeLocation } from 'src/like-location/entities/like-location.entitiy';
 import { AuthPhone } from 'src/auth/entities/auth-phone.entitiy';
-
+import { ConfigModule, ConfigService } from '@nestjs/config';
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.DB_HOST,
-      port: +process.env.DB_PORT,
-      username: process.env.DB_USERNAME,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      synchronize: process.env.NODE_ENV !== 'prod',
-      logging: process.env.NODE_ENV !== 'prod',
-      entities: [
-        Location,
-        AdminUser,
-        User,
-        Auth,
-        Question,
-        Consult,
-        Writing,
-        Like,
-        Reply,
-        Report,
-        NestedReply,
-        Chat,
-        Alarm,
-        UserGrantRequest,
-        LikeLocation,
-        AuthPhone,
-      ], // db 들어가는 곳
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        type: 'postgres',
+        host: process.env.DB_HOST,
+        port: +process.env.DB_PORT,
+        username: process.env.DB_USERNAME,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME,
+        synchronize: configService.get('NODE_ENV') !== 'prod',
+        logging: configService.get('NODE_ENV') !== 'prod',
+        entities: [
+          Location,
+          AdminUser,
+          User,
+          Auth,
+          Question,
+          Consult,
+          Writing,
+          Like,
+          Reply,
+          Report,
+          NestedReply,
+          Chat,
+          Alarm,
+          UserGrantRequest,
+          LikeLocation,
+          AuthPhone,
+        ],
+      }),
+      inject: [ConfigService],
     }),
   ],
 })

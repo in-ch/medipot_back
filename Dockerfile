@@ -18,4 +18,4 @@ RUN npm run build
 EXPOSE 4000
 
 # 앱 실행
-CMD ["sh", "-c", "NODE_ENV=prod npm run start:prod"]
+CMD ["sh", "-c", "npm run start:prod"]

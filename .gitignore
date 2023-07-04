@@ -405,3 +405,4 @@ dist
 /dist/*
 
 pgdata
+docker-compose.yaml

@@ -21,7 +21,7 @@ async function bootstrap() {
   app.use(bodyParser.json({ limit: '500mb' }));
   app.use(bodyParser.urlencoded({ limit: '500mb', extended: true }));
 
-  await app.listen(4000);
+  await app.listen(process.env.PORT);
 
   console.log(chalk.hex('#000000').bold('🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉'));
   console.log(chalk.hex('#FFB638').bold('🌠                                       🌠'));

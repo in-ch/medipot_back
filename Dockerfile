@@ -2,10 +2,13 @@
 FROM node:16-alpine
 
 # 앱 디렉토리 생성
+RUN mkdir -p /app
 WORKDIR /app
+ADD . /app/
 
 # 앱 종속성 설치
-COPY package*.json ./
+RUN rm yarn.lock || true
+RUN rm package-lock.json || true
 RUN npm install
 
 # 앱 소스 코드 복사

@@ -395,14 +395,12 @@ Temporary Items
 =======
 # Local
 .env
-dist
 
 *.env 
 .dev.env
 .prod.env
 
 
-/dist/*
 
 pgdata
 docker-compose.yaml

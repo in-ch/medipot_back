@@ -404,3 +404,6 @@ Temporary Items
 
 pgdata
 docker-compose.yaml
+
+/dist
+/dist/*

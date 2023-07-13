@@ -9,7 +9,7 @@
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "dev": "node --max-old-space-size=8192 node_modules/.bin/nest start --watch cross-env NODE_ENV=dev",
-    "start:prod": "cross-env NODE_ENV=prod node dist/main.jsㅋㅋ",
+    "start:prod": "cross-env NODE_ENV=prod node dist/main.js",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",

@@ -114,7 +114,21 @@ export class LocationService {
     const supplyAreaArray = String(supplyArea).split(',');
     const departmentsValueArray = String(departmentsValue).split(',');
     const keywordsArray = String(keywords).split(',');
-
+    console.log({
+      limit,
+      page,
+      zoom,
+      lat,
+      lng,
+      deposit,
+      depositMonly,
+      manageCost,
+      dedicatedArea,
+      supplyArea,
+      keywords,
+      departmentsValue,
+      text,
+    });
     try {
       const locations = await this.locations.find({
         take: limit || 10,

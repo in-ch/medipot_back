@@ -17,8 +17,6 @@ import { ReportModule } from './report/report.module';
 import { NestedReplyModule } from './nested-reply/nested-reply.module';
 import { ChatModule } from './chat/chat.module';
 import { AdminModule } from './admin/admin.module';
-import { ScheduleModule } from '@nestjs/schedule';
-import { ScheduleService } from './utills/schedule/schedule.service';
 import { AlarmModule } from './alarm/alarm.module';
 import { NaverModule } from './naver/naver.module';
 import { Alarm } from './alarm/entities/alarm.entitiy';
@@ -47,11 +45,10 @@ import { LikeLocationModule } from './like-location/like-location.module';
     ChatModule,
     AdminModule,
     AlarmModule,
-    ScheduleModule.forRoot(),
     TypeOrmModule.forFeature([Alarm, User]),
     LikeLocationModule,
   ],
   controllers: [],
-  providers: [ScheduleService],
+  providers: [],
 })
 export class AppModule {}

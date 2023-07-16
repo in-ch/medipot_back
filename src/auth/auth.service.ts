@@ -241,19 +241,22 @@ export class AuthService {
       axios
         .post(url_, body, options)
         .then(async (res) => {
-          console.log(res);
+          this.authsPhone.save(
+            this.authsPhone.create({
+              user: USER,
+              code: code,
+            }),
+          );
         })
-        .catch((err) => {
-          console.log(err);
-          throw new BadRequestException('잘못된 휴대번호이거나 잘못된 요청입니다.');
+        .catch(() => {
+          return {
+            statusCode: 404,
+            data: {
+              ok: false,
+            },
+          };
         });
 
-      this.authsPhone.save(
-        this.authsPhone.create({
-          user: USER,
-          code: code,
-        }),
-      );
       return {
         statusCode: 200,
         data: {
@@ -262,7 +265,7 @@ export class AuthService {
       };
     } catch (e) {
       console.error(e);
-      throw new BadRequestException(e);
+      throw e;
     }
   }
 
@@ -292,34 +295,41 @@ export class AuthService {
           },
         },
       });
-
       if (AUTH.code !== code) {
         throw new BadRequestException('인증번호가 틀렸습니다.');
       }
       const timeCheck: boolean = await checkElapsedTime(AUTH.createdAt.toString());
       if (timeCheck) {
         throw new BadRequestException('인증시간이 5분이상 초과하였습니다.');
+      } else {
+        const USER = await this.users.findOne({
+          where: {
+            no,
+          },
+        });
+        USER.phone = phone;
+        await this.users.save(USER);
+
+        await this.authsPhone.delete(AUTH.no);
+        return {
+          statusCode: 200,
+          data: {
+            ok: true,
+            phone,
+          },
+        };
       }
-
-      const USER = await this.users.findOne({
-        where: {
-          no,
-        },
+    } catch (e) {
+      console.log({
+        e,
       });
-      USER.phone = phone;
-      await this.users.save(USER);
-
-      await this.authsPhone.delete(AUTH.no);
       return {
-        statusCode: 200,
+        statusCode: 400,
+        error: e,
         data: {
-          ok: true,
-          phone,
+          ok: false,
         },
       };
-    } catch (e) {
-      console.error(e);
-      throw new BadRequestException(e);
     }
   }
 }

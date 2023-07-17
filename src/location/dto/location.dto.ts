@@ -14,13 +14,13 @@ export class LocationCrudDto {
   @IsNumber()
   depositMonly: number;
 
-  @ApiProperty()
+  @ApiProperty({ nullable: true })
   @IsNumber()
-  premium: number;
+  premium?: number;
 
-  @ApiProperty()
+  @ApiProperty({ nullable: true })
   @IsNumber()
-  manageCost: number;
+  manageCost?: number;
 
   @ApiProperty()
   @IsArray()
@@ -38,7 +38,7 @@ export class LocationCrudDto {
   @IsNumber()
   supplyArea: number;
 
-  @ApiProperty()
+  @ApiProperty({ nullable: true })
   @IsString()
   readonly etc?: string;
 

@@ -16,10 +16,10 @@ export class Location extends CommonEntity {
   @Column({ comment: '월 임대보증금' })
   depositMonly: number;
 
-  @Column({ comment: '권리금' })
+  @Column({ comment: '권리금', nullable: true })
   premium: number;
 
-  @Column({ comment: '관리비' })
+  @Column({ comment: '관리비', nullable: true })
   manageCost: number;
 
   @Column({ comment: '중개수수료', default: 0, nullable: true })
@@ -49,7 +49,7 @@ export class Location extends CommonEntity {
   @Column({ type: 'varchar', length: 2, comment: '주차 댓수', default: '미정' })
   parkingCapacity: number;
 
-  @Column({ type: 'varchar', length: 20, comment: '사용 승인일', default: '' })
+  @Column({ type: 'varchar', length: 20, comment: '사용 승인일', default: '미정' })
   approvalDate: string;
 
   @Column({ type: 'varchar', comment: '상세 설명' })

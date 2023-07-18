@@ -320,7 +320,7 @@ export class AuthService {
         };
       }
     } catch (e) {
-      console.log({
+      console.error({
         e,
       });
       return {

@@ -265,7 +265,6 @@ export class NotionService {
   async notionRequestGrant({ name, license }: NotionRequestGrantParams): Promise<boolean> {
     try {
       const notion = new Client({ auth: process.env.NOTION_API_KEY });
-      console.log(name);
       await notion.pages.create({
         parent: {
           database_id: process.env.NOTION_REQUEST_LICENSE,

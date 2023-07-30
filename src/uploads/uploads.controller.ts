@@ -38,7 +38,7 @@ export class UploadsController {
     });
     const Image = await sharp(file.buffer, { failOnError: false })
       .withMetadata()
-      .resize(200)
+      .resize(1000)
       .jpeg({ mozjpeg: true })
       .png()
       .toBuffer();

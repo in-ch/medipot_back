@@ -31,10 +31,10 @@ export class Location extends CommonEntity {
   @Column('text', { comment: '키워드', array: true })
   keywords: string[];
 
-  @Column({ comment: '전용 면적' })
+  @Column({ comment: '전용 면적', type: 'float' })
   dedicatedArea: number;
 
-  @Column({ comment: '공급 면적' })
+  @Column({ comment: '공급 면적', type: 'float' })
   supplyArea: number;
 
   @Column({ type: 'varchar', length: 300, comment: '추가 정보', default: '' })
@@ -46,7 +46,7 @@ export class Location extends CommonEntity {
   @Column({ type: 'varchar', length: 150, comment: '상세 주소' })
   detailAddress: string;
 
-  @Column({ type: 'varchar', length: 2, comment: '주차 댓수', default: '미정' })
+  @Column({ type: 'varchar', length: 10, comment: '주차 댓수', default: '미정' })
   parkingCapacity: number;
 
   @Column({ type: 'varchar', length: 20, comment: '사용 승인일', default: '미정' })

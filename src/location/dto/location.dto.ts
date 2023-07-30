@@ -48,7 +48,7 @@ export class LocationCrudDto {
 
   @ApiProperty()
   @IsString()
-  detail: string;
+  detail?: string;
 
   @ApiProperty()
   @IsArray()
@@ -121,3 +121,5 @@ export class GetGeoLocationsPaginationDto extends PaginationDto {
   @IsString()
   text?: string;
 }
+
+export class GetUserLocationsOutputDto extends LocationCrudDto {}

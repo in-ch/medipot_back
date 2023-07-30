@@ -7,6 +7,7 @@ import { NoDto } from 'src/commons/dtos/no.dto';
 import { JwtAuthGuard } from 'src/user/strategy/jwtAuthentication.guard';
 import {
   GetGeoLocationsPaginationDto,
+  GetUserLocationsOutputDto,
   LocationCreateHeaderDto,
   LocationCrudDto,
   LocationOutputCrudDto,
@@ -62,5 +63,13 @@ export class LocationController {
     @Body() payload: LocationUpdateApprovedCrudDto,
   ): Promise<OutputDto<LocationOutputCrudDto>> {
     return this.locationsService.updateApproveredLocation(payload);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('user/locations')
+  getUserLocations(
+    @Req() request: Request<{ userNo: number }>,
+  ): Promise<OutputDto<GetUserLocationsOutputDto[]>> {
+    return this.locationsService.getUserLocations(request.query);
   }
 }

@@ -6,6 +6,7 @@ import { OutputDto, PaginationDto } from 'src/commons/dtos';
 import { NoDto } from 'src/commons/dtos/no.dto';
 import {
   GetGeoLocationsPaginationDto,
+  GetUserLocationsOutputDto,
   LocationCreateHeaderDto,
   LocationCrudDto,
   LocationOutputCrudDto,
@@ -340,6 +341,36 @@ export class LocationService {
     } catch (e) {
       console.error(`updateApproveredLocation API error: ${e}`);
       throw e;
+    }
+  }
+
+  /**
+   * @param {GetUserLocationsDto} query 쿼리값, userNo
+   * @description 유저의 입지 정보들을 가져온다.
+   * @return {OutputDto<LocationOutputCrudDto>} 입지 정보를 가져온다.
+   * @author in-ch, 2023-07-30
+   */
+  async getUserLocations(query): Promise<OutputDto<GetUserLocationsOutputDto[]>> {
+    try {
+      const { userNo } = query;
+
+      const locations = await this.locations.find({
+        where: {
+          user: {
+            no: Number(userNo),
+          },
+        },
+        relations: ['user'],
+      });
+      const filteredLocations = locations.map(({ detail, ...rest }) => rest);
+      return {
+        statusCode: 200,
+        data: filteredLocations,
+        totalCount: filteredLocations.length,
+      };
+    } catch (e) {
+      console.error(`get user locations error: ${e}`);
+      throw new BadRequestException('존재하지 않거나 잘못된 매물 정보를 요청하였습니다.');
     }
   }
 }

@@ -16,13 +16,13 @@ export class Location extends CommonEntity {
   @Column({ comment: '월 임대보증금' })
   depositMonly: number;
 
-  @Column({ comment: '권리금', nullable: true })
+  @Column({ comment: '권리금', nullable: true, type: 'float' })
   premium: number;
 
-  @Column({ comment: '관리비', nullable: true })
+  @Column({ comment: '관리비', nullable: true, type: 'float' })
   manageCost: number;
 
-  @Column({ comment: '중개수수료', default: 0, nullable: true })
+  @Column({ comment: '중개수수료', default: 0, nullable: true, type: 'float' })
   brokerage: number;
 
   @Column('text', { array: true, comment: '진료과들' })

@@ -91,8 +91,6 @@ export class LocationService {
     query: GetGeoLocationsPaginationDto,
   ): Promise<OutputDto<LocationOutputCrudDto[]>> {
     const {
-      limit,
-      page,
       zoom,
       lat,
       lng,
@@ -105,8 +103,14 @@ export class LocationService {
       departmentsValue,
       text,
     } = query;
-
-    const parseZoom = (zoom * 0.31) / 2;
+    const parseZoom =
+      Number(zoom) > 11
+        ? zoom
+        : Number(zoom) > 8
+        ? zoom * 0.0775
+        : Number(zoom) > 5
+        ? 0.031 * zoom
+        : zoom / 200;
     const depositArray = String(deposit).split(',');
     const depositMonlyArray = String(depositMonly).split(',');
     const manageCostArray = String(manageCost).split(',');
@@ -116,8 +120,6 @@ export class LocationService {
     const keywordsArray = String(keywords).split(',');
     try {
       const locations = await this.locations.find({
-        take: limit || 10,
-        skip: page * limit || 0,
         where: [
           {
             lat: Between(Number(lat) - Number(parseZoom), Number(lat) + Number(parseZoom)),

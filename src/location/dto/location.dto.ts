@@ -123,6 +123,11 @@ export class GetGeoLocationsPaginationDto extends PaginationDto {
 }
 
 export class GetUserLocationsOutputDto extends LocationCrudDto {}
+export class GetUserLocationHeader {
+  @ApiProperty()
+  @IsString()
+  authorization: string;
+}
 
 export class DeleteLocationDto {
   @ApiProperty()
@@ -130,8 +135,4 @@ export class DeleteLocationDto {
   locationNo: number;
 }
 
-export class DeleteLocationHeaderParams {
-  @ApiProperty()
-  @IsString()
-  authorization: string;
-}
+export class DeleteLocationHeaderParams extends GetUserLocationHeader {}

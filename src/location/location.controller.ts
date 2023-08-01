@@ -10,6 +10,7 @@ import {
   DeleteLocationDto,
   DeleteLocationHeaderParams,
   GetGeoLocationsPaginationDto,
+  GetUserLocationHeader,
   GetUserLocationsOutputDto,
   LocationCreateHeaderDto,
   LocationCrudDto,
@@ -73,9 +74,9 @@ export class LocationController {
   @UseGuards(JwtAuthGuard)
   @Get('user/locations')
   getUserLocations(
-    @Req() request: Request<{ userNo: number }>,
+    @Headers() header: GetUserLocationHeader,
   ): Promise<OutputDto<GetUserLocationsOutputDto[]>> {
-    return this.locationsService.getUserLocations(request.query);
+    return this.locationsService.getUserLocations(header);
   }
 
   @UseGuards(JwtAuthGuard)

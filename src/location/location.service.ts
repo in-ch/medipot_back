@@ -8,6 +8,7 @@ import {
   DeleteLocationDto,
   DeleteLocationHeaderParams,
   GetGeoLocationsPaginationDto,
+  GetUserLocationHeader,
   GetUserLocationsOutputDto,
   LocationCreateHeaderDto,
   LocationCrudDto,
@@ -355,16 +356,25 @@ export class LocationService {
    * @return {OutputDto<LocationOutputCrudDto>} 입지 정보를 가져온다.
    * @author in-ch, 2023-07-30
    */
-  async getUserLocations(query): Promise<OutputDto<GetUserLocationsOutputDto[]>> {
+  async getUserLocations(
+    header: GetUserLocationHeader,
+  ): Promise<OutputDto<GetUserLocationsOutputDto[]>> {
     try {
-      const { userNo } = query;
+      const { authorization } = header;
+      const UnSignToken = await this.jwtService.verify(authorization.replace('Bearer ', ''), {
+        secret: process.env.PRIVATE_KEY,
+      });
+      const { no } = UnSignToken;
 
       const locations = await this.locations.find({
         where: {
           user: {
-            no: Number(userNo),
+            no: Number(no),
             deletedAt: IsNull(),
           },
+        },
+        order: {
+          no: 'DESC',
         },
         relations: ['user'],
       });

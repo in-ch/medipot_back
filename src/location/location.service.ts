@@ -1,10 +1,12 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotAcceptableException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ArrayContains, Between, Like, Repository } from 'typeorm';
+import { ArrayContains, Between, IsNull, Like, Repository } from 'typeorm';
 
 import { OutputDto, PaginationDto } from 'src/commons/dtos';
 import { NoDto } from 'src/commons/dtos/no.dto';
 import {
+  DeleteLocationDto,
+  DeleteLocationHeaderParams,
   GetGeoLocationsPaginationDto,
   GetUserLocationsOutputDto,
   LocationCreateHeaderDto,
@@ -40,6 +42,7 @@ export class LocationService {
         const location = await this.locations.findOne({
           where: {
             no: Number(no),
+            deletedAt: IsNull(),
           },
           relations: ['user'],
         });
@@ -163,6 +166,7 @@ export class LocationService {
             ),
             isApproved: true,
             address: Like(`%${text}%`),
+            deletedAt: IsNull(),
           },
           {
             lat: Between(Number(lat) - Number(parseZoom), Number(lat) + Number(parseZoom)),
@@ -205,6 +209,7 @@ export class LocationService {
             ),
             isApproved: true,
             name: Like(`%${text}%`),
+            deletedAt: IsNull(),
           },
           {
             lat: Between(Number(lat) - Number(parseZoom), Number(lat) + Number(parseZoom)),
@@ -358,6 +363,7 @@ export class LocationService {
         where: {
           user: {
             no: Number(userNo),
+            deletedAt: IsNull(),
           },
         },
         relations: ['user'],
@@ -371,6 +377,48 @@ export class LocationService {
     } catch (e) {
       console.error(`get user locations error: ${e}`);
       throw new BadRequestException('존재하지 않거나 잘못된 매물 정보를 요청하였습니다.');
+    }
+  }
+
+  /**
+   * @param {}
+   * @return {OutputDto<boolean>} 입지를 삭제한다.
+   * @author in-ch, 2023-07-30
+   */
+  async deleteLocation(
+    payload: DeleteLocationDto,
+    header: DeleteLocationHeaderParams,
+  ): Promise<OutputDto<boolean>> {
+    const { authorization } = header;
+    const UnSignToken = await this.jwtService.verify(authorization.replace('Bearer ', ''), {
+      secret: process.env.PRIVATE_KEY,
+    });
+    const { no } = UnSignToken;
+    try {
+      const { locationNo } = payload;
+      const USER = await this.users.findOne({
+        where: {
+          no,
+        },
+      });
+
+      const LOCATION = await this.locations.findOne({
+        where: {
+          no: locationNo,
+        },
+        relations: ['user'],
+      });
+      if (USER.no !== LOCATION.user.no) throw new NotAcceptableException('권한이 없습니다.');
+      await this.locations.softDelete({
+        no: locationNo,
+      });
+      return {
+        statusCode: 200,
+        data: true,
+      };
+    } catch (e) {
+      console.error(`delete location error: ${e}`);
+      throw new BadRequestException('존재하지 않거나 잘못된 매물 삭제를 요청하였습니다.');
     }
   }
 }

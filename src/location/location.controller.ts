@@ -1,11 +1,14 @@
-import { Body, Controller, Get, Headers, Post, Put, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Headers, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
+import { number } from 'joi';
 
 import { OutputDto, PaginationDto } from 'src/commons/dtos';
 import { NoDto } from 'src/commons/dtos/no.dto';
 import { JwtAuthGuard } from 'src/user/strategy/jwtAuthentication.guard';
 import {
+  DeleteLocationDto,
+  DeleteLocationHeaderParams,
   GetGeoLocationsPaginationDto,
   GetUserLocationsOutputDto,
   LocationCreateHeaderDto,
@@ -65,11 +68,22 @@ export class LocationController {
     return this.locationsService.updateApproveredLocation(payload);
   }
 
+  @ApiBody({ type: number })
+  @ApiCreatedResponse({ description: '성공', type: OutputDto<GetUserLocationsOutputDto[]> })
   @UseGuards(JwtAuthGuard)
   @Get('user/locations')
   getUserLocations(
     @Req() request: Request<{ userNo: number }>,
   ): Promise<OutputDto<GetUserLocationsOutputDto[]>> {
     return this.locationsService.getUserLocations(request.query);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('delete')
+  deleteLocation(
+    @Body() payload: DeleteLocationDto,
+    @Headers() header: DeleteLocationHeaderParams,
+  ): Promise<OutputDto<boolean>> {
+    return this.locationsService.deleteLocation(payload, header);
   }
 }

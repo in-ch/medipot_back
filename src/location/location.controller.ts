@@ -11,6 +11,7 @@ import {
   DeleteLocationHeaderParams,
   GetGeoLocationsPaginationDto,
   GetUserLocationHeader,
+  GetUserLocationRequestDto,
   GetUserLocationsOutputDto,
   LocationCreateHeaderDto,
   LocationCrudDto,
@@ -77,6 +78,17 @@ export class LocationController {
     @Headers() header: GetUserLocationHeader,
   ): Promise<OutputDto<GetUserLocationsOutputDto[]>> {
     return this.locationsService.getUserLocations(header);
+  }
+
+  @ApiBody({ type: number })
+  @ApiCreatedResponse({ description: '성공', type: OutputDto<GetUserLocationsOutputDto[]> })
+  @UseGuards(JwtAuthGuard)
+  @Get('user/location')
+  getUserLocation(
+    @Headers() header: GetUserLocationHeader,
+    @Req() request: Request<GetUserLocationRequestDto>,
+  ): Promise<OutputDto<GetUserLocationsOutputDto>> {
+    return this.locationsService.getUserLocation(header, request);
   }
 
   @UseGuards(JwtAuthGuard)

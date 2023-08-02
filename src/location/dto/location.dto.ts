@@ -136,3 +136,9 @@ export class DeleteLocationDto {
 }
 
 export class DeleteLocationHeaderParams extends GetUserLocationHeader {}
+
+export class GetUserLocationRequestDto {
+  @ApiProperty()
+  @IsNumber()
+  locationNo: number;
+}

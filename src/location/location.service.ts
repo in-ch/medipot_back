@@ -9,6 +9,7 @@ import {
   DeleteLocationHeaderParams,
   GetGeoLocationsPaginationDto,
   GetUserLocationHeader,
+  GetUserLocationRequestDto,
   GetUserLocationsOutputDto,
   LocationCreateHeaderDto,
   LocationCrudDto,
@@ -19,6 +20,7 @@ import { Location } from './entities/location.entitiy';
 import { NotionService } from 'src/utills/notion/notion.service';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/user/entities/user.entitiy';
+import { Request } from 'express';
 
 @Injectable()
 export class LocationService {
@@ -383,6 +385,49 @@ export class LocationService {
         statusCode: 200,
         data: filteredLocations,
         totalCount: filteredLocations.length,
+      };
+    } catch (e) {
+      console.error(`get user locations error: ${e}`);
+      throw new BadRequestException('존재하지 않거나 잘못된 매물 정보를 요청하였습니다.');
+    }
+  }
+
+  /**
+   * @param {GetUserLocationsDto} request locationNo
+   * @description 유저의 입지 정보들을 가져온다.
+   * @return {OutputDto<LocationOutputCrudDto>} 입지 정보를 가져온다.
+   * @author in-ch, 2023-08-03
+   */
+  async getUserLocation(
+    header: GetUserLocationHeader,
+    request: Request<GetUserLocationRequestDto>,
+  ): Promise<OutputDto<GetUserLocationsOutputDto>> {
+    try {
+      const { authorization } = header;
+      const UnSignToken = await this.jwtService.verify(authorization.replace('Bearer ', ''), {
+        secret: process.env.PRIVATE_KEY,
+      });
+      const { no } = UnSignToken;
+      const { locationNo } = request.query;
+
+      const LOCATION = await this.locations.findOne({
+        where: {
+          no: Number(locationNo),
+          deletedAt: IsNull(),
+          isApproved: false,
+          user: {
+            no: Number(no),
+          },
+        },
+        order: {
+          no: 'DESC',
+        },
+        relations: ['user'],
+      });
+
+      return {
+        statusCode: 200,
+        data: LOCATION,
       };
     } catch (e) {
       console.error(`get user locations error: ${e}`);

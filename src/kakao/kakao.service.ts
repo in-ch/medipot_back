@@ -131,10 +131,11 @@ export class KakaoService {
       const results = await this.me({
         authorization: `Bearer ${authorization}`,
       });
+
       const {
         data: {
           kakao_account: {
-            profile: { nickname, thumbnail_image_url },
+            profile: { thumbnail_image_url },
             email,
           },
         },
@@ -145,6 +146,7 @@ export class KakaoService {
           email,
           isSocialLogin: true,
         },
+        select: ['no', 'phone', 'email', 'nickname', 'profile', 'refresh_token', 'token'],
       });
 
       if (Number(User?.no) > 0) {

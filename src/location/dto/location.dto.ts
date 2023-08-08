@@ -71,10 +71,6 @@ export class LocationUpdateDto extends LocationCrudDto {
 
   @ApiProperty()
   @IsNumber()
-  brokerage?: number;
-
-  @ApiProperty()
-  @IsNumber()
   parkingCapacity?: number;
 
   @ApiProperty()

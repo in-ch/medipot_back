@@ -375,7 +375,6 @@ export class LocationService {
         imgs,
         lat,
         lng,
-        brokerage,
         parkingCapacity,
         approvalDate,
       } = payload;
@@ -395,7 +394,6 @@ export class LocationService {
       Location.imgs = imgs;
       Location.lat = lat;
       Location.lng = lng || Location.lng;
-      Location.brokerage = brokerage || Location.brokerage;
       Location.parkingCapacity = parkingCapacity || Location.parkingCapacity;
       Location.approvalDate = approvalDate || Location.approvalDate;
 

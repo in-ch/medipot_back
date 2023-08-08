@@ -64,6 +64,20 @@ export class LocationCrudDto {
 }
 export class LocationOutputCrudDto extends LocationCrudDto {}
 
+export class LocationUpdateDto extends LocationCrudDto {
+  @ApiProperty()
+  @IsNumber()
+  locationNo: number;
+
+  @ApiProperty()
+  @IsNumber()
+  parkingCapacity?: number;
+
+  @ApiProperty()
+  @IsString()
+  approvalDate?: string;
+}
+
 export class LocationCreateHeaderDto {
   @ApiProperty()
   @IsString()

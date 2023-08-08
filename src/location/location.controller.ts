@@ -17,6 +17,7 @@ import {
   LocationCrudDto,
   LocationOutputCrudDto,
   LocationUpdateApprovedCrudDto,
+  LocationUpdateDto,
 } from './dto/location.dto';
 import { LocationService } from './location.service';
 
@@ -59,6 +60,17 @@ export class LocationController {
     @Headers() header: LocationCreateHeaderDto,
   ): Promise<OutputDto<LocationOutputCrudDto>> {
     return this.locationsService.createLocation(payload, header);
+  }
+
+  @ApiBody({ type: LocationUpdateDto })
+  @ApiCreatedResponse({ description: '성공', type: OutputDto<LocationOutputCrudDto> })
+  @UseGuards(JwtAuthGuard)
+  @Put()
+  updateLocation(
+    @Body() payload: LocationUpdateDto,
+    @Headers() header: LocationCreateHeaderDto,
+  ): Promise<OutputDto<LocationOutputCrudDto>> {
+    return this.locationsService.updateLocation(payload, header);
   }
 
   @ApiBody({ type: LocationUpdateApprovedCrudDto })

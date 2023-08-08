@@ -15,6 +15,7 @@ import {
   LocationCrudDto,
   LocationOutputCrudDto,
   LocationUpdateApprovedCrudDto,
+  LocationUpdateDto,
 } from './dto/location.dto';
 import { Location } from './entities/location.entitiy';
 import { NotionService } from 'src/utills/notion/notion.service';
@@ -275,7 +276,7 @@ export class LocationService {
   /**
    * @param {LocationCrudDto} payload 생성할 입지 정보들
    * @param {LocationCreateHeaderDto} header access_token
-   * @description 입지 정보들을 가져온다.
+   * @description 입지를 생성한다.
    * @return {OutputDto<LocationOutputCrudDto>} 입지 생성 후 결과를 알려준다.
    * @author in-ch, 2022-12-07
    */
@@ -314,6 +315,95 @@ export class LocationService {
       return {
         statusCode: 200,
         data: newLocation,
+      };
+    } catch (e) {
+      console.error(`create location API error: ${e}`);
+      throw e;
+    }
+  }
+
+  /**
+   * @param {LocationCrudDto} payload 수정한 입지 정보들
+   * @param {LocationCreateHeaderDto} header access_token
+   * @description 입지를 수정한다.
+   * @return {OutputDto<LocationOutputCrudDto>} 입지 수정 후 결과를 알려준다.
+   * @author in-ch, 2023-08-08
+   */
+  async updateLocation(
+    payload: LocationUpdateDto,
+    header: LocationCreateHeaderDto,
+  ): Promise<OutputDto<LocationOutputCrudDto>> {
+    try {
+      const { authorization } = header;
+      const UnSignToken = await this.jwtService.verify(authorization.replace('Bearer ', ''), {
+        secret: process.env.PRIVATE_KEY,
+      });
+      const { no } = UnSignToken;
+      const { locationNo } = payload;
+
+      const User = await this.users.findOne({
+        where: {
+          no,
+        },
+      });
+
+      const Location = await this.locations.findOne({
+        where: {
+          no: locationNo,
+          user: {
+            no: User.no,
+          },
+        },
+      });
+      if (!Location?.no) {
+        throw new BadRequestException('존재하지 않는 매물입니다.');
+      }
+
+      const {
+        name,
+        deposit,
+        depositMonly,
+        premium,
+        manageCost,
+        departments,
+        keywords,
+        dedicatedArea,
+        supplyArea,
+        etc,
+        address,
+        detail,
+        imgs,
+        lat,
+        lng,
+        brokerage,
+        parkingCapacity,
+        approvalDate,
+      } = payload;
+
+      Location.name = name;
+      Location.deposit = deposit;
+      Location.depositMonly = depositMonly;
+      Location.premium = premium || Location.premium;
+      Location.manageCost = manageCost || Location.manageCost;
+      Location.departments = departments;
+      Location.keywords = keywords;
+      Location.dedicatedArea = dedicatedArea;
+      Location.supplyArea = supplyArea;
+      Location.etc = etc || Location.etc;
+      Location.address = address;
+      Location.detail = detail || Location.detail;
+      Location.imgs = imgs;
+      Location.lat = lat;
+      Location.lng = lng || Location.lng;
+      Location.brokerage = brokerage || Location.brokerage;
+      Location.parkingCapacity = parkingCapacity || Location.parkingCapacity;
+      Location.approvalDate = approvalDate || Location.approvalDate;
+
+      this.locations.save(Location);
+
+      return {
+        statusCode: 200,
+        data: Location,
       };
     } catch (e) {
       console.error(`create location API error: ${e}`);

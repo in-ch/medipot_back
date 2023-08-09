@@ -48,7 +48,15 @@ export class LocationCrudDto {
 
   @ApiProperty()
   @IsString()
+  simpleAddress?: string;
+
+  @ApiProperty()
+  @IsString()
   detail?: string;
+
+  @ApiProperty()
+  @IsString()
+  detailAddress?: string;
 
   @ApiProperty()
   @IsArray()

@@ -377,6 +377,8 @@ export class LocationService {
         lng,
         parkingCapacity,
         approvalDate,
+        simpleAddress,
+        detailAddress,
       } = payload;
 
       Location.name = name;
@@ -396,6 +398,8 @@ export class LocationService {
       Location.lng = lng || Location.lng;
       Location.parkingCapacity = parkingCapacity || Location.parkingCapacity;
       Location.approvalDate = approvalDate || Location.approvalDate;
+      Location.simpleAddress = simpleAddress || Location.simpleAddress;
+      Location.detailAddress = detailAddress || Location.detailAddress;
 
       this.locations.save(Location);
 

@@ -43,6 +43,9 @@ export class Location extends CommonEntity {
   @Column({ type: 'varchar', length: 150, comment: '입지 주소' })
   address: string;
 
+  @Column({ type: 'varchar', length: 50, comment: '동까지만 나오는 입지 주소', nullable: true })
+  simpleAddress?: string;
+
   @Column({ type: 'varchar', length: 150, comment: '상세 주소' })
   detailAddress: string;
 

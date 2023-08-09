@@ -515,6 +515,28 @@ export class LocationService {
           no: 'DESC',
         },
         relations: ['user'],
+        select: [
+          'no',
+          'address',
+          'approvalDate',
+          'brokerage',
+          'createdAt',
+          'dedicatedArea',
+          'departments',
+          'deposit',
+          'depositMonly',
+          'detail',
+          'detailAddress',
+          'etc',
+          'imgs',
+          'keywords',
+          'manageCost',
+          'name',
+          'parkingCapacity',
+          'premium',
+          'simpleAddress',
+          'supplyArea',
+        ],
       });
 
       return {

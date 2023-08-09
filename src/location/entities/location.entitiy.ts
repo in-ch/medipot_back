@@ -40,13 +40,13 @@ export class Location extends CommonEntity {
   @Column({ type: 'varchar', length: 300, comment: '추가 정보', default: '' })
   etc: string;
 
-  @Column({ type: 'varchar', length: 150, comment: '입지 주소' })
+  @Column({ type: 'varchar', length: 150, comment: '입지 주소', select: false })
   address: string;
 
-  @Column({ type: 'varchar', length: 50, comment: '동까지만 나오는 입지 주소', nullable: true })
+  @Column({ type: 'varchar', length: 50, comment: '동까지만 나오는 입지 주소' })
   simpleAddress?: string;
 
-  @Column({ type: 'varchar', length: 150, comment: '상세 주소' })
+  @Column({ type: 'varchar', length: 150, comment: '상세 주소', select: false })
   detailAddress: string;
 
   @Column({ type: 'varchar', length: 10, comment: '주차 댓수', default: '미정' })

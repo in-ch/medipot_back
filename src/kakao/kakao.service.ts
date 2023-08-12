@@ -194,7 +194,7 @@ export class KakaoService {
           email,
           password: '#!@$!ASAFAZXCVASDG!@$!@$!@%!@%!@$!@#SFSERQDAFASDGAS!@%!YGBXCV',
           nickname: faker.internet.userName({ firstName: 'unknown' }),
-          profile: thumbnail_image_url,
+          profile: thumbnail_image_url.replace('http://', 'https://'),
           isSocialLogin: true,
         });
         await this.users.save(NewUser);

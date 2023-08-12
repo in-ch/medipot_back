@@ -23,6 +23,7 @@ import { Alarm } from './alarm/entities/alarm.entitiy';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user/entities/user.entitiy';
 import { LikeLocationModule } from './like-location/like-location.module';
+import { EventModule } from './event/event.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { LikeLocationModule } from './like-location/like-location.module';
     AlarmModule,
     TypeOrmModule.forFeature([Alarm, User]),
     LikeLocationModule,
+    EventModule,
   ],
   controllers: [],
   providers: [],

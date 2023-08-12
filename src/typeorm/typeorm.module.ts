@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { Location } from 'src/location/entities/location.entitiy';
 import { User } from 'src/user/entities/user.entitiy';
@@ -17,7 +18,8 @@ import { Alarm } from 'src/alarm/entities/alarm.entitiy';
 import { UserGrantRequest } from 'src/user/entities/doctorGrant.entitiy';
 import { LikeLocation } from 'src/like-location/entities/like-location.entitiy';
 import { AuthPhone } from 'src/auth/entities/auth-phone.entitiy';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { Event } from 'src/event/entities/event.entitiy';
+
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
@@ -48,6 +50,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
           UserGrantRequest,
           LikeLocation,
           AuthPhone,
+          Event,
         ],
       }),
       inject: [ConfigService],

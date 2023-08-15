@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { OutputDto } from 'src/commons/dtos';
-import { EventCrudDto, EventListPagination } from './dto/event.dto';
+import { EventCrudDto, EventListPagination, EventUpdateDto } from './dto/event.dto';
 import { Event } from './entities/event.entitiy';
 
 @Injectable()
@@ -48,6 +48,38 @@ export class EventService {
       };
     } catch (e) {
       console.error(`create event API error: ${e}`);
+      throw e;
+    }
+  }
+
+  /**
+   * @param {EventUpdateDto} payload 수정할 이벤트 정보들
+   * @description 이벤트를 수정한다.
+   * @return {OutputDto<Event>} 이벤트 수정
+   * @author in-ch, 2023-08-15
+   */
+  async updateEvent(payload: EventUpdateDto): Promise<OutputDto<Event>> {
+    try {
+      const { eventNo, img, title, detail, href, startDate, endDate } = payload;
+      const event = await this.events.findOne({
+        where: {
+          no: eventNo,
+        },
+      });
+      event.img = img;
+      event.title = title;
+      event.detail = detail;
+      event.href = href;
+      event.startDate = startDate;
+      event.endDate = endDate;
+
+      this.events.save(event);
+      return {
+        statusCode: 200,
+        data: event,
+      };
+    } catch (e) {
+      console.error(`update event API error: ${e}`);
       throw e;
     }
   }

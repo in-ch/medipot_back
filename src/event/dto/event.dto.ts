@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 import { PaginationDto } from 'src/commons/dtos';
 
 export class EventListPagination extends PaginationDto {}
@@ -28,4 +28,10 @@ export class EventCrudDto {
   @ApiProperty()
   @IsString()
   endDate: string;
+}
+
+export class EventUpdateDto extends EventCrudDto {
+  @ApiProperty()
+  @IsNumber()
+  eventNo: number;
 }

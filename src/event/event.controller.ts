@@ -1,9 +1,9 @@
-import { Body, Controller, Get, Post, Put, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 
 import { OutputDto } from 'src/commons/dtos';
-import { EventCrudDto, EventListPagination, EventUpdateDto } from './dto/event.dto';
+import { DeleteEventDto, EventCrudDto, EventListPagination, EventUpdateDto } from './dto/event.dto';
 import { Event } from './entities/event.entitiy';
 import { EventService } from './event.service';
 
@@ -29,10 +29,17 @@ export class EventController {
   }
 
   @ApiBody({ type: EventCrudDto })
-  @ApiCreatedResponse({ description: '성공', type: OutputDto<Event> })
+  @ApiResponse({ description: '성공', type: OutputDto<Event> })
   // @UseGuards(AdminGuard)
   @Put()
   updateEvent(@Body() payload: EventUpdateDto): Promise<OutputDto<Event>> {
     return this.eventService.updateEvent(payload);
+  }
+
+  @ApiBody({ type: DeleteEventDto })
+  @ApiResponse({ description: '성공', type: OutputDto<Event> })
+  @Delete()
+  deleteEvent(@Body() payload: DeleteEventDto): Promise<OutputDto<Event>> {
+    return this.eventService.deleteEvent(payload);
   }
 }

@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { OutputDto } from 'src/commons/dtos';
-import { EventCrudDto, EventListPagination, EventUpdateDto } from './dto/event.dto';
+import { DeleteEventDto, EventCrudDto, EventListPagination, EventUpdateDto } from './dto/event.dto';
 import { Event } from './entities/event.entitiy';
 
 @Injectable()
@@ -72,7 +72,6 @@ export class EventService {
       event.href = href;
       event.startDate = startDate;
       event.endDate = endDate;
-
       this.events.save(event);
       return {
         statusCode: 200,
@@ -80,6 +79,36 @@ export class EventService {
       };
     } catch (e) {
       console.error(`update event API error: ${e}`);
+      throw e;
+    }
+  }
+
+  /**
+   * @param {DeleteEventDto} payload 삭제할 이벤트 정보들
+   * @description 이벤트를 삭제한다.
+   * @return {OutputDto<Event>} 이벤트 삭제
+   * @author in-ch, 2023-08-15
+   */
+  async deleteEvent(payload: DeleteEventDto): Promise<OutputDto<Event>> {
+    try {
+      const { eventNo } = payload;
+      const event = await this.events.findOne({
+        where: {
+          no: eventNo,
+        },
+      });
+      if (!event?.no) {
+        throw new BadRequestException('이미 삭제되었거나 없는 이벤트입니다.');
+      }
+      await this.events.softDelete({
+        no: eventNo,
+      });
+      return {
+        statusCode: 200,
+        data: event,
+      };
+    } catch (e) {
+      console.error(`delete event API error: ${e}`);
       throw e;
     }
   }

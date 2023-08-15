@@ -10,6 +10,9 @@ export class Event extends CommonEntity {
   @Column({ type: 'varchar', comment: '이미지' })
   img: string;
 
+  @Column({ type: 'varchar', comment: '링크' })
+  href: string;
+
   @Column({ type: 'varchar', comment: '이벤트 시작 날짜' })
   startDate: string;
 

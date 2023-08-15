@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Between, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 
 import { OutputDto } from 'src/commons/dtos';
 import { DeleteEventDto, EventCrudDto, EventListPagination, EventUpdateDto } from './dto/event.dto';
@@ -13,9 +13,15 @@ export class EventService {
   async list(query: EventListPagination): Promise<OutputDto<Event[]>> {
     try {
       const { page, limit } = query;
+      const currentDate = new Date();
+
       const events = await this.events.find({
         take: limit || 10,
         skip: page * limit || 0,
+        where: {
+          startDate: LessThanOrEqual(currentDate.toISOString()),
+          endDate: MoreThanOrEqual(currentDate.toISOString()),
+        },
       });
       const totalCount = events.length;
       return {

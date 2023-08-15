@@ -36,8 +36,10 @@ export class EventUpdateDto extends EventCrudDto {
   eventNo: number;
 }
 
-export class DeleteEventDto {
+export class GetEventDto {
   @ApiProperty()
   @IsNumber()
   eventNo: number;
 }
+
+export class DeleteEventDto extends GetEventDto {}

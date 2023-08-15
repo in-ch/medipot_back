@@ -3,7 +3,13 @@ import { ApiBody, ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagg
 import { Request } from 'express';
 
 import { OutputDto } from 'src/commons/dtos';
-import { DeleteEventDto, EventCrudDto, EventListPagination, EventUpdateDto } from './dto/event.dto';
+import {
+  DeleteEventDto,
+  EventCrudDto,
+  EventListPagination,
+  EventUpdateDto,
+  GetEventDto,
+} from './dto/event.dto';
 import { Event } from './entities/event.entitiy';
 import { EventService } from './event.service';
 
@@ -18,6 +24,13 @@ export class EventController {
   @Get('/list')
   async list(@Req() request: Request<EventListPagination>) {
     return this.eventService.list(request.query);
+  }
+
+  @ApiBody({ type: GetEventDto })
+  @ApiResponse({ description: '성공', type: OutputDto<Event> })
+  @Get()
+  async getEvent(@Req() request: Request<GetEventDto>): Promise<OutputDto<Event>> {
+    return this.eventService.getEvent(request);
   }
 
   @ApiBody({ type: EventCrudDto })

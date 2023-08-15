@@ -3,8 +3,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Between, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 
 import { OutputDto } from 'src/commons/dtos';
-import { DeleteEventDto, EventCrudDto, EventListPagination, EventUpdateDto } from './dto/event.dto';
+import {
+  DeleteEventDto,
+  EventCrudDto,
+  EventListPagination,
+  EventUpdateDto,
+  GetEventDto,
+} from './dto/event.dto';
 import { Event } from './entities/event.entitiy';
+import { Request } from 'express';
 
 @Injectable()
 export class EventService {
@@ -31,6 +38,30 @@ export class EventService {
       };
     } catch (e) {
       console.error(e);
+      throw e;
+    }
+  }
+
+  /**
+   * @param {EventCrudDto} payload 조회할 이벤트
+   * @description 이벤트를 단건 조회한다.
+   * @return {OutputDto<Event>} 이벤트 조회
+   * @author in-ch, 2023-08-15
+   */
+  async getEvent(request: Request<GetEventDto>): Promise<OutputDto<Event>> {
+    try {
+      const { eventNo } = request.query;
+      const event = await this.events.findOne({
+        where: {
+          no: Number(eventNo),
+        },
+      });
+      return {
+        statusCode: 200,
+        data: event,
+      };
+    } catch (e) {
+      console.error(`get event API error: ${e}`);
       throw e;
     }
   }

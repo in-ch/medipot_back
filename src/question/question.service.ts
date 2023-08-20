@@ -52,6 +52,7 @@ export class QuestionService {
           no: locationNo,
         },
         relations: ['user'],
+        select: ['no', 'address'],
       });
       if (!location.no) {
         throw new NotFoundException('삭제된 매물입니다.');
@@ -70,7 +71,13 @@ export class QuestionService {
         locationNo,
       };
       this.questions.save(this.questions.create(newQuestion));
-
+      console.log({
+        name: user.nickname,
+        phone: user.phone,
+        location: location.address,
+        locationUser: locationUser.nickname,
+        locationPhone: locationUser.phone,
+      });
       await this.notionService.notionInsertQuestion({
         name: user.nickname,
         phone: user.phone,

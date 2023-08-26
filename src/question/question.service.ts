@@ -61,29 +61,23 @@ export class QuestionService {
         where: {
           no: location.user.no,
         },
-        select: ['phone', 'nickname'],
+        select: ['no', 'phone', 'nickname'],
       });
-
       const newQuestion = {
         user,
         location,
         userNo: no,
         locationNo,
+        locationUser,
       };
       this.questions.save(this.questions.create(newQuestion));
-      console.log({
-        name: user.nickname,
-        phone: user.phone,
-        location: location.address,
-        locationUser: locationUser.nickname,
-        locationPhone: locationUser.phone,
-      });
+
       await this.notionService.notionInsertQuestion({
         name: user.nickname,
         phone: user.phone,
         location: location.address,
         locationUser: locationUser.nickname,
-        locationPhone: locationUser.phone,
+        locationPhone: '미정',
       });
 
       return {

@@ -407,3 +407,5 @@ docker-compose.yaml
 
 /dist
 /dist/*
+/dist 2
+/dist 2/*

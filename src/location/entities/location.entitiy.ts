@@ -55,7 +55,7 @@ export class Location extends CommonEntity {
   @Column({ type: 'varchar', length: 20, comment: '사용 승인일', default: '미정' })
   approvalDate: string;
 
-  @Column({ type: 'varchar', comment: '상세 설명' })
+  @Column({ type: 'varchar', comment: '상세 설명', select: false })
   detail: string;
 
   @Column('text', { comment: '이미지들', array: true })

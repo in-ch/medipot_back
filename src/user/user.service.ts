@@ -40,7 +40,7 @@ import { NotionService } from 'src/utills/notion/notion.service';
 const faker = new Faker({
   locale: [ko],
 });
-const bcrypt = require('bcrypt'); // 패스워드 암호화
+const bcrypt = require('bcryptjs'); // 패스워드 암호화
 
 @Injectable()
 export class UserService {

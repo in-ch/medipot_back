@@ -19,7 +19,7 @@ import {
 } from './dto/admin.user.dto';
 import { OutputDto } from 'src/commons/dtos';
 
-const bcrypt = require('bcrypt'); // 패스워드 암호화
+const bcrypt = require('bcryptjs'); // 패스워드 암호화
 
 @Injectable()
 export class AdminService {

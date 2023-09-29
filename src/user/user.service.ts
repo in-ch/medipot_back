@@ -224,8 +224,7 @@ export class UserService {
         },
         select: ['password', 'email', 'token', 'refresh_token', 'nickname', 'profile', 'no'],
       });
-
-      if (USER.refresh_token !== refresh_token) {
+      if (USER?.refresh_token !== refresh_token) {
         throw new BadRequestException('리프레쉬 토큰이 변조되었습니다.');
       }
       const verify = await this.jwtService.verify(refresh_token, {

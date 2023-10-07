@@ -14,6 +14,7 @@ import { JwtService } from '@nestjs/jwt';
 import { OutputDto } from 'src/commons/dtos';
 import { DEPARTMENT, User, UserGrant } from './entities/user.entitiy';
 import {
+  DeleteUserHeader,
   GetUserGrantHeader,
   MeInputDto,
   MeOutputCrudDto,
@@ -36,6 +37,9 @@ import {
 import { Request } from 'express';
 import { UserGrantRequest } from './entities/doctorGrant.entitiy';
 import { NotionService } from 'src/utills/notion/notion.service';
+import { LikeLocation } from 'src/like-location/entities/like-location.entitiy';
+import { Consult } from 'src/consult/entities/consult.entitiy';
+import { Location } from 'src/location/entities/location.entitiy';
 
 const faker = new Faker({
   locale: [ko],
@@ -46,6 +50,10 @@ const bcrypt = require('bcryptjs'); // 패스워드 암호화
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly users: Repository<User>,
+    @InjectRepository(LikeLocation) private readonly likeLocations: Repository<LikeLocation>,
+    @InjectRepository(Consult) private readonly consults: Repository<Consult>,
+    @InjectRepository(Location) private readonly locations: Repository<Location>,
+
     @InjectRepository(UserGrantRequest)
     private readonly userGrantRequests: Repository<UserGrantRequest>,
 
@@ -518,6 +526,56 @@ export class UserService {
     } catch (e) {
       console.error(e);
       throw new BadRequestException('유저의 의사 권한 요청 리스트를 가져오는데 실패하였습니다.');
+    }
+  }
+
+  /**
+   * @param {DeleteUserHeader} header -> userNo
+   * @description 유저를 삭제한다.
+   * @return {OutputDto<User>}
+   * @author in-ch, 2023-10-07
+   */
+  async deleteUser(header: DeleteUserHeader): Promise<OutputDto<User>> {
+    try {
+      const { authorization } = header;
+      const UnSignToken = await this.jwtService.verify(authorization.replace('Bearer ', ''), {
+        secret: process.env.PRIVATE_KEY,
+      });
+      const User = await this.users.findOne({
+        where: {
+          no: UnSignToken.no,
+        },
+      });
+      if (!User?.no) {
+        throw new BadRequestException('이미 삭제된 유저입니다.');
+      }
+
+      await this.locations.softDelete({
+        user: {
+          no: User.no,
+        },
+      });
+      await this.likeLocations.softDelete({
+        user: {
+          no: User.no,
+        },
+      });
+      await this.consults.softDelete({
+        user: {
+          no: User.no,
+        },
+      });
+      await this.users.softDelete({
+        no: UnSignToken.no,
+      });
+
+      return {
+        statusCode: 200,
+        data: User,
+      };
+    } catch (e) {
+      console.error(e);
+      throw new BadRequestException(e?.message);
     }
   }
 }

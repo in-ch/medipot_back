@@ -1,6 +1,8 @@
 import { BadRequestException, Injectable, NotAcceptableException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ArrayContains, Between, IsNull, Like, Repository } from 'typeorm';
+import { ArrayContains, Between, IsNull, Like, Not, Repository } from 'typeorm';
+import { JwtService } from '@nestjs/jwt';
+import { Request } from 'express';
 
 import { OutputDto, PaginationDto } from 'src/commons/dtos';
 import { NoDto } from 'src/commons/dtos/no.dto';
@@ -19,9 +21,7 @@ import {
 } from './dto/location.dto';
 import { Location } from './entities/location.entitiy';
 import { NotionService } from 'src/utills/notion/notion.service';
-import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/user/entities/user.entitiy';
-import { Request } from 'express';
 
 @Injectable()
 export class LocationService {

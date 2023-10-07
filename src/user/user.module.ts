@@ -11,10 +11,21 @@ import { Writing } from 'src/writing/entities/writing';
 import { UserGrantRequest } from './entities/doctorGrant.entitiy';
 import { NotionService } from 'src/utills/notion/notion.service';
 import { AdminUser } from 'src/admin/entities/admin-user.entitiy';
+import { LikeLocation } from 'src/like-location/entities/like-location.entitiy';
+import { Consult } from 'src/consult/entities/consult.entitiy';
+import { Location } from 'src/location/entities/location.entitiy';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Writing, UserGrantRequest, AdminUser]),
+    TypeOrmModule.forFeature([
+      User,
+      Writing,
+      UserGrantRequest,
+      AdminUser,
+      LikeLocation,
+      Consult,
+      Location,
+    ]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

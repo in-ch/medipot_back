@@ -4,7 +4,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { OutputDto } from 'src/commons/dtos';
 import { Location } from 'src/location/entities/location.entitiy';
 import { User } from 'src/user/entities/user.entitiy';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
+
 import {
   GetLikeLocationsHeaderDto,
   LikeLocationCrudDto,
@@ -40,6 +41,7 @@ export class LikeLocationService {
           user: {
             no,
           },
+          deletedAt: IsNull(),
           location: {
             no: locationNo,
           },
@@ -95,6 +97,7 @@ export class LikeLocationService {
           user: {
             no,
           },
+          deletedAt: IsNull(),
           location: {
             no: locationNo,
           },
@@ -138,6 +141,7 @@ export class LikeLocationService {
           user: {
             no,
           },
+          deletedAt: IsNull(),
         },
         relations: ['location'],
       });

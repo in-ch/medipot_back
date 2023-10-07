@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Headers, Post, Put, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Headers, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { AdminGuard } from 'src/admin/strategy/grant.strategy';
@@ -23,6 +23,7 @@ import {
   UpdateUserGrantBodyDto,
   UserGrantRequestListPagination,
   RequestDepartmentHeaderDto,
+  DeleteUserHeader,
 } from './dto/user.dto';
 import { UserGrantRequest } from './entities/doctorGrant.entitiy';
 import { DEPARTMENT, User, UserGrant } from './entities/user.entitiy';
@@ -125,5 +126,13 @@ export class UserController {
   @Get('/grant')
   getUserGrant(@Headers() header: GetUserGrantHeader): Promise<OutputDto<UserGrant>> {
     return this.usersService.getUserGrant(header);
+  }
+
+  @ApiBody({ type: DeleteUserHeader })
+  @ApiResponse({ description: '성공', type: OutputDto<User> })
+  @UseGuards(JwtAuthGuard)
+  @Delete('/delete')
+  DeleteUser(@Headers() header: DeleteUserHeader): Promise<OutputDto<User>> {
+    return this.usersService.deleteUser(header);
   }
 }

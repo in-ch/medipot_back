@@ -1,7 +1,7 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { OutputDto } from 'src/commons/dtos';
 import { User } from 'src/user/entities/user.entitiy';
 import { NotionService } from 'src/utills/notion/notion.service';
@@ -44,6 +44,7 @@ export class ConsultService {
           user: {
             no,
           },
+          deletedAt: IsNull(),
         },
         relations: ['user'],
         loadRelationIds: true,
@@ -81,6 +82,7 @@ export class ConsultService {
           phone,
           type,
           isDone: false,
+          deletedAt: IsNull(),
         },
       });
       if (Number(CONSULT?.no > 0)) {
@@ -131,6 +133,7 @@ export class ConsultService {
         where: {
           no,
           isDone: false,
+          deletedAt: IsNull(),
         },
       });
       CONSULT.isDone = true;

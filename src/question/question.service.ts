@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Not, Repository } from 'typeorm';
 
 import { OutputDto } from 'src/commons/dtos';
 import { Question } from './entities/question.entitiy';
@@ -111,12 +111,13 @@ export class QuestionService {
         },
         relations: ['location'],
       });
+
       const totalCount = questions.length;
 
       return {
         totalCount,
         statusCode: 200,
-        data: questions,
+        data: questions.filter((question) => question?.location !== null),
       };
     } catch (e) {
       console.error(`getQuestions API Error: ${e}`);

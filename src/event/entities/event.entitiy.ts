@@ -19,6 +19,6 @@ export class Event extends CommonEntity {
   @Column({ type: 'varchar', comment: '이벤트 끝나는 날짜' })
   endDate: string;
 
-  @Column({ type: 'varchar', comment: '상세 설명' })
+  @Column({ type: 'varchar', comment: '상세 설명', select: false })
   detail: string;
 }

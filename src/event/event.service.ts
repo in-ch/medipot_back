@@ -55,6 +55,7 @@ export class EventService {
         where: {
           no: Number(eventNo),
         },
+        select: ['detail', 'title', 'img', 'href', 'startDate', 'endDate'],
       });
       return {
         statusCode: 200,

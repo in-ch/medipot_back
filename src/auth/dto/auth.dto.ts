@@ -22,8 +22,7 @@ export class EmailValidationParams extends PickType(AuthEmailParams, ['email']) 
 
 export class NicknameValidationParams {
   @ApiProperty()
-  @IsString()
-  nickname: string;
+  nickname: any;
 }
 
 export class ValidationPhoneParams {

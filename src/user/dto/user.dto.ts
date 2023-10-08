@@ -38,16 +38,13 @@ export class MeOutputCrudDto extends UserLoginOutputCrudDto {}
 
 export class UpdateProfileCrudDto {
   @ApiProperty()
-  @IsString()
-  profile?: string;
+  profile?: any;
 
   @ApiProperty()
-  @IsString()
-  nickname?: string;
+  nickname?: any;
 
   @ApiProperty()
-  @IsString()
-  department?: string;
+  department?: any;
 }
 export class UpdateProfileHeaderDto extends MeInputDto {}
 export class UpdateProfileOutputDto {}

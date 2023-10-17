@@ -19,6 +19,7 @@ import { UserGrantRequest } from 'src/user/entities/doctorGrant.entitiy';
 import { LikeLocation } from 'src/like-location/entities/like-location.entitiy';
 import { AuthPhone } from 'src/auth/entities/auth-phone.entitiy';
 import { Event } from 'src/event/entities/event.entitiy';
+import { Hospital } from 'src/hospital/entities/hospital.entitiy';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { Event } from 'src/event/entities/event.entitiy';
           LikeLocation,
           AuthPhone,
           Event,
+          Hospital,
         ],
       }),
       inject: [ConfigService],

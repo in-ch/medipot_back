@@ -24,6 +24,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user/entities/user.entitiy';
 import { LikeLocationModule } from './like-location/like-location.module';
 import { EventModule } from './event/event.module';
+import { HospitalModule } from './hospital/hospital.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { EventModule } from './event/event.module';
     TypeOrmModule.forFeature([Alarm, User]),
     LikeLocationModule,
     EventModule,
+    HospitalModule,
   ],
   controllers: [],
   providers: [],

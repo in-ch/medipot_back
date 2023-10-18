@@ -14,10 +14,10 @@ export class Hospital extends CommonEntity {
   registerDate: string;
 
   @Column('text', { comment: '위도', default: 0 })
-  lat: number;
+  lng: number;
 
   @Column('text', { comment: '경도', default: 0 })
-  lng: number;
+  lat: number;
 
   @Column({ type: 'varchar', length: 20, comment: '개설일자', default: '' })
   department: string;

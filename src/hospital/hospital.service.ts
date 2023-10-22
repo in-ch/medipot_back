@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
 import { OutputDto } from 'src/commons/dtos';
 import { Between, Repository } from 'typeorm';
-import { HospitalCrudDto } from './dto/hospital.dto';
+import { GetHospitalQueryParams, HospitalCrudDto } from './dto/hospital.dto';
 
 import { Hospital } from './entities/hospital.entitiy';
 
@@ -19,7 +19,7 @@ export class HospitalService {
    */
   async getHospitals(request: Request<HospitalCrudDto>): Promise<OutputDto<Hospital[]>> {
     try {
-      const parseZoom = 0.02;
+      const parseZoom = 0.005;
       const { lat, lng } = request.query;
       const hospitals = await this.hospitals.find({
         where: {
@@ -34,6 +34,33 @@ export class HospitalService {
       };
     } catch (e) {
       console.error(`getHospitals API error: ${e}`);
+      throw e;
+    }
+  }
+
+  /**
+   * @param {GetHospitalQueryParams} query 쿼리값
+   * @description 병원 정보를 가져온다.
+   * @return {OutputDto<Hospital>} 병원 정보를 가져온다.
+   * @author in-ch, 2023-10-22
+   */
+  async getHospital(request: Request<GetHospitalQueryParams>): Promise<OutputDto<Hospital>> {
+    try {
+      const { hospitalNo } = request.query;
+      console.log({
+        hospitalNo,
+      });
+      const hospital = await this.hospitals.findOne({
+        where: {
+          no: Number(hospitalNo),
+        },
+      });
+      return {
+        statusCode: 200,
+        data: hospital,
+      };
+    } catch (e) {
+      console.error(`getHospital API error: ${e}`);
       throw e;
     }
   }

@@ -10,3 +10,9 @@ export class HospitalCrudDto {
   @IsNumber()
   lng: number;
 }
+
+export class GetHospitalQueryParams {
+  @ApiProperty()
+  @IsNumber()
+  hospitalNo: number;
+}

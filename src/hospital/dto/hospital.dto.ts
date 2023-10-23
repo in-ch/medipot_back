@@ -16,3 +16,9 @@ export class GetHospitalQueryParams {
   @IsNumber()
   hospitalNo: number;
 }
+
+export class GetHospitalByLocationIdQueryParams {
+  @ApiProperty()
+  @IsNumber()
+  locationNo: number;
+}

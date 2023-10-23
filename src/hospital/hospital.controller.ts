@@ -2,7 +2,11 @@ import { Controller, Get, Req } from '@nestjs/common';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { OutputDto } from 'src/commons/dtos';
-import { GetHospitalQueryParams, HospitalCrudDto } from './dto/hospital.dto';
+import {
+  GetHospitalByLocationIdQueryParams,
+  GetHospitalQueryParams,
+  HospitalCrudDto,
+} from './dto/hospital.dto';
 import { Hospital } from './entities/hospital.entitiy';
 
 import { HospitalService } from './hospital.service';
@@ -17,6 +21,15 @@ export class HospitalController {
   @Get()
   getHospitals(@Req() request: Request<HospitalCrudDto>): Promise<OutputDto<Hospital[]>> {
     return this.hospitalsService.getHospitals(request);
+  }
+
+  @ApiBody({ type: HospitalCrudDto })
+  @ApiResponse({ description: '성공', type: OutputDto<HospitalCrudDto> })
+  @Get('getByLocationId')
+  getHospitalsByLocationId(
+    @Req() request: Request<GetHospitalByLocationIdQueryParams>,
+  ): Promise<OutputDto<Hospital[]>> {
+    return this.hospitalsService.getHospitalsByLocationId(request);
   }
 
   @ApiBody({ type: GetHospitalQueryParams })

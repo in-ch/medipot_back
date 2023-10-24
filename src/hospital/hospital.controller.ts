@@ -28,7 +28,7 @@ export class HospitalController {
   @Get('getByLocationId')
   getHospitalsByLocationId(
     @Req() request: Request<GetHospitalByLocationIdQueryParams>,
-  ): Promise<OutputDto<Hospital[]>> {
+  ): Promise<OutputDto<{ list: Hospital[]; lat: number; lng: number }>> {
     return this.hospitalsService.getHospitalsByLocationId(request);
   }
 

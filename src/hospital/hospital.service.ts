@@ -54,7 +54,7 @@ export class HospitalService {
    */
   async getHospitalsByLocationId(
     request: Request<GetHospitalByLocationIdQueryParams>,
-  ): Promise<OutputDto<Hospital[]>> {
+  ): Promise<OutputDto<{ list: Hospital[]; lat: number; lng: number }>> {
     try {
       const { locationNo } = request.query;
       const Location = await this.locations.findOne({
@@ -75,9 +75,14 @@ export class HospitalService {
           ),
         },
       });
+      const randomOffset = (Math.random() - 0.5) * 0.003;
       return {
         statusCode: 200,
-        data: hospitals,
+        data: {
+          list: hospitals,
+          lat: Number(Location?.lat) + Number(randomOffset),
+          lng: Number(Location?.lng) + Number(randomOffset),
+        },
       };
     } catch (e) {
       console.error(`getHospitalsByLocationId API error: ${e}`);

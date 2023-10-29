@@ -15,6 +15,8 @@ import { OutputDto } from 'src/commons/dtos';
 import { DEPARTMENT, User, UserGrant } from './entities/user.entitiy';
 import {
   DeleteUserHeader,
+  GetPhoneNumRequestParamDto,
+  GetPhoneNumResponseDto,
   GetUserGrantHeader,
   MeInputDto,
   MeOutputCrudDto,
@@ -572,6 +574,42 @@ export class UserService {
       return {
         statusCode: 200,
         data: User,
+      };
+    } catch (e) {
+      console.error(e);
+      throw new BadRequestException(e?.message);
+    }
+  }
+
+  /**
+   * @param {Request<GetPhoneNumRequestParamDto>} request -> userNo
+   * @description 유저의 휴대번호를 조회한다.
+   * @return {OutputDto<GetPhoneNumResponseDto>}
+   * @author in-ch, 2023-10-29
+   */
+  async getPhoneNum(
+    @Req() request: Request<GetPhoneNumRequestParamDto>,
+  ): Promise<OutputDto<GetPhoneNumResponseDto>> {
+    try {
+      console.log(request.query);
+      const {
+        query: { userNo },
+      } = request;
+      const User = await this.users.findOne({
+        where: {
+          no: Number(userNo),
+        },
+        select: ['phone'],
+      });
+      if (!User?.phone) {
+        throw new BadRequestException('유저를 찾을 수 없습니다.');
+      }
+
+      return {
+        statusCode: 200,
+        data: {
+          phone: User.phone,
+        },
       };
     } catch (e) {
       console.error(e);

@@ -90,3 +90,15 @@ export class UpdateUserGrantBodyDto {
 export class RequestDepartmentHeaderDto extends MeInputDto {}
 
 export class UserGrantRequestListPagination extends PaginationDto {}
+
+export class GetPhoneNumRequestParamDto {
+  @ApiProperty()
+  @IsNumber()
+  userNo: number;
+}
+
+export class GetPhoneNumResponseDto {
+  @ApiProperty()
+  @IsString()
+  phone: string;
+}

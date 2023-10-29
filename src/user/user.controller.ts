@@ -24,6 +24,8 @@ import {
   UserGrantRequestListPagination,
   RequestDepartmentHeaderDto,
   DeleteUserHeader,
+  GetPhoneNumResponseDto,
+  GetPhoneNumRequestParamDto,
 } from './dto/user.dto';
 import { UserGrantRequest } from './entities/doctorGrant.entitiy';
 import { DEPARTMENT, User, UserGrant } from './entities/user.entitiy';
@@ -134,5 +136,15 @@ export class UserController {
   @Delete('/delete')
   DeleteUser(@Headers() header: DeleteUserHeader): Promise<OutputDto<User>> {
     return this.usersService.deleteUser(header);
+  }
+
+  @ApiBody({ type: GetPhoneNumRequestParamDto })
+  @ApiResponse({ description: '성공', type: OutputDto<GetPhoneNumResponseDto> })
+  @UseGuards(JwtAuthGuard)
+  @Get('/getPhoneNum')
+  getPhoneNum(
+    @Req() request: Request<GetPhoneNumRequestParamDto>,
+  ): Promise<OutputDto<GetPhoneNumResponseDto>> {
+    return this.usersService.getPhoneNum(request);
   }
 }

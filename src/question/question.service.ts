@@ -1,6 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IsNull, Not, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 import { OutputDto } from 'src/commons/dtos';
 import { Question } from './entities/question.entitiy';
@@ -10,7 +10,7 @@ import {
   QuestionListPagination,
   QuestionOutputCrudDto,
 } from './dto/question';
-import { User } from 'src/user/entities/user.entitiy';
+import { User, UserGrant } from 'src/user/entities/user.entitiy';
 import { Location } from 'src/location/entities/location.entitiy';
 import { JwtService } from '@nestjs/jwt';
 import { NotionService } from 'src/utills/notion/notion.service';
@@ -41,48 +41,52 @@ export class QuestionService {
         where: {
           no,
         },
-        select: ['no', 'nickname', 'phone'],
+        select: ['no', 'nickname', 'phone', 'grant'],
       });
       if (!user.no) {
         throw new NotFoundException('유저 인증에 실패했습니다.');
+      } else if (user.grant !== UserGrant.DOCTOR) {
+        return {
+          statusCode: 406,
+        };
+      } else {
+        const location = await this.locations.findOne({
+          where: {
+            no: locationNo,
+          },
+          relations: ['user'],
+          select: ['no', 'address'],
+        });
+        if (!location.no) {
+          throw new NotFoundException('삭제된 매물입니다.');
+        }
+        const locationUser = await this.users.findOne({
+          where: {
+            no: location.user.no,
+          },
+          select: ['no', 'phone', 'nickname'],
+        });
+        const newQuestion = {
+          user,
+          location,
+          userNo: no,
+          locationNo,
+          locationUser,
+        };
+        this.questions.save(this.questions.create(newQuestion));
+
+        await this.notionService.notionInsertQuestion({
+          name: user.nickname,
+          phone: user.phone,
+          location: location.address,
+          locationUser: locationUser.nickname,
+          locationPhone: '미정',
+        });
+
+        return {
+          statusCode: 200,
+        };
       }
-
-      const location = await this.locations.findOne({
-        where: {
-          no: locationNo,
-        },
-        relations: ['user'],
-        select: ['no', 'address'],
-      });
-      if (!location.no) {
-        throw new NotFoundException('삭제된 매물입니다.');
-      }
-      const locationUser = await this.users.findOne({
-        where: {
-          no: location.user.no,
-        },
-        select: ['no', 'phone', 'nickname'],
-      });
-      const newQuestion = {
-        user,
-        location,
-        userNo: no,
-        locationNo,
-        locationUser,
-      };
-      this.questions.save(this.questions.create(newQuestion));
-
-      await this.notionService.notionInsertQuestion({
-        name: user.nickname,
-        phone: user.phone,
-        location: location.address,
-        locationUser: locationUser.nickname,
-        locationPhone: '미정',
-      });
-
-      return {
-        statusCode: 200,
-      };
     } catch (e) {
       console.error(`Add Question API Error: ${e}`);
       throw e;

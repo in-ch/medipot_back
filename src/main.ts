@@ -16,7 +16,11 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, swagger_config);
   SwaggerModule.setup('inch', app, document);
 
-  app.enableCors();
+  app.enableCors({
+    origin: process.env.ALLOWED_ORIGIN, // 수정 필요한 도메인 주소
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
   app.useGlobalPipes(new ValidationPipe());
   app.use(bodyParser.json({ limit: '500mb' }));
   app.use(bodyParser.urlencoded({ limit: '500mb', extended: true }));

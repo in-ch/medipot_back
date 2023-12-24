@@ -55,7 +55,7 @@ export class UploadsController {
           ACL: 'public-read',
         })
         .promise();
-      const url = `https://${BUCKET_NAME}.s3.amazonaws.com/${objectName}`;
+      const url = `${process.env.CLOUD_FRONT}/${objectName}`;
       return { url };
     } catch (e) {
       console.error(e);

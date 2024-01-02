@@ -1,4 +1,7 @@
-import { Module } from '@nestjs/common';
+import { HttpException, Module } from '@nestjs/common';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { RavenInterceptor, RavenModule } from 'nest-raven';
 
 import { TypeormModule } from './typeorm/typeorm.module';
 import { ConfigAppModule } from './config/config.module';
@@ -20,7 +23,6 @@ import { AdminModule } from './admin/admin.module';
 import { AlarmModule } from './alarm/alarm.module';
 import { NaverModule } from './naver/naver.module';
 import { Alarm } from './alarm/entities/alarm.entitiy';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user/entities/user.entitiy';
 import { LikeLocationModule } from './like-location/like-location.module';
 import { EventModule } from './event/event.module';
@@ -53,6 +55,20 @@ import { HospitalModule } from './hospital/hospital.module';
     HospitalModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useValue: new RavenInterceptor({
+        filters: [
+          {
+            type: HttpException,
+            filter: (exception: HttpException) => {
+              return 299 > exception.getStatus();
+            },
+          },
+        ],
+      }),
+    },
+  ],
 })
 export class AppModule {}

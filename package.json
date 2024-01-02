@@ -34,6 +34,7 @@
     "@nestjs/websockets": "9.0.0",
     "@notionhq/client": "^2.2.5",
     "@sentry/node": "^7.91.0",
+    "@slack/client": "^5.0.2",
     "@types/socket.io": "^3.0.2",
     "aws-sdk": "^2.1282.0",
     "bcryptjs": "^2.4.3",

@@ -27,6 +27,7 @@ import { User } from './user/entities/user.entitiy';
 import { LikeLocationModule } from './like-location/like-location.module';
 import { EventModule } from './event/event.module';
 import { HospitalModule } from './hospital/hospital.module';
+import { WebhookInterceptor } from './webhook.interceptor';
 
 @Module({
   imports: [
@@ -68,6 +69,10 @@ import { HospitalModule } from './hospital/hospital.module';
           },
         ],
       }),
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: WebhookInterceptor,
     },
   ],
 })

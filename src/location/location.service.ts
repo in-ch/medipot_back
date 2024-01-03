@@ -22,6 +22,7 @@ import {
 import { Location } from './entities/location.entitiy';
 import { NotionService } from 'src/utills/notion/notion.service';
 import { User } from 'src/user/entities/user.entitiy';
+import sendSlackMsg from 'src/utills/sendSlackMsg';
 
 @Injectable()
 export class LocationService {
@@ -324,7 +325,6 @@ export class LocationService {
       });
 
       this.locations.save(newLocation);
-
       await this.notionService.notionInsertLocation({
         name: newLocation.name,
         address: newLocation.address,
@@ -333,6 +333,17 @@ export class LocationService {
         userName: User.nickname,
       });
 
+      sendSlackMsg(
+        process.env.SLACK_WEBHOOK_LOCATION_REGISTER_REQUEST,
+        `${User.nickname} 님의 요청입니다.`,
+        `
+이름: ${User.nickname}
+입지명: ${newLocation.name}
+주소: ${newLocation.address}
+키워드: ${newLocation.keywords}
+진료과: ${newLocation.departments}
+      `,
+      );
       return {
         statusCode: 200,
         data: newLocation,

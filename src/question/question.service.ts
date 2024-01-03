@@ -14,6 +14,7 @@ import { User, UserGrant } from 'src/user/entities/user.entitiy';
 import { Location } from 'src/location/entities/location.entitiy';
 import { JwtService } from '@nestjs/jwt';
 import { NotionService } from 'src/utills/notion/notion.service';
+import sendSlackMsg from 'src/utills/sendSlackMsg';
 
 @Injectable()
 export class QuestionService {
@@ -82,6 +83,18 @@ export class QuestionService {
           locationUser: locationUser.nickname,
           locationPhone: '미정',
         });
+
+        sendSlackMsg(
+          process.env.SLACK_WEBHOOK_PREMIUM_REPORT_REQUEST,
+          `${user.nickname} 님의 요청입니다.`,
+          `
+  이름: ${user.nickname}
+  연락처: ${user.phone}
+  요청 주소: ${location.address}
+  요청 입지 등록 유저명: ${locationUser.nickname}
+  해당 입지: https://medi-pots.com/location/detail/${location.no}
+        `,
+        );
 
         return {
           statusCode: 200,

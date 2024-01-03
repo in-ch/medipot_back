@@ -15,6 +15,7 @@ import {
   SendConsultAddResponse,
 } from './dto/consult.dto';
 import { Consult } from './entities/consult.entitiy';
+import sendSlackMsg from 'src/utills/sendSlackMsg';
 
 @Injectable()
 export class ConsultService {
@@ -110,6 +111,20 @@ export class ConsultService {
         detail: NEW_CONSULT.detail,
         phone: NEW_CONSULT.phone,
       });
+
+      sendSlackMsg(
+        process.env.SLACK_WEBHOOK_HOMEPAGE_CONSULT_REQUEST,
+        `${NEW_CONSULT.name} 님의 홈페이지 문의입니다.`,
+        `
+이름: ${NEW_CONSULT.name}
+종류: ${NEW_CONSULT.type.toString()}
+유저 이름: ${NEW_CONSULT.user.nickname}
+상세 내용: 
+${NEW_CONSULT.detail}
+
+연락처: ${NEW_CONSULT.phone}
+      `,
+      );
 
       return {
         statusCode: 200,

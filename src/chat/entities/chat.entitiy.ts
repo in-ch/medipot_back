@@ -1,6 +1,7 @@
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+
 import { CommonEntity } from 'src/commons/entities/common.entity';
 import { User } from 'src/user/entities/user.entitiy';
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 export enum MESSAGE_TYPE {
   message = 'MESSAGE',

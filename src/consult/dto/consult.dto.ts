@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNumber, IsString } from 'class-validator';
+
 import { PaginationDto } from 'src/commons/dtos';
 import { MeInputDto } from 'src/user/dto/user.dto';
 import { CONSULT_CONSULT } from '../entities/consult.entitiy';

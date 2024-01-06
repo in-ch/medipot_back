@@ -5,12 +5,12 @@ import { JwtModule } from '@nestjs/jwt';
 
 import { Writing } from 'src/writing/entities/writing';
 import { User } from 'src/user/entities/user.entitiy';
+import { Alarm } from 'src/alarm/entities/alarm.entitiy';
+import { NestedReply } from 'src/nested-reply/entities/nestedReply.entitiy';
+import { AlarmService } from 'src/alarm/alarm.service';
 import { ReplyController } from './reply.controller';
 import { ReplyService } from './reply.service';
 import { Reply } from './entities/reply.entity';
-import { AlarmService } from 'src/alarm/alarm.service';
-import { Alarm } from 'src/alarm/entities/alarm.entitiy';
-import { NestedReply } from 'src/nested-reply/entities/nestedReply.entitiy';
 
 @Module({
   imports: [

@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsNumber, IsString } from 'class-validator';
+
 import { UserCreateInputCrudDto } from 'src/user/dto/user.dto';
 
 export class MeInputDto {

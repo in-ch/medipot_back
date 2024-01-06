@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNumber } from 'class-validator';
+
 import { ALARM_TYPE } from '../entities/alarm.entitiy';
 
 export class AddAlaramPayload {

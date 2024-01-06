@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Headers, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
+
 import { OutputDto } from 'src/commons/dtos';
 import { JwtAuthGuard } from 'src/user/strategy/jwtAuthentication.guard';
 import { ConsultService } from './consult.service';

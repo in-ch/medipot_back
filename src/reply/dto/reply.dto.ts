@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsString } from 'class-validator';
+
 import { PaginationDto } from 'src/commons/dtos';
 
 export class ReplyCrudDto {

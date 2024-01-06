@@ -1,7 +1,8 @@
+import { Entity, JoinColumn, ManyToOne } from 'typeorm';
+
 import { CommonEntity } from 'src/commons/entities/common.entity';
 import { Location } from 'src/location/entities/location.entitiy';
 import { User } from 'src/user/entities/user.entitiy';
-import { Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 @Entity()
 export class LikeLocation extends CommonEntity {

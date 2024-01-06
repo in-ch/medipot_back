@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
+import { LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
+import { Request } from 'express';
 
 import { OutputDto } from 'src/commons/dtos';
 import {
@@ -11,7 +12,6 @@ import {
   GetEventDto,
 } from './dto/event.dto';
 import { Event } from './entities/event.entitiy';
-import { Request } from 'express';
 
 @Injectable()
 export class EventService {

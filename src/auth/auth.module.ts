@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { EmailService } from 'src/email/email.service';
 
+import { EmailService } from 'src/email/email.service';
 import { User } from 'src/user/entities/user.entitiy';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';

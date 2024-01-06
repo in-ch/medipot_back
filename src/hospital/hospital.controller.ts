@@ -1,6 +1,7 @@
 import { Controller, Get, Req } from '@nestjs/common';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
+
 import { OutputDto } from 'src/commons/dtos';
 import {
   GetHospitalByLocationIdQueryParams,
@@ -8,7 +9,6 @@ import {
   HospitalCrudDto,
 } from './dto/hospital.dto';
 import { Hospital } from './entities/hospital.entitiy';
-
 import { HospitalService } from './hospital.service';
 
 @ApiTags('병원')

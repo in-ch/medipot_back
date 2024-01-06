@@ -1,7 +1,9 @@
 import { Body, Controller, Headers, Post, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
+
 import { OutputDto } from 'src/commons/dtos';
 import { JwtAuthGuard } from 'src/user/strategy/jwtAuthentication.guard';
+import { ReportService } from './report.service';
 import {
   NestedReportHeaderDto,
   NestedReportReplyCrudDto,
@@ -9,7 +11,6 @@ import {
   ReportHeaderDto,
   ReportReplyCrudDto,
 } from './dto/report.dto';
-import { ReportService } from './report.service';
 
 @ApiTags('신고')
 @Controller('report')

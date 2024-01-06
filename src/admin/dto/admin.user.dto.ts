@@ -1,6 +1,7 @@
 import { PickType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsString } from 'class-validator';
+
 import { grant } from '../entities/admin-user.entitiy';
 
 export class AdminUserCrudDto {

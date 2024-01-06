@@ -6,6 +6,8 @@ import { JwtService } from '@nestjs/jwt';
 import { catchError, firstValueFrom } from 'rxjs';
 import { Faker, ko } from '@faker-js/faker';
 
+import { LOGIN_REGISTER_TYPE, OutputDto } from 'src/commons/dtos';
+import { User } from 'src/user/entities/user.entitiy';
 import {
   KakaoLoginInputDto,
   KakaoLoginOutputDto,
@@ -15,8 +17,6 @@ import {
   RefreshInputDto,
   RefreshOkOutputDto,
 } from './dto/kakao.dto';
-import { LOGIN_REGISTER_TYPE, OutputDto } from 'src/commons/dtos';
-import { User } from 'src/user/entities/user.entitiy';
 
 const faker = new Faker({
   locale: [ko],

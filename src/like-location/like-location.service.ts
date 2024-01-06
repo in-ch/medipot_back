@@ -1,11 +1,11 @@
 import { BadRequestException, Body, ConflictException, Headers, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
+import { IsNull, Repository } from 'typeorm';
+
 import { OutputDto } from 'src/commons/dtos';
 import { Location } from 'src/location/entities/location.entitiy';
 import { User } from 'src/user/entities/user.entitiy';
-import { IsNull, Repository } from 'typeorm';
-
 import {
   GetLikeLocationsHeaderDto,
   LikeLocationCrudDto,

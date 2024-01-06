@@ -1,7 +1,7 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { ApiBody, ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { OutputDto } from 'src/commons/dtos';
 
+import { OutputDto } from 'src/commons/dtos';
 import { AdminService } from './admin.service';
 import {
   AdminUserCreateCrudDto,

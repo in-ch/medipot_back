@@ -1,7 +1,7 @@
 import { HttpException, Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { RavenInterceptor, RavenModule } from 'nest-raven';
+import { RavenInterceptor } from 'nest-raven';
 
 import { TypeormModule } from './typeorm/typeorm.module';
 import { ConfigAppModule } from './config/config.module';

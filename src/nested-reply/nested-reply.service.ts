@@ -8,6 +8,7 @@ import { AlarmService } from 'src/alarm/alarm.service';
 import { OutputDto, PageOutput } from 'src/commons/dtos';
 import { Reply } from 'src/reply/entities/reply.entity';
 import { User } from 'src/user/entities/user.entitiy';
+import { ALARM_TYPE } from 'src/alarm/entities/alarm.entitiy';
 import {
   CreateNestedReplyHeaderParams,
   CreateNestedReplyParams,
@@ -16,7 +17,6 @@ import {
   NestedReplyListPagination,
 } from './dto/nestedReply.dto';
 import { NestedReply } from './entities/nestedReply.entitiy';
-import { ALARM_TYPE } from 'src/alarm/entities/alarm.entitiy';
 
 @Injectable()
 export class NestedReplyService {

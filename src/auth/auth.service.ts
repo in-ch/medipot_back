@@ -3,9 +3,14 @@ import { MoreThanOrEqual, Repository } from 'typeorm';
 import { BadRequestException, ConflictException } from '@nestjs/common';
 import * as crypto from 'crypto';
 import axios from 'axios';
+import { JwtService } from '@nestjs/jwt';
 
 import { User } from 'src/user/entities/user.entitiy';
+import { EmailService } from 'src/email/email.service';
+import { checkElapsedTime } from 'src/utills/checkElapsedTime';
+import { OutputDto } from 'src/commons/dtos';
 import { Auth } from './entities/auth.entitiy';
+import { AuthPhone } from './entities/auth-phone.entitiy';
 import {
   AuthEmailParams,
   EmailValidationOutput,
@@ -17,11 +22,6 @@ import {
   ValidationPhoneHeader,
   ValidationPhoneParams,
 } from './dto/auth.dto';
-import { EmailService } from 'src/email/email.service';
-import { OutputDto } from 'src/commons/dtos';
-import { JwtService } from '@nestjs/jwt';
-import { AuthPhone } from './entities/auth-phone.entitiy';
-import { checkElapsedTime } from 'src/utills/checkElapsedTime';
 
 const createRandNum = (min, max) => {
   var ntemp = Math.floor(Math.random() * (max - min + 1)) + min;

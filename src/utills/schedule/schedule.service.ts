@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
+import { IsNull, Repository } from 'typeorm';
+
 import { Alarm, ALARM_TYPE } from 'src/alarm/entities/alarm.entitiy';
 import { User } from 'src/user/entities/user.entitiy';
-import { IsNull, Repository } from 'typeorm';
 
 /// 9시부터 24시까지 2시간 마다 실행
 @Injectable()

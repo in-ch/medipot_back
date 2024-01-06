@@ -5,6 +5,11 @@ import { Repository } from 'typeorm';
 import { User } from 'src/user/entities/user.entitiy';
 import { JwtService } from '@nestjs/jwt';
 import { Writing } from 'src/writing/entities/writing';
+import { Reply } from 'src/reply/entities/reply.entity';
+import { NotionService } from 'src/utills/notion/notion.service';
+import { NestedReply } from 'src/nested-reply/entities/nestedReply.entitiy';
+import { OutputDto } from 'src/commons/dtos';
+import { Report } from './entities/report.entity';
 import {
   NestedReportHeaderDto,
   NestedReportReplyCrudDto,
@@ -12,11 +17,6 @@ import {
   ReportHeaderDto,
   ReportReplyCrudDto,
 } from './dto/report.dto';
-import { OutputDto } from 'src/commons/dtos';
-import { Report } from './entities/report.entity';
-import { Reply } from 'src/reply/entities/reply.entity';
-import { NotionService } from 'src/utills/notion/notion.service';
-import { NestedReply } from 'src/nested-reply/entities/nestedReply.entitiy';
 
 @Injectable()
 export class ReportService {

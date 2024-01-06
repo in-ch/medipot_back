@@ -1,7 +1,8 @@
+import { Entity, JoinColumn, ManyToOne } from 'typeorm';
+
 import { CommonEntity } from 'src/commons/entities/common.entity';
 import { User } from 'src/user/entities/user.entitiy';
 import { Writing } from 'src/writing/entities/writing';
-import { Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 @Entity()
 export class Like extends CommonEntity {

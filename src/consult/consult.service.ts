@@ -2,9 +2,11 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Repository } from 'typeorm';
+
 import { OutputDto } from 'src/commons/dtos';
 import { User } from 'src/user/entities/user.entitiy';
 import { NotionService } from 'src/utills/notion/notion.service';
+import sendSlackMsg from 'src/utills/sendSlackMsg';
 import {
   ConsultListHeaders,
   ConsultListPagination,
@@ -15,7 +17,6 @@ import {
   SendConsultAddResponse,
 } from './dto/consult.dto';
 import { Consult } from './entities/consult.entitiy';
-import sendSlackMsg from 'src/utills/sendSlackMsg';
 
 @Injectable()
 export class ConsultService {

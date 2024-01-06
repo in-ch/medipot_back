@@ -1,8 +1,9 @@
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+
 import { CommonEntity } from 'src/commons/entities/common.entity';
 import { Reply } from 'src/reply/entities/reply.entity';
 import { Report } from 'src/report/entities/report.entity';
 import { User } from 'src/user/entities/user.entitiy';
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 @Entity()
 export class NestedReply extends CommonEntity {

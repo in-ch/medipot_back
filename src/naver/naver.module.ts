@@ -3,8 +3,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from 'src/user/entities/user.entitiy';
 
+import { User } from 'src/user/entities/user.entitiy';
 import { NaverController } from './naver.controller';
 import { NaverService } from './naver.service';
 

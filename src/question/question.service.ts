@@ -1,20 +1,20 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { JwtService } from '@nestjs/jwt';
 
 import { OutputDto } from 'src/commons/dtos';
 import { Question } from './entities/question.entitiy';
+import { User, UserGrant } from 'src/user/entities/user.entitiy';
+import { Location } from 'src/location/entities/location.entitiy';
+import { NotionService } from 'src/utills/notion/notion.service';
+import sendSlackMsg from 'src/utills/sendSlackMsg';
 import {
   QuestionCrudDto,
   QuestionHeaderDto,
   QuestionListPagination,
   QuestionOutputCrudDto,
 } from './dto/question';
-import { User, UserGrant } from 'src/user/entities/user.entitiy';
-import { Location } from 'src/location/entities/location.entitiy';
-import { JwtService } from '@nestjs/jwt';
-import { NotionService } from 'src/utills/notion/notion.service';
-import sendSlackMsg from 'src/utills/sendSlackMsg';
 
 @Injectable()
 export class QuestionService {

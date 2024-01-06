@@ -1,12 +1,12 @@
 import { Strategy } from 'passport-local';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { ExtractJwt } from 'passport-jwt';
 
 import { OutputDto } from 'src/commons/dtos';
 import { AdminService } from '../admin.service';
 import { AdminUserOutputCrudDto } from '../dto/admin.user.dto';
-import { ConfigService } from '@nestjs/config';
-import { ExtractJwt } from 'passport-jwt';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {

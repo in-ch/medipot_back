@@ -6,6 +6,8 @@ import { OutputDto, PageOutput } from 'src/commons/dtos';
 import { MeInputDto } from 'src/user/dto/user.dto';
 import { GrantGuard } from 'src/user/strategy/grant.strategy';
 import { JwtAuthGuard } from 'src/user/strategy/jwtAuthentication.guard';
+import { Writing } from './entities/writing';
+import { WritingService } from './writing.service';
 import {
   WritingCreateDto,
   WritingCreateOutputDto,
@@ -13,8 +15,6 @@ import {
   WritingDetailDto,
   WritingListDto,
 } from './dto/writing.dto';
-import { Writing } from './entities/writing';
-import { WritingService } from './writing.service';
 
 @ApiTags('커뮤니티 글')
 @Controller('writing')

@@ -1,8 +1,9 @@
 import { PickType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsEnum, IsNumber, IsString } from 'class-validator';
+import { IsBoolean, IsNumber, IsString } from 'class-validator';
+
 import { PaginationDto } from 'src/commons/dtos';
-import { DEPARTMENT, UserGrant } from '../entities/user.entitiy';
+import { UserGrant } from '../entities/user.entitiy';
 
 export class UserCreateInputCrudDto {
   @IsString()

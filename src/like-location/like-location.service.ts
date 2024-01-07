@@ -50,7 +50,9 @@ export class LikeLocationService {
         loadRelationIds: true,
       });
       if (LikeLocation?.no) {
-        throw new ConflictException('이미 좋아요를 했습니다.');
+        throw new ConflictException(
+          `이미 좋아요를 했습니다. 유저 no: ${no} 입지 no: ${locationNo}`,
+        );
       } else {
         const User = await this.users.findOne({
           where: {
@@ -107,7 +109,9 @@ export class LikeLocationService {
       });
 
       if (!LikeLocation?.no) {
-        throw new ConflictException('이미 삭제한 좋아요입니다.');
+        throw new ConflictException(
+          `이미 삭제한 좋아요입니다. 유저 no: ${no} 입지 no: ${locationNo}`,
+        );
       } else {
         this.likeLocations.delete(LikeLocation.no);
         return {

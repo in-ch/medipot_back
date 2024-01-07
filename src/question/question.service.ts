@@ -45,7 +45,9 @@ export class QuestionService {
         select: ['no', 'nickname', 'phone', 'grant'],
       });
       if (!user.no) {
-        throw new NotFoundException('유저 인증에 실패했습니다.');
+        throw new NotFoundException(
+          `유저 인증에 실패했습니다. 유저 no: ${user?.no} 입지 no: ${locationNo}`,
+        );
       } else if (user.grant !== UserGrant.DOCTOR) {
         return {
           statusCode: 406,
@@ -59,7 +61,9 @@ export class QuestionService {
           select: ['no', 'address'],
         });
         if (!location.no) {
-          throw new NotFoundException('삭제된 매물입니다.');
+          throw new NotFoundException(
+            `삭제된 매물입니다. 유저 no: ${user?.no} 입지 no: ${locationNo}`,
+          );
         }
         const locationUser = await this.users.findOne({
           where: {

@@ -136,7 +136,9 @@ export class EventService {
         },
       });
       if (!event?.no) {
-        throw new BadRequestException('이미 삭제되었거나 없는 이벤트입니다.');
+        throw new BadRequestException(
+          `이미 삭제되었거나 없는 이벤트입니다. 삭제된 이벤트명 ${event?.title}`,
+        );
       }
       await this.events.softDelete({
         no: eventNo,

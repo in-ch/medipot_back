@@ -88,7 +88,9 @@ export class ConsultService {
         },
       });
       if (Number(CONSULT?.no > 0)) {
-        throw new ConflictException('이미 신청이 완료되었습니다.');
+        throw new ConflictException(
+          `이미 신청이 완료되었습니다. 이미 신청된 상담 no ${CONSULT?.no}`,
+        );
       }
       const UnSignToken = await this.jwtService.verify(authorization.replace('Bearer ', ''), {
         secret: process.env.PRIVATE_KEY,

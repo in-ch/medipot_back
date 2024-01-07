@@ -235,7 +235,7 @@ export class UserService {
         select: ['password', 'email', 'token', 'refresh_token', 'nickname', 'profile', 'no'],
       });
       if (USER?.refresh_token !== refresh_token) {
-        throw new BadRequestException('리프레쉬 토큰이 변조되었습니다.');
+        throw new BadRequestException(`리프레쉬 토큰이 변조되었습니다. 유저 no: ${USER.no}`);
       }
       const verify = await this.jwtService.verify(refresh_token, {
         secret: process.env.PRIVATE_KEY,
@@ -430,7 +430,7 @@ export class UserService {
         select: ['grant', 'no', 'nickname'],
       });
       if (User.grant === UserGrant.DOCTOR)
-        throw new BadRequestException('이미 의사 권한을 가지고 있습니다.');
+        throw new BadRequestException(`이미 의사 권한을 가지고 있습니다. 유저 no: ${User.no}`);
       const existedUserGrant = await this.userGrantRequests.findOne({
         where: {
           user: {
@@ -549,7 +549,7 @@ export class UserService {
         },
       });
       if (!User?.no) {
-        throw new BadRequestException('이미 삭제된 유저입니다.');
+        throw new BadRequestException(`이미 삭제된 유저입니다. 삭제된 유저 no: ${UnSignToken?.no}`);
       }
 
       await this.locations.softDelete({
@@ -591,7 +591,6 @@ export class UserService {
     @Req() request: Request<GetPhoneNumRequestParamDto>,
   ): Promise<OutputDto<GetPhoneNumResponseDto>> {
     try {
-      console.log(request.query);
       const {
         query: { userNo },
       } = request;
@@ -602,7 +601,9 @@ export class UserService {
         select: ['phone'],
       });
       if (!User?.phone) {
-        throw new BadRequestException('유저를 찾을 수 없습니다.');
+        throw new BadRequestException(
+          `유저를 찾을 수 없습니다. 유저 넘버: ${User?.no} 닉네임: ${User?.nickname}`,
+        );
       }
 
       return {

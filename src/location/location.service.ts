@@ -73,7 +73,9 @@ export class LocationService {
           relations: ['user'],
         });
         if (!location?.no) {
-          throw new BadRequestException('존재하지 않는 매물입니다.');
+          throw new BadRequestException(
+            `존재하지 않는 매물입니다. 요청한 입지 no: ${location?.no}`,
+          );
         }
         return {
           statusCode: 200,
@@ -81,8 +83,7 @@ export class LocationService {
         };
       }
     } catch (e) {
-      console.error(`getLocation error: ${e}`);
-      throw new BadRequestException('존재하지 않거나 잘못된 매물 정보를 요청하였습니다.');
+      throw new BadRequestException(e);
     }
   }
   /**
@@ -388,7 +389,9 @@ export class LocationService {
         },
       });
       if (!Location?.no) {
-        throw new BadRequestException('존재하지 않는 매물입니다.');
+        throw new BadRequestException(
+          `[updateLocation] 존재하지 않는 매물입니다. 유저 no: ${no} 입지 no: ${locationNo}`,
+        );
       }
 
       const {
@@ -462,7 +465,9 @@ export class LocationService {
         },
       });
       if (!location?.no) {
-        throw new BadRequestException('존재하지 않는 매물입니다.');
+        throw new BadRequestException(
+          `존재하지 않는 매물입니다. 입지 no: ${no} 입지 no: ${location?.no}`,
+        );
       }
       location.isApproved = !location.isApproved;
       this.locations.save(location);
@@ -512,7 +517,7 @@ export class LocationService {
       };
     } catch (e) {
       console.error(`get user locations error: ${e}`);
-      throw new BadRequestException('존재하지 않거나 잘못된 매물 정보를 요청하였습니다.');
+      throw new BadRequestException(e);
     }
   }
 
@@ -577,7 +582,7 @@ export class LocationService {
       };
     } catch (e) {
       console.error(`get user locations error: ${e}`);
-      throw new BadRequestException('존재하지 않거나 잘못된 매물 정보를 요청하였습니다.');
+      throw new BadRequestException(e);
     }
   }
 

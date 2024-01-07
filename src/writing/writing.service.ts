@@ -156,7 +156,8 @@ export class WritingService {
         },
         relations: ['user'],
       });
-      if (USER.no !== WRITING.user.no) throw new NotAcceptableException('권한이 없습니다.');
+      if (USER.no !== WRITING.user.no)
+        throw new NotAcceptableException(`권한이 없습니다. 요청한 유저 no: ${USER.no}`);
       await this.writings.softDelete({
         no: writingNo,
       });
@@ -166,7 +167,7 @@ export class WritingService {
       };
     } catch (e) {
       console.error(`delete writing api Error: ${e}`);
-      throw new BadRequestException('글 삭제에 실패했습니다.');
+      throw new BadRequestException(e);
     }
   }
 }

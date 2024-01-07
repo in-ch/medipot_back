@@ -46,7 +46,9 @@ export class LikeService {
         loadRelationIds: true,
       });
       if (Like?.no) {
-        throw new ConflictException('이미 좋아요를 했습니다.');
+        throw new ConflictException(
+          `이미 좋아요를 했습니다. 유저 no: ${no} 게시글 no: ${writingNo}`,
+        );
       } else {
         const User = await this.users.findOne({
           where: {
@@ -111,7 +113,9 @@ export class LikeService {
         loadRelationIds: true,
       });
       if (!Like?.no) {
-        throw new ConflictException('이미 삭제한 좋아요입니다.');
+        throw new ConflictException(
+          `이미 삭제한 좋아요입니다. 유저 no: ${no} 게시글 no: ${writingNo}`,
+        );
       } else {
         this.likes.delete(Like.no);
         return {

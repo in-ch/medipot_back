@@ -77,7 +77,7 @@ export class AuthService {
         },
       });
       if (existedUsersCount > 0) {
-        throw new ConflictException('이미 존재하는 이메일입니다.');
+        throw new ConflictException(`이미 존재하는 이메일입니다. 중복 이메일: ${email}`);
       }
       const verificationCode = createRandNum(111111, 999999);
 
@@ -160,7 +160,7 @@ export class AuthService {
         },
       });
       if (existedUsersCount > 0) {
-        throw new ConflictException('이미 존재하는 닉네임입니다.');
+        throw new ConflictException(`이미 존재하는 닉네임입니다. 중복 닉네임: ${nickname}`);
       } else {
         return {
           message: '닉네임 중복 확인이 완료되었습니다.',
@@ -190,7 +190,7 @@ export class AuthService {
         },
       });
       if (USERS.length > 0) {
-        throw new BadRequestException('이미 인증된 휴대번호입니다.');
+        throw new BadRequestException(`이미 인증된 휴대번호입니다. 중복 휴대번호: ${phone}`);
       }
       const { authorization } = header;
       const UnSignToken = await this.jwtService.verify(authorization.replace('Bearer ', ''), {
@@ -205,7 +205,9 @@ export class AuthService {
       });
 
       if (!!USER.phone) {
-        throw new BadRequestException('이미 휴대번호가 인증되었습니다.');
+        throw new BadRequestException(
+          `이미 휴대번호가 인증되었습니다. 인증된 휴대번호 ${USER.phone}`,
+        );
       }
 
       let code = '';

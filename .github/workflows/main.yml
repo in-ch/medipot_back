@@ -1,0 +1,43 @@
+name: 도커 이미지를 빌드하고 ECS에 푸시하자.
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 코드 체크아웃
+        uses: actions/checkout@v2
+
+      - name: package.json에서 어플리케이션 버전 가져오기
+        id: package_version
+        run: echo "::set-output name=VERSION::$(cat package.json | jq -r .version)"
+
+      - name: AWS credentials 설정
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Amazon ECR에 로그인
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Docker 이미지 빌드 및 푸시
+        env:
+          ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+          IMAGE_TAG: ${{ steps.package_version.outputs.VERSION }}
+        run: |
+          # Build your Docker image with the version from package.json.
+          docker build -t medipot-back .
+          
+          # Docker 이미지를 ECR 레지스트리로 푸시
+          docker tag medipot-back $ECR_REGISTRY/medipot-back:$IMAGE_TAG
+          docker push $ECR_REGISTRY/medipot-back:$IMAGE_TAG

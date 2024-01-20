@@ -42,13 +42,9 @@ jobs:
           docker tag medipot-back $ECR_REGISTRY/medipot-back:$IMAGE_TAG
           docker push $ECR_REGISTRY/medipot-back:$IMAGE_TAG
       
-      - name: ssh를 통해 EC2 로그인하기 
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
-          scripts: | 
-            'echo "Hello, this is a test file" > ~/test.txt'
+      - name: SSH into EC2 and Run Test Script
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} 'bash -s' << 'ENDSSH'
+            echo "Hello, this is a test file" > ~/test.txt
+          ENDSSH
           

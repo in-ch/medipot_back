@@ -41,10 +41,3 @@ jobs:
           # Docker 이미지를 ECR 레지스트리로 푸시
           docker tag medipot-back $ECR_REGISTRY/medipot-back:$IMAGE_TAG
           docker push $ECR_REGISTRY/medipot-back:$IMAGE_TAG
-      
-      - name: SSH into EC2 and Run Test Script
-        run: |
-          ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} 'bash -s' << 'ENDSSH'
-            echo "Hello, this is a test file" > ~/test.txt
-          ENDSSH
-          

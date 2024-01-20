@@ -1,8 +1,8 @@
 {
-  "name": "nest-typescript-starter",
+  "name": "medipot-back",
   "private": true,
   "version": "1.0.0",
-  "description": "Nest TypeScript starter repository",
+  "description": "medipot-backend-service",
   "license": "MIT",
   "scripts": {
     "build": "node --max-old-space-size=8192 node_modules/.bin/nest build",

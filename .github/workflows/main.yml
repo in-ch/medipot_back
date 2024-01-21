@@ -35,10 +35,7 @@ jobs:
           ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
           IMAGE_TAG: ${{ steps.package_version.outputs.VERSION }}
         run: |
-          # Build your Docker image with the version from package.json.
           docker build -t medipot-back .
-          
-          # Docker 이미지를 ECR 레지스트리로 푸시
           docker tag medipot-back $ECR_REGISTRY/medipot-back:$IMAGE_TAG
           docker push $ECR_REGISTRY/medipot-back:$IMAGE_TAG
 
@@ -78,7 +75,7 @@ jobs:
             cd medipot_back
             
             # ECR에서 Docker 이미지를 가져오기
-            docker pull $ECR_REGISTRY/medipot-back:$IMAGE_TAG
+            docker pull $ECR_REGISTRY/medipot-back:1.1.0
             
             # 새로운 Docker 컨테이너 실행
-            docker run -d --name medipot-back -p 80:4000 $ECR_REGISTRY/medipot-back:$IMAGE_TAG
+            docker run -d --name medipot-back -p 80:4000 $ECR_REGISTRY/medipot-back:1.1.0

@@ -56,8 +56,15 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      - name: package.json에서 어플리케이션 버전 가져오기
+        id: package_version
+        run: echo "::set-output name=VERSION::$(cat package.json | jq -r .version)"
+
       - name: SSH로 EC2에 접속
         uses: appleboy/ssh-action@master
+        env:
+          ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+          IMAGE_TAG: ${{ steps.package_version.outputs.VERSION }}
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
@@ -67,10 +74,11 @@ jobs:
             docker stop medipot-back || true
             docker rm medipot-back || true
 
-            cd medipot-back
+            # 프로젝트 디렉토리로 이동
+            cd medipot_back
             
             # ECR에서 Docker 이미지를 가져오기
-            docker pull $ECR_REGISTRY/medipot-back:${{ needs.build-and-push.outputs.IMAGE_TAG }}
+            docker pull $ECR_REGISTRY/medipot-back:$IMAGE_TAG
             
             # 새로운 Docker 컨테이너 실행
-            docker run -d --name medipot-back -p 80:4000 $ECR_REGISTRY/medipot-back:${{ needs.build-and-push.outputs.IMAGE_TAG }}
+            docker run -d --name medipot-back -p 80:4000 $ECR_REGISTRY/medipot-back:$IMAGE_TAG

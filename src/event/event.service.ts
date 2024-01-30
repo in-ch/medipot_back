@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
+import { IsNull, LessThanOrEqual, MoreThanOrEqual, Not, Repository } from 'typeorm';
 import { Request } from 'express';
 
 import { OutputDto } from 'src/commons/dtos';
@@ -17,6 +17,12 @@ import { Event } from './entities/event.entitiy';
 export class EventService {
   constructor(@InjectRepository(Event) private readonly events: Repository<Event>) {}
 
+  /**
+   * @param {EventListPagination} payload 조회할 이벤트의 pagination
+   * @description 유효한 이벤트를 조회한다.
+   * @return {OutputDto<Event[]>} 유효 이벤트 조회
+   * @author in-ch, 2024-01-30
+   */
   async list(query: EventListPagination): Promise<OutputDto<Event[]>> {
     try {
       const { page, limit } = query;
@@ -31,6 +37,35 @@ export class EventService {
         },
       });
       const totalCount = events.length;
+      return {
+        totalCount,
+        statusCode: 200,
+        data: events,
+      };
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
+  }
+
+  /**
+   * @param {EventListPagination} payload 조회할 이벤트의 pagination
+   * @description 이벤트를 전체 조회한다.
+   * @return {OutputDto<Event[]>} 이벤트 전체 조회
+   * @author in-ch, 2024-01-30
+   */
+  async listAll(query: EventListPagination): Promise<OutputDto<Event[]>> {
+    try {
+      const { page, limit } = query;
+
+      const events = await this.events.find({
+        take: limit || 10,
+        skip: page * limit || 0,
+        withDeleted: true,
+      });
+
+      const totalCount = events.length;
+
       return {
         totalCount,
         statusCode: 200,

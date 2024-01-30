@@ -26,6 +26,13 @@ export class EventController {
     return this.eventService.list(request.query);
   }
 
+  @ApiBody({ type: EventListPagination })
+  @ApiResponse({ description: '성공', type: OutputDto<Event[]> })
+  @Get('/list/all')
+  async listAll(@Req() request: Request<EventListPagination>) {
+    return this.eventService.listAll(request.query);
+  }
+
   @ApiBody({ type: GetEventDto })
   @ApiResponse({ description: '성공', type: OutputDto<Event> })
   @Get()

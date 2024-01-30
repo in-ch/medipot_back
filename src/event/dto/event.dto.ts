@@ -44,3 +44,4 @@ export class GetEventDto {
 }
 
 export class DeleteEventDto extends GetEventDto {}
+export class ActiveEventDto extends GetEventDto {}

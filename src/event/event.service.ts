@@ -5,6 +5,7 @@ import { Request } from 'express';
 
 import { OutputDto } from 'src/commons/dtos';
 import {
+  ActiveEventDto,
   DeleteEventDto,
   EventCrudDto,
   EventListPagination,
@@ -44,7 +45,7 @@ export class EventService {
       };
     } catch (e) {
       console.error(e);
-      throw e;
+      throw new Error(e);
     }
   }
 
@@ -73,7 +74,7 @@ export class EventService {
       };
     } catch (e) {
       console.error(e);
-      throw e;
+      throw new Error(e);
     }
   }
 
@@ -98,7 +99,7 @@ export class EventService {
       };
     } catch (e) {
       console.error(`get event API error: ${e}`);
-      throw e;
+      throw new Error(e);
     }
   }
 
@@ -121,7 +122,7 @@ export class EventService {
       };
     } catch (e) {
       console.error(`create event API error: ${e}`);
-      throw e;
+      throw new Error(e);
     }
   }
 
@@ -152,7 +153,40 @@ export class EventService {
       };
     } catch (e) {
       console.error(`update event API error: ${e}`);
-      throw e;
+      throw new Error(e);
+    }
+  }
+
+  /**
+   * @param {DeleteEventDto} payload 삭제할 이벤트 정보들
+   * @description 이벤트를 삭제한다.
+   * @return {OutputDto<Event>} 이벤트 삭제
+   * @author in-ch, 2023-08-15
+   */
+  async activeEvent(payload: ActiveEventDto): Promise<OutputDto<Event>> {
+    try {
+      const { eventNo } = payload;
+      const event = await this.events.findOne({
+        where: {
+          no: eventNo,
+          deletedAt: Not(IsNull()),
+        },
+        withDeleted: true,
+      });
+      if (!event?.no) {
+        throw new BadRequestException(
+          `이미 활성화되었거나 없는 이벤트입니다. 활성화 시도 event id: ${eventNo}`,
+        );
+      }
+      event.deletedAt = null;
+      await this.events.save(event);
+      return {
+        statusCode: 200,
+        data: event,
+      };
+    } catch (e) {
+      console.error(`active event API error: ${e}`);
+      throw new Error(e);
     }
   }
 
@@ -184,7 +218,7 @@ export class EventService {
       };
     } catch (e) {
       console.error(`delete event API error: ${e}`);
-      throw e;
+      throw new Error(e);
     }
   }
 }

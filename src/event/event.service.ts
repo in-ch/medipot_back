@@ -63,6 +63,7 @@ export class EventService {
         take: limit || 10,
         skip: page * limit || 0,
         withDeleted: true,
+        select: ['no', 'title', 'img', 'href', 'startDate', 'endDate', 'detail', 'deletedAt'],
       });
 
       const totalCount = events.length;

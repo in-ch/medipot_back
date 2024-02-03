@@ -3,7 +3,7 @@ import { ApiBody, ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagg
 import { Request } from 'express';
 import { AdminGuard } from 'src/admin/strategy/grant.strategy';
 
-import { OutputDto } from 'src/commons/dtos';
+import { OutputDto, PaginationDto } from 'src/commons/dtos';
 import {
   UserCreateOutputCrudDto,
   UserCreateInputCrudDto,
@@ -49,6 +49,13 @@ export class UserController {
   @Post('/login')
   login(@Body() payload: UserLoginCrudDto): Promise<OutputDto<UserLoginOutputCrudDto>> {
     return this.usersService.login(payload);
+  }
+
+  @ApiBody({ type: PaginationDto })
+  @ApiResponse({ description: '성공', type: OutputDto<User[]> })
+  @Get('/list')
+  getList(@Req() request: Request<PaginationDto>): Promise<OutputDto<User[]>> {
+    return this.usersService.getList(request.query);
   }
 
   @ApiBody({})

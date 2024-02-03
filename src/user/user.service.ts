@@ -11,7 +11,7 @@ import { IsNull, Repository } from 'typeorm';
 import { Faker, ko } from '@faker-js/faker';
 import { JwtService } from '@nestjs/jwt';
 
-import { OutputDto } from 'src/commons/dtos';
+import { OutputDto, PaginationDto } from 'src/commons/dtos';
 import { DEPARTMENT, User, UserGrant } from './entities/user.entitiy';
 import {
   DeleteUserHeader,
@@ -74,6 +74,32 @@ export class UserService {
     const isPasswordMatching = await bcrypt.compare(plainTextPassword, hashedPassword);
     if (!isPasswordMatching) {
       throw new HttpException('비밀번호가 틀렸습니다.', HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  /**
+   * @param {string} limit 한 페이지에 몇개 가져올 것인지
+   * @param {string} page 페이지 숫자
+   * @description 유저 리스트를 가져온다.
+   * @return {User[]}
+   * @author in-ch, 2024-02-03
+   */
+  async getList(query: PaginationDto): Promise<OutputDto<User[]>> {
+    try {
+      const { limit, page } = query;
+      const users = await this.users.find({
+        take: limit || 10,
+        skip: page * limit || 0,
+      });
+      const [_, totalCount] = await this.users.findAndCount();
+      return {
+        totalCount,
+        statusCode: 200,
+        data: users,
+      };
+    } catch (e) {
+      console.error(`user getList API error: ${e}`);
+      throw e;
     }
   }
 
@@ -480,7 +506,7 @@ export class UserService {
       });
       User.grant = grant;
       this.users.save(User);
-      this.userGrantRequests.delete({
+      this.userGrantRequests.softDelete({
         user: {
           no: User.no,
         },

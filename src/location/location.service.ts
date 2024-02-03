@@ -69,6 +69,7 @@ export class LocationService {
             'imgs',
             'user',
             'createdAt',
+            'isApproved',
           ],
           relations: ['user'],
         });
@@ -99,7 +100,7 @@ export class LocationService {
         take: limit || 10,
         skip: page * limit || 0,
       });
-      const totalCount = locations.length;
+      const [_, totalCount] = await this.locations.findAndCount();
       return {
         totalCount,
         statusCode: 200,
@@ -587,7 +588,8 @@ export class LocationService {
   }
 
   /**
-   * @param {}
+   * @param {DeleteLocationDto} payload
+   * @param {DeleteLocationHeaderParams} header
    * @return {OutputDto<boolean>} 입지를 삭제한다.
    * @author in-ch, 2023-07-30
    */

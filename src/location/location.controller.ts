@@ -3,13 +3,14 @@ import { ApiBody, ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagg
 import { Request } from 'express';
 import { number } from 'joi';
 
-import { OutputDto, PaginationDto } from 'src/commons/dtos';
+import { OutputDto } from 'src/commons/dtos';
 import { NoDto } from 'src/commons/dtos/no.dto';
 import { JwtAuthGuard } from 'src/user/strategy/jwtAuthentication.guard';
 import {
   DeleteLocationDto,
   DeleteLocationHeaderParams,
   GetGeoLocationsPaginationDto,
+  GetHospitalListRequestDto,
   GetUserLocationHeader,
   GetUserLocationRequestDto,
   GetUserLocationsOutputDto,
@@ -33,13 +34,13 @@ export class LocationController {
     return this.locationsService.getLocation(request.query);
   }
 
-  @ApiBody({ type: PaginationDto })
+  @ApiBody({ type: GetHospitalListRequestDto })
   @ApiResponse({ description: '성공', type: OutputDto<LocationOutputCrudDto[]> })
   @Get('list')
   getLocations(
-    @Req() request: Request<PaginationDto>,
+    @Req() request: Request<GetHospitalListRequestDto>,
   ): Promise<OutputDto<LocationOutputCrudDto[]>> {
-    return this.locationsService.getLocations(request.query);
+    return this.locationsService.getLocations(request);
   }
 
   @ApiBody({ type: GetGeoLocationsPaginationDto })

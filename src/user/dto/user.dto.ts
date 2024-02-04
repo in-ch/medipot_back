@@ -2,7 +2,7 @@ import { PickType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsNumber, IsString } from 'class-validator';
 
-import { PaginationDto } from 'src/commons/dtos';
+import { GetListParams } from 'src/commons/dtos';
 import { UserGrant } from '../entities/user.entitiy';
 
 export class UserCreateInputCrudDto {
@@ -90,7 +90,7 @@ export class UpdateUserGrantBodyDto {
 
 export class RequestDepartmentHeaderDto extends MeInputDto {}
 
-export class UserGrantRequestListPagination extends PaginationDto {}
+export class UserGrantRequestListPagination extends GetListParams {}
 
 export class GetPhoneNumRequestParamDto {
   @ApiProperty()

@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsString } from 'class-validator';
 
-import { PaginationDto } from 'src/commons/dtos';
+import { GetListParams } from 'src/commons/dtos';
 
-export class EventListPagination extends PaginationDto {}
+export class EventListPagination extends GetListParams {}
 
 export class EventCrudDto {
   @ApiProperty()

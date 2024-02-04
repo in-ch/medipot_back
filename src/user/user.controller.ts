@@ -3,7 +3,7 @@ import { ApiBody, ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagg
 import { Request } from 'express';
 import { AdminGuard } from 'src/admin/strategy/grant.strategy';
 
-import { OutputDto, PaginationDto } from 'src/commons/dtos';
+import { GetListParams, OutputDto } from 'src/commons/dtos';
 import {
   UserCreateOutputCrudDto,
   UserCreateInputCrudDto,
@@ -51,11 +51,11 @@ export class UserController {
     return this.usersService.login(payload);
   }
 
-  @ApiBody({ type: PaginationDto })
+  @ApiBody({ type: GetListParams })
   @ApiResponse({ description: '성공', type: OutputDto<User[]> })
   @Get('/list')
-  getList(@Req() request: Request<PaginationDto>): Promise<OutputDto<User[]>> {
-    return this.usersService.getList(request.query);
+  getList(@Req() request: Request<GetListParams>): Promise<OutputDto<User[]>> {
+    return this.usersService.getList(request);
   }
 
   @ApiBody({})
@@ -90,7 +90,6 @@ export class UserController {
 
   @ApiBody({ type: RequestGrantCrudDto })
   @ApiResponse({ description: '성공', type: OutputDto<UserGrantRequest[]> })
-  @UseGuards(AdminGuard)
   @Get('/grant/list')
   getGrants(
     @Req() request: Request<UserGrantRequestListPagination>,

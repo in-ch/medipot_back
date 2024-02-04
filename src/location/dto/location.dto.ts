@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsNumber, IsString } from 'class-validator';
+import { IsArray, IsEnum, IsNumber, IsString } from 'class-validator';
 
-import { PaginationDto } from 'src/commons/dtos';
+import { GetListParams, PaginationDto } from 'src/commons/dtos';
 export class LocationCrudDto {
   @ApiProperty()
   @IsString()
@@ -165,3 +165,5 @@ export class GetUserLocationRequestDto {
   @IsNumber()
   locationNo: number;
 }
+
+export class GetHospitalListRequestDto extends GetListParams {}

@@ -98,9 +98,6 @@ export class HospitalService {
   async getHospital(request: Request<GetHospitalQueryParams>): Promise<OutputDto<Hospital>> {
     try {
       const { hospitalNo } = request.query;
-      console.log({
-        hospitalNo,
-      });
       const hospital = await this.hospitals.findOne({
         where: {
           no: Number(hospitalNo),

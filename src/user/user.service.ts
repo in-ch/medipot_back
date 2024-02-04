@@ -7,11 +7,12 @@ import {
   Req,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IsNull, Repository } from 'typeorm';
+import { FindOptionsWhere, IsNull, Like, Not, Repository } from 'typeorm';
 import { Faker, ko } from '@faker-js/faker';
 import { JwtService } from '@nestjs/jwt';
+import { Request } from 'express';
 
-import { OutputDto, PaginationDto } from 'src/commons/dtos';
+import { GetListParams, OutputDto } from 'src/commons/dtos';
 import { DEPARTMENT, User, UserGrant } from './entities/user.entitiy';
 import {
   DeleteUserHeader,
@@ -36,7 +37,6 @@ import {
   UserLoginCrudDto,
   UserLoginOutputCrudDto,
 } from './dto/user.dto';
-import { Request } from 'express';
 import { UserGrantRequest } from './entities/doctorGrant.entitiy';
 import { NotionService } from 'src/utills/notion/notion.service';
 import { LikeLocation } from 'src/like-location/entities/like-location.entitiy';
@@ -80,18 +80,44 @@ export class UserService {
   /**
    * @param {string} limit 한 페이지에 몇개 가져올 것인지
    * @param {string} page 페이지 숫자
+   * @param {string} keyword 검색 키워드
+   * @param {boolean} isDeleted 삭제 여부
    * @description 유저 리스트를 가져온다.
    * @return {User[]}
    * @author in-ch, 2024-02-03
    */
-  async getList(query: PaginationDto): Promise<OutputDto<User[]>> {
+  async getList({ query }: Request<GetListParams>): Promise<OutputDto<User[]>> {
     try {
-      const { limit, page } = query;
+      const { limit, page, keyword, isDeleted } = query;
+      let where: FindOptionsWhere<User> | FindOptionsWhere<User>[] = {
+        nickname: keyword !== undefined ? Like(`%${String(keyword)}%`) : Like('%%'),
+      };
+      if (isDeleted !== 'ALL') {
+        where.deletedAt = isDeleted === 'TRUE' ? IsNull() : Not(IsNull());
+      }
       const users = await this.users.find({
-        take: limit || 10,
-        skip: page * limit || 0,
+        take: Number(limit) || 10,
+        skip: Number(page) * Number(limit) || 0,
+        select: [
+          'no',
+          'email',
+          'nickname',
+          'profile',
+          'department',
+          'department',
+          'createdAt',
+          'deletedAt',
+          'grant',
+        ],
+        where,
+        withDeleted: true,
       });
-      const [_, totalCount] = await this.users.findAndCount();
+
+      const [_, totalCount] = await this.users.findAndCount({
+        where,
+        withDeleted: true,
+      });
+
       return {
         totalCount,
         statusCode: 200,
@@ -531,20 +557,15 @@ export class UserService {
       const {
         query: { limit, page },
       } = request;
-
+      let where: FindOptionsWhere<User> | FindOptionsWhere<User>[] = {};
       const userGrantRequests: UserGrantRequest[] = await this.userGrantRequests.find({
         take: Number(limit) || 10,
         skip: Number(page) * Number(limit) || 0,
-        where: {
-          deletedAt: IsNull(),
-        },
+        where,
         relations: ['user'],
       });
-
       const totalCount = await this.userGrantRequests.count({
-        where: {
-          deletedAt: IsNull(),
-        },
+        where,
       });
       return {
         statusCode: 200,

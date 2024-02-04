@@ -1,6 +1,14 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IsNull, LessThanOrEqual, MoreThanOrEqual, Not, Repository } from 'typeorm';
+import {
+  FindOptionsWhere,
+  IsNull,
+  LessThanOrEqual,
+  Like,
+  MoreThanOrEqual,
+  Not,
+  Repository,
+} from 'typeorm';
 import { Request } from 'express';
 
 import { OutputDto } from 'src/commons/dtos';
@@ -19,19 +27,19 @@ export class EventService {
   constructor(@InjectRepository(Event) private readonly events: Repository<Event>) {}
 
   /**
-   * @param {EventListPagination} payload 조회할 이벤트의 pagination
+   * @param { Request<EventListPagination>} payload 조회할 이벤트의 pagination
    * @description 유효한 이벤트를 조회한다.
    * @return {OutputDto<Event[]>} 유효 이벤트 조회
    * @author in-ch, 2024-01-30
    */
-  async list(query: EventListPagination): Promise<OutputDto<Event[]>> {
+  async list(request: Request<EventListPagination>): Promise<OutputDto<Event[]>> {
     try {
-      const { page, limit } = query;
+      const { page, limit } = request.query;
       const currentDate = new Date();
 
       const events = await this.events.find({
-        take: limit || 10,
-        skip: page * limit || 0,
+        take: Number(limit) || 10,
+        skip: Number(page) * Number(limit) || 0,
         where: {
           startDate: LessThanOrEqual(currentDate.toISOString()),
           endDate: MoreThanOrEqual(currentDate.toISOString()),
@@ -55,19 +63,26 @@ export class EventService {
    * @return {OutputDto<Event[]>} 이벤트 전체 조회
    * @author in-ch, 2024-01-30
    */
-  async listAll(query: EventListPagination): Promise<OutputDto<Event[]>> {
+  async listAll(request: Request<EventListPagination>): Promise<OutputDto<Event[]>> {
     try {
-      const { page, limit } = query;
-
+      const { page, limit, keyword, isDeleted } = request.query;
+      let where: FindOptionsWhere<Event> | FindOptionsWhere<Event>[] = {
+        title: keyword !== undefined ? Like(`%${String(keyword)}%`) : Like('%%'),
+      };
+      if (isDeleted !== 'ALL') {
+        where.deletedAt = isDeleted === 'TRUE' ? IsNull() : Not(IsNull());
+      }
       const events = await this.events.find({
-        take: limit || 10,
-        skip: page * limit || 0,
+        take: Number(limit) || 10,
+        skip: Number(page) * Number(limit) || 0,
+        where,
         withDeleted: true,
-        select: ['no', 'title', 'img', 'href', 'startDate', 'endDate', 'detail', 'deletedAt'],
+        select: ['no', 'title', 'img', 'href', 'startDate', 'endDate', 'deletedAt'],
       });
-
-      const totalCount = events.length;
-
+      const [_, totalCount] = await this.events.findAndCount({
+        where,
+        withDeleted: true,
+      });
       return {
         totalCount,
         statusCode: 200,

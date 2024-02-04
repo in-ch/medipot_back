@@ -1,10 +1,10 @@
 import { BadRequestException, Injectable, NotAcceptableException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ArrayContains, Between, IsNull, Like, Repository } from 'typeorm';
+import { ArrayContains, Between, FindOptionsWhere, IsNull, Like, Not, Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 
-import { OutputDto, PaginationDto } from 'src/commons/dtos';
+import { OutputDto } from 'src/commons/dtos';
 import { NoDto } from 'src/commons/dtos/no.dto';
 import { NotionService } from 'src/utills/notion/notion.service';
 import { User } from 'src/user/entities/user.entitiy';
@@ -14,6 +14,7 @@ import {
   DeleteLocationDto,
   DeleteLocationHeaderParams,
   GetGeoLocationsPaginationDto,
+  GetHospitalListRequestDto,
   GetUserLocationHeader,
   GetUserLocationRequestDto,
   GetUserLocationsOutputDto,
@@ -88,19 +89,29 @@ export class LocationService {
     }
   }
   /**
-   * @param {PaginationDto} query 쿼리값
+   * @param {Request<GetHospitalListRequestDto>} request 쿼리값
    * @description 입지 정보들을 가져온다.
    * @return {OutputDto<LocationOutputCrudDto[]>} 입지 정보들을 가져온다.
    * @author in-ch, 2022-12-07
    */
-  async getLocations(query: PaginationDto): Promise<OutputDto<LocationOutputCrudDto[]>> {
-    const { limit, page } = query;
+  async getLocations(
+    request: Request<GetHospitalListRequestDto>,
+  ): Promise<OutputDto<LocationOutputCrudDto[]>> {
+    const { limit, page, keyword, isDeleted } = request.query;
+    console.log({ keyword });
     try {
+      let where: FindOptionsWhere<Location> | FindOptionsWhere<Location>[] = {
+        name: keyword !== undefined ? Like(`%${String(keyword)}%`) : Like('%%'),
+      };
+
       const locations = await this.locations.find({
-        take: limit || 10,
-        skip: page * limit || 0,
+        take: Number(limit) || 10,
+        skip: Number(page) * Number(limit) || 0,
+        where,
       });
-      const [_, totalCount] = await this.locations.findAndCount();
+      const [_, totalCount] = await this.locations.findAndCount({
+        where,
+      });
       return {
         totalCount,
         statusCode: 200,

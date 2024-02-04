@@ -24,14 +24,14 @@ export class EventController {
   @ApiResponse({ description: '성공', type: OutputDto<Event[]> })
   @Get('/list')
   async list(@Req() request: Request<EventListPagination>) {
-    return this.eventService.list(request.query);
+    return this.eventService.list(request);
   }
 
   @ApiBody({ type: EventListPagination })
   @ApiResponse({ description: '성공', type: OutputDto<Event[]> })
   @Get('/list/all')
   async listAll(@Req() request: Request<EventListPagination>) {
-    return this.eventService.listAll(request.query);
+    return this.eventService.listAll(request);
   }
 
   @ApiBody({ type: GetEventDto })

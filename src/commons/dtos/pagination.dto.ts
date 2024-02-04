@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber } from 'class-validator';
+import { IsBoolean, IsNumber, IsString } from 'class-validator';
 
 export class PaginationDto {
   @ApiProperty()
@@ -9,4 +9,14 @@ export class PaginationDto {
   @ApiProperty()
   @IsNumber()
   page?: number;
+}
+
+export class GetListParams extends PaginationDto {
+  @ApiProperty()
+  @IsString()
+  keyword: string;
+
+  @ApiProperty()
+  @IsBoolean()
+  isDeleted: boolean;
 }

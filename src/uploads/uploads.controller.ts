@@ -35,6 +35,17 @@ export class UploadsController {
   @Post('')
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(@UploadedFile() file: any) {
+    return this.uploadImageToS3(file);
+  }
+
+  @Post('/watermark')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadWatermarkFile(@UploadedFile() file: any) {
+    const watermarkImage = process.env.WATERMARK_IMG;
+    return this.uploadImageToS3(file, watermarkImage);
+  }
+
+  private async uploadImageToS3(file: any, watermarkImage?: string) {
     AWS.config.update({
       credentials: {
         accessKeyId: process.env.S3_ACESS_KEY,
@@ -46,23 +57,26 @@ export class UploadsController {
       const s3 = new AWS.S3();
       const imgSize = 700;
 
-      // 이미지 리사이징 및 워터마크 적용
-      const Image = await sharp(file.buffer, { failOnError: false })
+      // 이미지 리사이징
+      let image = await sharp(file.buffer, { failOnError: false })
         .withMetadata()
         .resize(imgSize)
         .jpeg({ mozjpeg: true })
         .png()
         .toBuffer();
 
-      const watermarkedImage = await sharp(Image)
-        .composite([{ input: process.env.WATERMARK_IMG, gravity: 'southeast' }])
-        .resize({ width: imgSize })
-        .toBuffer();
+      // 워터마크 적용
+      if (watermarkImage) {
+        image = await sharp(image)
+          .composite([{ input: watermarkImage, gravity: 'southeast' }])
+          .resize({ width: imgSize })
+          .toBuffer();
+      }
 
       const objectName = `${generateRandomString(10)}.png`;
       await s3
         .putObject({
-          Body: watermarkedImage,
+          Body: image,
           Bucket: process.env.S3_BUCKET_NAME,
           Key: objectName,
           ContentType: 'image/png',

@@ -22,7 +22,7 @@ async function bootstrap() {
   });
 
   app.enableCors({
-    origin: process.env.ALLOWED_ORIGIN, // 수정 필요한 도메인 주소
+    origin: process.env.NODE_ENV === 'dev' ? '*' : process.env.ALLOWED_ORIGIN, // 수정 필요한 도메인 주소
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });

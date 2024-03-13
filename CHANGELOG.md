@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/in-ch/medipot_back/compare/v1.2.1...v1.3.0) (2024-03-13)
+
+
+### Features
+
+* sns 보내기 기능 coolsms로 변경 ([#33](https://github.com/in-ch/medipot_back/issues/33)) ([504f798](https://github.com/in-ch/medipot_back/commit/504f79892408caf95941aacfaade3f5d8adeb4a3))
+
 ### [1.2.1](https://github.com/in-ch/medipot_back/compare/v1.2.0...v1.2.1) (2024-03-10)
 
 ## 1.2.0 (2024-02-26)

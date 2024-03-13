@@ -1,14 +1,13 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { MoreThanOrEqual, Repository } from 'typeorm';
 import { BadRequestException, ConflictException } from '@nestjs/common';
-import * as crypto from 'crypto';
-import axios from 'axios';
 import { JwtService } from '@nestjs/jwt';
 
 import { User } from 'src/user/entities/user.entitiy';
 import { EmailService } from 'src/email/email.service';
 import { checkElapsedTime } from 'src/utills/checkElapsedTime';
 import { OutputDto } from 'src/commons/dtos';
+import sendMsg from 'src/utills/sendMsg';
 import { Auth } from './entities/auth.entitiy';
 import { AuthPhone } from './entities/auth-phone.entitiy';
 import {
@@ -36,31 +35,6 @@ export class AuthService {
     private readonly emailServices: EmailService,
     private readonly jwtService: JwtService,
   ) {}
-
-  private makeSignature(): string {
-    const NCP_accessKey = `${process.env.NCP_ACCESS_KEY}`; // access key id (from portal or sub account)
-    const NCP_secretKey = `${process.env.NCP_SECRET_KEY}`; // secret key (from portal or sub account)
-    const NCP_serviceID = `${process.env.NCP_SERVICE_ID}`;
-
-    const space = ' '; // one space
-    const newLine = '\n'; // new line
-    const method = 'POST'; // method
-    const url2 = `/sms/v2/services/${NCP_serviceID}/messages`;
-    const timestamp = Date.now().toString();
-
-    const message = [];
-    const hmac = crypto.createHmac('sha256', NCP_secretKey);
-
-    message.push(method);
-    message.push(space);
-    message.push(url2);
-    message.push(newLine);
-    message.push(timestamp);
-    message.push(newLine);
-    message.push(NCP_accessKey);
-    const signature = hmac.update(message.join('')).digest('base64');
-    return signature.toString();
-  }
 
   /**
    * @param {AuthEmailParams} params email
@@ -197,77 +171,37 @@ export class AuthService {
         secret: process.env.PRIVATE_KEY,
       });
       const { no } = UnSignToken;
-
       const USER = await this.users.findOne({
         where: {
           no,
         },
       });
-
       if (!!USER.phone) {
         throw new BadRequestException(
           `이미 휴대번호가 인증되었습니다. 인증된 휴대번호 ${USER.phone}`,
         );
       }
-
       let code = '';
       for (let i = 0; i < 6; i++) {
         code += Math.floor(Math.random() * 10);
       }
-
-      const serviceId = `${process.env.NCP_SERVICE_ID}`;
-      const accessKey = `${process.env.NCP_ACCESS_KEY}`;
-      const url_ = `https://sens.apigw.ntruss.com/sms/v2/services/${serviceId}/messages`;
-
-      const body = {
-        type: 'SMS',
-        contentType: 'COMM',
-        countryCode: '82',
-        from: '01056922949', // 발신자 번호
-        content: `[메디팟 휴대전화 인증번호] ${code}`,
-        messages: [
-          {
-            to: phone, // 수신자 번호
+      const isSuccess = await sendMsg(phone, `[메디팟 휴대전화 인증번호] ${code}`);
+      if (isSuccess) {
+        return {
+          statusCode: 200,
+          data: {
+            ok: true,
           },
-        ],
-      };
-      const options = {
-        headers: {
-          'Content-Type': 'application/json; charset=utf-8',
-          'x-ncp-iam-access-key': accessKey,
-          'x-ncp-apigw-timestamp': Date.now().toString(),
-          'x-ncp-apigw-signature-v2': this.makeSignature(),
-        },
-      };
-
-      axios
-        .post(url_, body, options)
-        .then(async (res) => {
-          this.authsPhone.save(
-            this.authsPhone.create({
-              user: USER,
-              code: code,
-            }),
-          );
-        })
-        .catch(() => {
-          return {
-            statusCode: 404,
-            data: {
-              ok: false,
-            },
-          };
-        });
-
-      return {
-        statusCode: 200,
-        data: {
-          ok: true,
-        },
-      };
+        };
+      }
     } catch (e) {
       console.error(e);
-      throw e;
+      return {
+        statusCode: 404,
+        data: {
+          ok: false,
+        },
+      };
     }
   }
 

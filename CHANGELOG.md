@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.4.0](https://github.com/in-ch/medipot_back/compare/v1.2.1...v1.4.0) (2024-03-19)
+
+
+### Features
+
+* sns 보내기 기능 coolsms로 변경 ([#33](https://github.com/in-ch/medipot_back/issues/33)) ([504f798](https://github.com/in-ch/medipot_back/commit/504f79892408caf95941aacfaade3f5d8adeb4a3))
+
+
+### Bug Fixes
+
+* **like:** add location filter at likeLocations API ([#36](https://github.com/in-ch/medipot_back/issues/36)) ([7ac3816](https://github.com/in-ch/medipot_back/commit/7ac3816050eb4c57518259ad0f1d638e8aea8051))
+
 ## [1.3.0](https://github.com/in-ch/medipot_back/compare/v1.2.1...v1.3.0) (2024-03-13)
 
 

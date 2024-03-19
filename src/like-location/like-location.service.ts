@@ -1,7 +1,7 @@
 import { BadRequestException, Body, ConflictException, Headers, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IsNull, Repository } from 'typeorm';
+import { IsNull, Not, Repository } from 'typeorm';
 
 import { OutputDto } from 'src/commons/dtos';
 import { Location } from 'src/location/entities/location.entitiy';
@@ -152,7 +152,7 @@ export class LikeLocationService {
       return {
         totalCount: likeLocations.length,
         statusCode: 200,
-        data: likeLocations,
+        data: likeLocations.filter((likeLocation) => likeLocation.location !== null),
       };
     } catch (e) {
       console.error(`getLocation error: ${e}`);

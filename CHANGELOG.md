@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.2](https://github.com/in-ch/medipot_back/compare/v1.4.1...v1.4.2) (2024-03-23)
+
+
+### Bug Fixes
+
+* **auth:** sendPhoneValidation API ([#36](https://github.com/in-ch/medipot_back/issues/36)) ([0f5ea43](https://github.com/in-ch/medipot_back/commit/0f5ea43af9cb2920cb2dbb961deeb0f95cd68635))
+
 ### [1.4.1](https://github.com/in-ch/medipot_back/compare/v1.4.0...v1.4.1) (2024-03-23)
 
 

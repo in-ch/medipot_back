@@ -187,6 +187,12 @@ export class AuthService {
       }
       const isSuccess = await sendMsg(phone, `[메디팟 휴대전화 인증번호] ${code}`);
       if (isSuccess) {
+        this.authsPhone.save(
+          this.authsPhone.create({
+            code,
+            user: USER,
+          }),
+        );
         return {
           statusCode: 200,
           data: {

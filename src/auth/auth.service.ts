@@ -222,12 +222,16 @@ export class AuthService {
       });
       const { no } = UnSignToken;
       const { code, phone } = payload;
-
+      const USER = await this.users.findOne({
+        where: {
+          no,
+        },
+      });
+      const userNo = USER.no;
       const AUTH = await this.authsPhone.findOne({
         where: {
-          code,
           user: {
-            no,
+            no: userNo,
           },
         },
       });
@@ -238,14 +242,8 @@ export class AuthService {
       if (timeCheck) {
         throw new BadRequestException('인증시간이 5분이상 초과하였습니다.');
       } else {
-        const USER = await this.users.findOne({
-          where: {
-            no,
-          },
-        });
         USER.phone = phone;
         await this.users.save(USER);
-
         await this.authsPhone.delete(AUTH.no);
         return {
           statusCode: 200,

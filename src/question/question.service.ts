@@ -48,11 +48,13 @@ export class QuestionService {
         throw new NotFoundException(
           `유저 인증에 실패했습니다. 유저 no: ${user?.no} 입지 no: ${locationNo}`,
         );
-      } else if (user.grant !== UserGrant.DOCTOR) {
-        return {
-          statusCode: 406,
-        };
-      } else {
+      }
+      // else if (user.grant !== UserGrant.DOCTOR) {
+      //   return {
+      //     statusCode: 406,
+      //   };
+      // }
+      else {
         const location = await this.locations.findOne({
           where: {
             no: locationNo,
